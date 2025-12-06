@@ -3,533 +3,626 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BizimSpace Messenger</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>LoveSync Social v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- AERO GLASS THEME --- */
-        :root {
-            --glass-top: rgba(255, 255, 255, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --msn-header: linear-gradient(to bottom, #f2f9fe 0%, #d6e8ff 100%);
-            --msn-bg: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png') no-repeat center center fixed; 
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8fafc;
+            overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
+            overflow: hidden;
         }
 
-        body { 
-            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: #4facfe;
-            background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-            height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        /* --- Animasyonlu Arka Plan --- */
+        .animated-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: #fff0f5;
+            overflow: hidden;
+        }
+        .blob {
+            position: absolute;
+            background: linear-gradient(180deg, rgba(255, 192, 203, 0.4) 0%, rgba(255, 105, 180, 0.3) 100%);
+            border-radius: 50%;
+            filter: blur(40px);
+            animation: floatBlob 10s infinite alternate ease-in-out;
+        }
+        .blob-1 { width: 300px; height: 300px; top: -50px; left: -50px; animation-delay: 0s; }
+        .blob-2 { width: 250px; height: 250px; bottom: -50px; right: -50px; background: rgba(135, 206, 250, 0.3); animation-delay: -5s; }
+        
+        @keyframes floatBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
         }
 
-        /* LOGO (SVG - ASLA KIRILMAZ) */
-        .msn-butterfly {
-            width: 80px; height: 80px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%230099ff' d='M50 50 Q30 10 10 30 T50 50'/%3E%3Cpath fill='%2300cc00' d='M50 50 Q70 10 90 30 T50 50'/%3E%3Cpath fill='%23ffcc00' d='M50 50 Q30 90 10 70 T50 50'/%3E%3Cpath fill='%23ff3300' d='M50 50 Q70 90 90 70 T50 50'/%3E%3Ccircle cx='50' cy='50' r='5' fill='%23fff'/%3E%3C/svg%3E");
-            background-size: cover; margin: 0 auto;
+        /* --- Animasyonlu Avatar Çerçevesi --- */
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            padding: 3px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff00cc, #3333ff, #ff00cc);
+            background-size: 200% 200%;
+            animation: spinBorder 3s linear infinite;
+        }
+        .avatar-img {
+            display: block;
+            border-radius: 50%;
+            background: white;
+            position: relative;
+            z-index: 2;
+        }
+        @keyframes spinBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* EKRAN YÖNETİMİ */
-        .screen { display: none; flex: 1; height: 100%; padding: 10px; justify-content: center; }
-        .screen.active { display: flex; }
+        /* --- Sohbet Baloncuk Animasyonları --- */
+        .message-enter {
+            animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes slideInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* GİRİŞ KUTUSU (GLASS EFFECT) */
-        .login-box {
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        .message-bubble {
+            max-width: 80%;
+            word-wrap: break-word;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .message-mine {
+            background: linear-gradient(135deg, #FF6B6B 0%, #EE5253 100%);
+            color: white;
+            border-radius: 20px 20px 4px 20px;
+        }
+
+        .message-theirs {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            color: #334155;
+            border-radius: 20px 20px 20px 4px;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        /* Glassmorphism Panel */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        /* Input Alanı */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            padding: 30px; text-align: center; width: 100%; max-width: 350px; margin: auto;
+            transition: all 0.3s ease;
         }
-        
-        .msn-input {
-            width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px;
-            border: 1px solid #ccc; font-size: 14px; outline: none;
-        }
-        
-        .msn-btn {
-            background: linear-gradient(to bottom, #63b8ff 0%, #30588e 100%);
-            color: white; border: 1px solid #204060; padding: 8px 20px;
-            border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.3); margin-top: 5px;
-        }
-        .msn-btn:hover { filter: brightness(1.1); }
-        .msn-btn.secondary { background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%); color: #333; }
-
-        /* ANA PENCERE */
-        .window-frame {
-            background: #fff; border-radius: 8px; flex: 1; display: flex; flex-direction: column;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid #4a7ac9;
-        }
-        
-        .window-header {
-            background: var(--msn-header); height: 50px; display: flex; align-items: center;
-            padding: 0 10px; border-bottom: 1px solid #a0bcdc; justify-content: space-between;
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.1);
+            border-color: #ff69b4;
         }
 
-        .my-card {
-            background: linear-gradient(to right, #eef6fb, #fff); padding: 10px;
-            display: flex; align-items: center; border-bottom: 1px solid #dcebf8;
+        /* Genel UI */
+        .bottom-nav-item.active i {
+            color: #EE5253;
+            transform: translateY(-5px);
+            filter: drop-shadow(0 4px 6px rgba(238, 82, 83, 0.3));
         }
-        .my-pic { width: 50px; height: 50px; border: 2px solid #fff; box-shadow: 0 0 5px rgba(0,0,0,0.2); object-fit: cover; border-radius: 4px; cursor: pointer; }
-        
-        /* TABS */
-        .tabs { display: flex; background: #f0f6fc; border-bottom: 1px solid #dcebf8; }
-        .tab { flex: 1; text-align: center; padding: 8px; font-size: 12px; cursor: pointer; color: #555; border-right: 1px solid #eef; }
-        .tab.active { background: #fff; font-weight: bold; color: #000; border-bottom: 2px solid #orange; }
-
-        .list-area { flex: 1; overflow-y: auto; background: #fff; padding: 5px; }
-
-        /* ARKADAŞ LİSTESİ */
-        .contact-item {
-            display: flex; align-items: center; padding: 8px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: 0.2s;
-        }
-        .contact-item:hover { background: #eaf4fd; }
-        .status-light { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #fff; box-shadow: 0 0 2px #000; margin-right: 8px; }
-        .green { background: #70d900; } .red { background: #e00; } .grey { background: #ccc; }
-
-        /* SOHBET */
-        .chat-history { flex: 1; background: #fff; padding: 10px; overflow-y: auto; font-size: 13px; }
-        .chat-input-area { background: #eef6fb; padding: 10px; border-top: 1px solid #dcebf8; display: flex; flex-direction: column; height: 100px; }
-        .chat-textarea { flex: 1; border: 1px solid #aaccf0; border-radius: 3px; font-family: inherit; resize: none; padding: 5px; }
-        
-        .msg-row { margin-bottom: 8px; }
-        .msg-sender { color: #888; font-size: 10px; margin-bottom: 2px; }
-        .msg-bubble { display: inline-block; padding: 6px 10px; border-radius: 4px; max-width: 80%; }
-        .msg-me { background: #eef6fb; border: 1px solid #dcebf8; color: #000; }
-        .msg-you { background: #fff; border: 1px solid #ddd; color: #000; }
-
-        /* AŞK SAYACI (Unique Feature) */
-        .love-footer {
-            background: #222; color: #fff; font-size: 10px; text-align: center; padding: 5px;
-            font-family: 'Courier New', monospace; letter-spacing: 1px;
+        .bottom-nav-item i {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* TİTREŞİM */
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(3px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: #FF3D00;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
         }
-        .shaking { animation: shake 0.5s; animation-iteration-count: infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body id="app-body">
+<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800">
 
-    <audio id="snd-login" src="https://www.myinstants.com/media/sounds/msn-messenger-sign-in-sound.mp3"></audio>
-    <audio id="snd-msg" src="https://www.myinstants.com/media/sounds/msn_messenger_new_message.mp3"></audio>
-    <audio id="snd-nudge" src="https://www.myinstants.com/media/sounds/msn-nudge-sound.mp3"></audio>
-
-    <div id="screen-auth" class="screen active">
-        <div class="login-box">
-            <div class="msn-butterfly"></div>
-            <h2 style="color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.5); margin:10px 0;">BizimSpace</h2>
-            
-            <div style="background:#fff; padding:5px; border-radius:5px; margin-bottom:15px; cursor:pointer;" onclick="document.getElementById('auth-file').click()">
-                <img id="auth-preview" src="https://via.placeholder.com/80" style="width:80px; height:80px; object-fit:cover;">
-                <div style="font-size:10px; color:#888;">Resim Seç</div>
-            </div>
-            <input type="file" id="auth-file" hidden accept="image/*">
-
-            <input type="email" id="auth-email" class="msn-input" placeholder="E-posta Adresi">
-            <input type="password" id="auth-pass" class="msn-input" placeholder="Parola">
-            
-            <button onclick="authAction('login')" class="msn-btn">Oturum Aç</button>
-            <button onclick="authAction('signup')" class="msn-btn secondary">Kaydol</button>
-            <div id="loading-txt" style="color:#fff; font-size:12px; margin-top:10px; display:none;">Lütfen bekleyin...</div>
-        </div>
+    <!-- Animasyonlu Arka Plan -->
+    <div class="animated-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
     </div>
 
-    <div id="screen-main" class="screen">
-        <div class="window-frame">
-            <div class="window-header">
-                <span style="font-weight:bold; color:#2e5f94; display:flex; align-items:center;">
-                    <span class="material-icons" style="font-size:18px; margin-right:5px;">face</span> BizimSpace
-                </span>
-                <span class="material-icons" onclick="logout()" style="cursor:pointer; color:#666;">power_settings_new</span>
-            </div>
-
-            <div class="my-card">
-                <img id="my-pic" src="" class="my-pic" onclick="editProfile()">
-                <div style="flex:1; margin-left:10px;">
-                    <b id="my-nick" style="color:#2e5f94; cursor:pointer;" onclick="editProfile()">...</b>
-                    <div id="my-msg" style="font-size:11px; color:#666; font-style:italic; cursor:pointer;" onclick="editStatusMsg()">[İleti yazmak için tıklayın]</div>
-                    <select id="my-status" onchange="setStatus(this.value)" style="border:none; background:transparent; font-size:11px; margin-top:3px;">
-                        <option value="online">🟢 Çevrimiçi</option>
-                        <option value="busy">⛔ Meşgul</option>
-                        <option value="offline">⚪ Çevrimdışı Görün</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('contacts', this)">Kişiler</div>
-                <div class="tab" onclick="switchTab('search', this)">Arkadaş Ekle</div>
-                <div class="tab" onclick="switchTab('requests', this)">İstekler (<span id="req-count">0</span>)</div>
-            </div>
-
-            <div id="tab-contacts" class="list-area">
-                <div style="padding:5px; font-size:11px; font-weight:bold; color:#4a7ac9;">▼ Arkadaşlarım</div>
-                <div id="friend-list"></div>
-            </div>
-
-            <div id="tab-search" class="list-area" style="display:none; padding:15px; text-align:center;">
-                <input type="text" id="search-in" class="msn-input" placeholder="İsim veya E-posta ara...">
-                <button onclick="searchUser()" class="msn-btn" style="width:auto;">Ara</button>
-                <div id="search-res" style="margin-top:15px; text-align:left;"></div>
-            </div>
-
-            <div id="tab-requests" class="list-area" style="display:none;">
-                <div id="req-list"></div>
-            </div>
-
-            <div class="love-footer" id="love-timer">
-                Birliktelik: Hesaplanıyor...
-            </div>
-        </div>
-    </div>
-
-    <div id="screen-chat" class="screen">
-        <div class="window-frame">
-            <div class="window-header" style="background:linear-gradient(to right, #fff, #eef6fb);">
-                <div style="display:flex; align-items:center;">
-                    <img id="chat-head-img" src="" style="width:30px; height:30px; border-radius:4px; margin-right:5px;">
-                    <span id="chat-head-name" style="font-weight:bold; color:#2e5f94;">...</span>
-                </div>
-                <span class="material-icons" onclick="closeChat()" style="cursor:pointer; color:#666;">close</span>
-            </div>
-
-            <div style="background:#f0f6fc; padding:5px; border-bottom:1px solid #ddd; display:flex; gap:10px;">
-                <button onclick="sendNudge()" style="border:1px solid #ccc; background:#fff; cursor:pointer;" title="Titreşim">📳</button>
-                <button onclick="document.getElementById('chat-file').click()" style="border:1px solid #ccc; background:#fff; cursor:pointer;" title="Resim">📷</button>
-                <input type="file" id="chat-file" hidden accept="image/*">
-            </div>
-
-            <div id="chat-box" class="chat-history"></div>
-
-            <div class="chat-input-area">
-                <textarea id="chat-text" class="chat-textarea"></textarea>
-                <div style="text-align:right; margin-top:5px;">
-                    <button onclick="sendMessage()" class="msn-btn" style="width:auto; padding:4px 15px;">Gönder</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- Firebase Script -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, getDocs, where, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp, query, where, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIG
-        const IMGBB_KEY = "4e42bfb4bfa830f09e932aa64cc20bb6";
-        const app = initializeApp({
-            apiKey: "AIzaSyA90T44N_om_KnTs3Wg06m8pBry0L20nVw",
-            authDomain: "sosyal-medya-a46b6.firebaseapp.com",
-            projectId: "sosyal-medya-a46b6",
-            storageBucket: "sosyal-medya-a46b6.firebasestorage.app",
-            messagingSenderId: "990331063740",
-            appId: "1:990331063740:web:e18de69584fc82825aafb9"
-        });
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-        let userData = {};
-        let activeChatId = null;
-
-        // --- AŞK SAYACI (EĞLENCELİ ÖZELLİK) ---
-        // Buraya ilişkinizin başlangıç tarihini girebilirsin (Yıl, Ay-1, Gün)
-        const startDate = new Date(2023, 0, 1); // Örn: 1 Ocak 2023
-        setInterval(() => {
-            const now = new Date();
-            const diff = now - startDate;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const mins = Math.floor((diff / 1000 / 60) % 60);
-            const secs = Math.floor((diff / 1000) % 60);
-            document.getElementById('love-timer').innerText = `❤️ ${days} Gün ${hours} Sa ${mins} Dk ${secs} Sn ❤️`;
-        }, 1000);
-
-        // --- YARDIMCI ---
-        const playSnd = (id) => document.getElementById(id).play().catch(()=>{});
-        const uploadImg = async (file) => {
-            const fd = new FormData(); fd.append("image", file);
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
-            const data = await res.json();
-            if(data.success) return data.data.url;
-            throw new Error("Hata");
+        // Kullanıcının verdiği yapılandırma
+        const userProvidedConfig = {
+            apiKey: "AIzaSyD9TSJoNxqly-dsFrqLK2fb5_fAxAa4wGk",
+            authDomain: "sosyal-medya-2.firebaseapp.com",
+            databaseURL: "https://sosyal-medya-2-default-rtdb.firebaseio.com",
+            projectId: "sosyal-medya-2",
+            storageBucket: "sosyal-medya-2.firebasestorage.app",
+            messagingSenderId: "640354012132",
+            appId: "1:640354012132:web:085a9489861f780b9095f1",
+            measurementId: "G-XMY4N1ZVXM"
         };
 
-        // --- AUTH ---
+        // Bu ortamda çalışması için sistem config'ini fallback olarak kullanacağız.
+        // Eğer kendi domaininde çalıştırırsan userProvidedConfig'i direkt kullanabilirsin.
+        const activeConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userProvidedConfig;
+        const activeAppId = typeof __app_id !== 'undefined' ? __app_id : userProvidedConfig.projectId;
+
+        const app = initializeApp(activeConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const IMGBB_API_KEY = "16e22819e49d2faf7921c4df3b067359";
+
+        // State
+        let currentUser = null;
+        let myUserProfile = null;
+        let activeChatId = null;
+        let unsubscribeMessages = null;
+
+        // UI Helpers - Window'a atayarak global erişim sağlıyoruz
+        window.show = (id) => {
+            document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        };
+
+        // --- AUTH LOGIC ---
+        
+        // 1. Durum Kontrolü
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                onSnapshot(doc(db, "users", user.uid), (s) => {
-                    if(s.exists()) {
-                        userData = s.data();
-                        updateUI();
-                        loadFriends();
-                        loadRequests();
-                    }
-                });
-                await updateDoc(doc(db, "users", user.uid), { status: 'online' });
-                playSnd('snd-login');
-                document.getElementById('screen-auth').classList.remove('active');
-                document.getElementById('screen-main').classList.add('active');
+                // Profil verisi var mı kontrol et
+                const userDoc = await getDoc(doc(db, 'artifacts', activeAppId, 'users', user.uid, 'profile', 'data'));
+                if (userDoc.exists()) {
+                    myUserProfile = userDoc.data();
+                    updateProfileUI();
+                    window.show('screen-main');
+                    loadPeople();
+                } else {
+                    // Kullanıcı var ama profili yok (yeni kayıt)
+                    window.show('screen-profile-setup');
+                }
             } else {
-                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-                document.getElementById('screen-auth').classList.add('active');
+                window.show('screen-welcome');
             }
         });
 
-        function updateUI() {
-            document.getElementById('my-pic').src = userData.photoURL || "https://via.placeholder.com/60";
-            document.getElementById('my-nick').innerText = userData.username;
-            document.getElementById('my-msg').innerText = userData.personalMsg || "[İleti yazmak için tıklayın]";
-            document.getElementById('my-status').value = userData.status || 'online';
-        }
-
-        window.authAction = async (type) => {
-            const e = document.getElementById('auth-email').value;
-            const p = document.getElementById('auth-pass').value;
-            if(!e || !p) return alert("Bilgileri girin");
-            document.getElementById('loading-txt').style.display='block';
-            
-            try {
-                if(type === 'login') await signInWithEmailAndPassword(auth, e, p);
-                else {
-                    const c = await createUserWithEmailAndPassword(auth, e, p);
-                    let url = "https://via.placeholder.com/150";
-                    const f = document.getElementById('auth-file').files[0];
-                    if(f) url = await uploadImg(f);
-                    
-                    await setDoc(doc(db, "users", c.user.uid), {
-                        uid: c.user.uid, email: e, username: e.split('@')[0],
-                        photoURL: url, status: 'online', personalMsg: '', friends: []
-                    }, {merge:true});
-                }
-            } catch(err) { alert(err.message); }
-            document.getElementById('loading-txt').style.display='none';
-        };
-
-        window.logout = async () => {
-            if(currentUser) await updateDoc(doc(db, "users", currentUser.uid), { status: 'offline' });
-            signOut(auth);
-        };
-
-        // --- ARKADAŞLIK & ARAMA (DÜZELTİLDİ: Client Side Filter) ---
-        window.searchUser = async () => {
-            const val = document.getElementById('search-in').value.toLowerCase();
-            const res = document.getElementById('search-res'); res.innerHTML = "Aranıyor...";
-            
-            const snap = await getDocs(collection(db, "users"));
-            res.innerHTML = "";
-            let found = false;
-
-            snap.forEach(d => {
-                const u = d.data();
-                // Büyük/Küçük harf duyarsız arama
-                if (u.uid !== currentUser.uid && (u.email.toLowerCase().includes(val) || u.username.toLowerCase().includes(val))) {
-                    found = true;
-                    res.innerHTML += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:5px;">
-                            <div style="display:flex; align-items:center;">
-                                <img src="${u.photoURL}" style="width:30px; height:30px; border-radius:3px; margin-right:5px;">
-                                <div><b>${u.username}</b><br><small>${u.email}</small></div>
-                            </div>
-                            <button class="msn-btn" style="width:auto; padding:2px 10px;" onclick="addFriend('${u.uid}')">Ekle</button>
-                        </div>
-                    `;
-                }
-            });
-            if(!found) res.innerHTML = "Sonuç bulunamadı.";
-        };
-
-        window.addFriend = async (targetUid) => {
-            const id = [currentUser.uid, targetUid].sort().join("_");
-            await setDoc(doc(db, "requests", id), { from: currentUser.uid, to: targetUid, status: 'pending' });
-            alert("İstek gönderildi!");
-        };
-
-        function loadRequests() {
-            const q = query(collection(db, "requests"), where("to", "==", currentUser.uid), where("status", "==", "pending"));
-            onSnapshot(q, async (snap) => {
-                const div = document.getElementById('req-list'); div.innerHTML = "";
-                document.getElementById('req-count').innerText = snap.size;
-                
-                for(const d of snap.docs) {
-                    const req = d.data();
-                    const u = (await getDoc(doc(db, "users", req.from))).data();
-                    div.innerHTML += `
-                        <div style="background:#ffffe0; padding:5px; border:1px solid #ccc; margin-bottom:5px;">
-                            <b>${u.username}</b> sizi eklemek istiyor.
-                            <div style="margin-top:5px;">
-                                <button onclick="acceptReq('${d.id}', '${req.from}')">Kabul</button>
-                                <button onclick="rejectReq('${d.id}')">Red</button>
-                            </div>
-                        </div>`;
-                }
-            });
-        }
-
-        window.acceptReq = async (docId, friendUid) => {
-            const myRef = doc(db, "users", currentUser.uid);
-            const frRef = doc(db, "users", friendUid);
-            const myF = userData.friends || []; myF.push(friendUid);
-            const frData = (await getDoc(frRef)).data();
-            const frF = frData.friends || []; frF.push(currentUser.uid);
-            
-            await updateDoc(myRef, { friends: myF });
-            await updateDoc(frRef, { friends: frF });
-            await deleteDoc(doc(db, "requests", docId));
-            alert("Kişi eklendi!");
-        };
-        window.rejectReq = async (id) => await deleteDoc(doc(db, "requests", id));
-
-        function loadFriends() {
-            const list = document.getElementById('friend-list');
-            const friends = userData.friends || [];
-            if(friends.length === 0) list.innerHTML = "<div style='padding:5px; color:#666;'>Listeniz boş. Arkadaş ekleyin.</div>";
-            else list.innerHTML = "";
-
-            friends.forEach(async (uid) => {
-                onSnapshot(doc(db, "users", uid), (s) => {
-                    const f = s.data();
-                    // Var olanı güncelleme yerine basitçe ekliyoruz (Prototip için)
-                    // Gerçek uygulamada ID ile div kontrolü yapılmalı, burada basitlik için geçiyoruz.
-                    // Fakat canlı güncelleme için listeyi temizleyip baştan çekmek daha temiz:
-                    renderFriend(f);
-                });
-            });
-        }
-
-        // Basit render (Duplicate engellemek için div id kontrolü)
-        function renderFriend(f) {
-            const list = document.getElementById('friend-list');
-            let item = document.getElementById('friend-'+f.uid);
-            const stColor = f.status==='online'?'green':(f.status==='busy'?'red':'grey');
-            
-            const html = `
-                <div class="status-light ${stColor}"></div>
-                <div style="flex:1;">
-                    <span style="font-weight:bold; color:#000;">${f.username}</span> 
-                    <span style="font-size:10px; color:#666;">(${f.status})</span>
-                    <div style="font-size:10px; color:#888; font-style:italic;">${f.personalMsg || ''}</div>
-                </div>
-            `;
-
-            if(item) { item.innerHTML = html; }
-            else {
-                item = document.createElement('div');
-                item.className = 'contact-item';
-                item.id = 'friend-'+f.uid;
-                item.innerHTML = html;
-                item.onclick = () => openChat(f.uid, f.username, f.photoURL);
-                list.appendChild(item);
+        // Yardımcı Fonksiyon: Demo Ortamı için Güvenli Giriş
+        async function safeAuthFallback() {
+            console.log("Demo ortamı fallback çalıştırılıyor...");
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
             }
         }
 
-        // --- CHAT ---
-        window.openChat = (uid, name, photo) => {
-            activeChatId = [currentUser.uid, uid].sort().join("_");
-            document.getElementById('chat-head-name').innerText = name;
-            document.getElementById('chat-head-img').src = photo || "";
-            document.getElementById('screen-main').classList.remove('active');
-            document.getElementById('screen-chat').classList.add('active');
+        // 2. Kayıt Ol
+        window.handleRegister = async () => {
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            
+            if(!email || !pass) return alert("Bilgileri doldurunuz.");
+            
+            setLoading(true);
+            try {
+                await createUserWithEmailAndPassword(auth, email, pass);
+            } catch (error) {
+                if (error.code === 'auth/operation-not-allowed') {
+                    // Demo ortamında email auth kapalıysa fallback yap
+                    alert("Demo ortamında E-posta kaydı devre dışı olduğundan test edebilmeniz için Misafir Girişi yapılıyor.");
+                    await safeAuthFallback();
+                } else {
+                    console.error(error);
+                    alert("Kayıt hatası: " + error.message);
+                    setLoading(false);
+                }
+            }
+        };
 
-            onSnapshot(query(collection(db, "chats", activeChatId, "messages"), orderBy("date", "asc")), (snap) => {
-                const box = document.getElementById('chat-box'); box.innerHTML = "";
+        // 3. Giriş Yap
+        window.handleLogin = async () => {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+
+            if(!email || !pass) return alert("Bilgileri doldurunuz.");
+
+            setLoading(true);
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+            } catch (error) {
+                if (error.code === 'auth/operation-not-allowed') {
+                    // Demo ortamında email auth kapalıysa fallback yap
+                    alert("Demo ortamında E-posta girişi devre dışı olduğundan test edebilmeniz için Misafir Girişi yapılıyor.");
+                    await safeAuthFallback();
+                } else {
+                    console.error(error);
+                    alert("Giriş hatası: " + error.message);
+                    setLoading(false);
+                }
+            }
+        };
+
+        window.handleLogout = () => {
+            signOut(auth);
+            location.reload();
+        };
+
+        // --- PROFILE LOGIC ---
+        
+        window.handleProfileSave = async () => {
+            const name = document.getElementById('setup-name').value;
+            const bio = document.getElementById('setup-bio').value;
+            const file = document.getElementById('setup-avatar').files[0];
+
+            if(!name) return alert("İsim zorunludur.");
+            
+            let photoURL = "https://ui-avatars.com/api/?name=" + encodeURIComponent(name) + "&background=FF6B6B&color=fff";
+
+            setLoading(true, "Fotoğraf Yükleniyor...");
+
+            if(file) {
+                try {
+                    photoURL = await uploadToImgBB(file);
+                } catch(e) {
+                    console.error("Resim hatası", e);
+                }
+            }
+
+            const profileData = {
+                uid: currentUser.uid,
+                displayName: name,
+                bio: bio || "Merhaba!",
+                photoURL: photoURL,
+                email: currentUser.email || "demo@lovesync.app",
+                lastSeen: serverTimestamp()
+            };
+
+            // Profili kaydet (Hem private hem public alana)
+            await setDoc(doc(db, 'artifacts', activeAppId, 'users', currentUser.uid, 'profile', 'data'), profileData);
+            await setDoc(doc(db, 'artifacts', activeAppId, 'public', 'data', `user_${currentUser.uid}`), profileData);
+
+            myUserProfile = profileData;
+            setLoading(false);
+            window.show('screen-main');
+            loadPeople();
+        };
+
+        // --- IMGBB ---
+        async function uploadToImgBB(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+            const data = await res.json();
+            return data.data.url;
+        }
+
+        // --- APP LOGIC ---
+
+        function loadPeople() {
+            const listRef = collection(db, 'artifacts', activeAppId, 'public', 'data');
+            onSnapshot(listRef, (snap) => {
+                const listEl = document.getElementById('people-list');
+                listEl.innerHTML = '';
                 snap.forEach(d => {
-                    const m = d.data();
-                    if(m.type === 'nudge') {
-                        box.innerHTML += `<div class="system-msg">--- ${m.senderName} titreşim gönderdi! ---</div>`;
-                        if(m.sender !== currentUser.uid) { playSnd('snd-nudge'); document.getElementById('app-body').classList.add('shaking'); setTimeout(()=>document.getElementById('app-body').classList.remove('shaking'), 500); }
-                    } else if(m.type === 'image') {
-                        box.innerHTML += `<div class="msg-row"><div class="msg-sender">${m.senderName}:</div><img src="${m.text}" style="max-width:150px; border:4px solid #fff; box-shadow:0 0 5px #ccc;"></div>`;
-                    } else {
-                        box.innerHTML += `<div class="msg-row"><div class="msg-sender">${m.senderName}:</div><div class="msg-bubble ${m.sender===currentUser.uid?'msg-me':'msg-you'}">${m.text}</div></div>`;
-                        if(m.sender !== currentUser.uid) playSnd('snd-msg');
+                    const data = d.data();
+                    if(d.id.startsWith('user_') && data.uid !== currentUser.uid) {
+                        listEl.innerHTML += `
+                            <div onclick="openChat('${data.uid}', '${data.displayName}', '${data.photoURL}')" 
+                                 class="glass-panel p-3 mb-3 rounded-2xl flex items-center gap-4 cursor-pointer hover:bg-white/50 transition transform hover:scale-[1.02]">
+                                <div class="avatar-container w-14 h-14 shrink-0">
+                                    <img src="${data.photoURL}" class="avatar-img w-full h-full object-cover">
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-gray-800">${data.displayName}</h4>
+                                    <p class="text-xs text-gray-500 truncate">${data.bio}</p>
+                                </div>
+                                <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-500">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                            </div>
+                        `;
                     }
                 });
-                box.scrollTop = box.scrollHeight;
             });
+        }
+
+        window.openChat = (uid, name, photo) => {
+            const ids = [currentUser.uid, uid].sort();
+            activeChatId = `chat_${ids[0]}_${ids[1]}`;
+            
+            document.getElementById('chat-user-name').innerText = name;
+            document.getElementById('chat-user-img').src = photo;
+            
+            window.show('screen-chat');
+            listenMessages(activeChatId);
         };
 
-        window.sendMessage = async () => {
-            const txt = document.getElementById('chat-text').value.trim();
-            if(!txt) return;
-            await addDoc(collection(db, "chats", activeChatId, "messages"), {
-                text: txt, sender: currentUser.uid, senderName: userData.username, type: 'text', date: serverTimestamp()
+        function listenMessages(chatId) {
+            if(unsubscribeMessages) unsubscribeMessages();
+            const msgRef = collection(db, 'artifacts', activeAppId, 'public', 'data', `messages_${chatId}`);
+            
+            unsubscribeMessages = onSnapshot(msgRef, (snap) => {
+                const msgs = [];
+                snap.forEach(d => msgs.push(d.data()));
+                msgs.sort((a,b) => (a.ts?.seconds || 0) - (b.ts?.seconds || 0));
+                renderMessages(msgs);
             });
-            document.getElementById('chat-text').value = "";
+        }
+
+        function renderMessages(msgs) {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+            msgs.forEach(msg => {
+                const isMine = msg.sender === currentUser.uid;
+                let content = `<span class="text-sm">${msg.text}</span>`;
+                
+                if(msg.type === 'image') content = `<img src="${msg.text}" class="rounded-lg max-w-[200px] border-2 border-white/50">`;
+                if(msg.type === 'heart') content = `<i class="fas fa-heart text-5xl text-red-500 animate-pulse drop-shadow-lg"></i>`;
+
+                container.innerHTML += `
+                    <div class="message-enter flex w-full mb-4 ${isMine ? 'justify-end' : 'justify-start'}">
+                        <div class="message-bubble p-3 ${isMine ? 'message-mine' : 'message-theirs'}">
+                            ${content}
+                        </div>
+                    </div>
+                `;
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        window.sendMessage = async (type = 'text', content = null) => {
+            const input = document.getElementById('msg-input');
+            const text = content || input.value;
+            
+            if(!text) return;
+
+            const msgRef = collection(db, 'artifacts', activeAppId, 'public', 'data', `messages_${activeChatId}`);
+            await addDoc(msgRef, {
+                text: text,
+                type: type,
+                sender: currentUser.uid,
+                ts: serverTimestamp()
+            });
+            
+            if(type === 'text') input.value = '';
         };
 
-        window.sendNudge = async () => {
-            await addDoc(collection(db, "chats", activeChatId, "messages"), {
-                text: "NUDE", sender: currentUser.uid, senderName: userData.username, type: 'nudge', date: serverTimestamp()
-            });
-        };
-
-        document.getElementById('chat-file').onchange = async (e) => {
-            if(e.target.files[0]) {
-                const url = await uploadImg(e.target.files[0]);
-                await addDoc(collection(db, "chats", activeChatId, "messages"), {
-                    text: url, sender: currentUser.uid, senderName: userData.username, type: 'image', date: serverTimestamp()
-                });
+        // File Selection for Chat
+        window.triggerFile = () => document.getElementById('chat-file-input').click();
+        
+        document.getElementById('chat-file-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const btn = document.getElementById('btn-cam');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                try {
+                    const url = await uploadToImgBB(file);
+                    window.sendMessage('image', url);
+                } catch(err) { alert('Hata'); }
+                btn.innerHTML = originalHtml;
             }
-        };
+        });
 
-        window.closeChat = () => {
-            document.getElementById('screen-chat').classList.remove('active');
-            document.getElementById('screen-main').classList.add('active');
-        };
+        // UI Updates
+        function updateProfileUI() {
+            document.getElementById('profile-tab-img').src = myUserProfile.photoURL;
+            document.getElementById('profile-tab-name').innerText = myUserProfile.displayName;
+        }
 
-        // --- PROFIL ---
-        document.getElementById('auth-file').onchange = (e) => {
-            if(e.target.files[0]) document.getElementById('auth-preview').src = URL.createObjectURL(e.target.files[0]);
-        };
-        document.getElementById('edit-file').onchange = (e) => {
-            if(e.target.files[0]) document.getElementById('edit-img-prev').src = URL.createObjectURL(e.target.files[0]);
-        };
-        window.openProfileEdit = () => {
-            document.getElementById('edit-nick').value = userData.username;
-            document.getElementById('edit-msg').value = userData.personalMsg || "";
-            document.getElementById('edit-img-prev').src = userData.photoURL;
-            document.getElementById('modal-profile').style.display='flex';
-        };
-        window.saveProfile = async () => {
-            const n = document.getElementById('edit-nick').value;
-            const m = document.getElementById('edit-msg').value;
-            const f = document.getElementById('edit-file').files[0];
-            let url = userData.photoURL;
-            if(f) url = await uploadImg(f);
-            await updateDoc(doc(db, "users", currentUser.uid), { username: n, personalMsg: m, photoURL: url });
-            document.getElementById('modal-profile').style.display='none';
-        };
-        window.editPersonalMsg = async () => {
-            const m = prompt("Kişisel İletiniz:", userData.personalMsg);
-            if(m !== null) await updateDoc(doc(db, "users", currentUser.uid), { personalMsg: m });
-        };
-        window.setStatus = async (v) => await updateDoc(doc(db, "users", currentUser.uid), { status: v });
+        function setLoading(state, text="İşlem yapılıyor...") {
+            const loader = document.getElementById('global-loader');
+            if(state) {
+                loader.classList.remove('hidden');
+                loader.querySelector('p').innerText = text;
+            } else {
+                loader.classList.add('hidden');
+            }
+        }
 
-        // TABS
-        window.switchTab = (name, el) => {
-            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-            el.classList.add('active');
-            document.querySelectorAll('.list-area').forEach(d=>d.style.display='none');
-            document.getElementById('tab-'+name).style.display='block';
+        // Setup Avatar Preview
+        document.getElementById('setup-avatar').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const r = new FileReader();
+                r.onload = (ev) => document.getElementById('setup-preview').src = ev.target.result;
+                r.readAsDataURL(file);
+            }
+        });
+
+        // Expose to window for HTML events
+        window.switchTab = (tab) => {
+            document.querySelectorAll('.tab-view').forEach(t => t.classList.add('hidden'));
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById(`nav-${tab}`).classList.add('active');
         };
 
     </script>
+
+    <!-- LOADING OVERLAY -->
+    <div id="global-loader" class="fixed inset-0 z-[100] bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center hidden">
+        <span class="loader mb-4"></span>
+        <p class="text-slate-600 font-medium">Yükleniyor...</p>
+    </div>
+
+    <!-- EKRAN 1: WELCOME (Giriş/Kayıt Seçimi) -->
+    <div id="screen-welcome" class="screen fixed inset-0 flex flex-col items-center justify-center p-8 text-center z-50">
+        <div class="mb-8 relative">
+            <div class="absolute inset-0 bg-pink-400 blur-2xl opacity-20 rounded-full animate-pulse"></div>
+            <i class="fas fa-heart text-6xl text-transparent bg-clip-text bg-gradient-to-tr from-pink-500 to-rose-600 drop-shadow-sm"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-slate-800 mb-2 tracking-tight">LoveSync</h1>
+        <p class="text-slate-500 mb-10 text-lg">Sevdiklerinle, en özel anlarında.</p>
+
+        <div class="w-full max-w-sm space-y-4">
+            <button onclick="window.show('screen-login')" class="w-full py-4 rounded-2xl bg-slate-900 text-white font-bold shadow-xl shadow-slate-200 hover:scale-[1.02] transition">
+                Giriş Yap
+            </button>
+            <button onclick="window.show('screen-register')" class="w-full py-4 rounded-2xl bg-white text-slate-900 font-bold border border-slate-200 shadow-lg hover:bg-slate-50 hover:scale-[1.02] transition">
+                Kayıt Ol
+            </button>
+        </div>
+    </div>
+
+    <!-- EKRAN 2: LOGIN -->
+    <div id="screen-login" class="screen hidden fixed inset-0 z-50 flex flex-col p-6 bg-white/90 backdrop-blur-xl">
+        <button onclick="window.show('screen-welcome')" class="self-start p-2 mb-8"><i class="fas fa-arrow-left text-xl"></i></button>
+        <h2 class="text-3xl font-bold mb-1">Tekrar Hoşgeldin!</h2>
+        <p class="text-slate-400 mb-8">Kaldığın yerden devam et.</p>
+        
+        <div class="space-y-4">
+            <input type="email" id="login-email" placeholder="E-posta Adresi" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-pink-300 transition">
+            <input type="password" id="login-pass" placeholder="Şifre" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-pink-300 transition">
+            <button onclick="handleLogin()" class="w-full py-4 mt-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-2xl font-bold shadow-lg shadow-pink-200">
+                Giriş Yap
+            </button>
+        </div>
+    </div>
+
+    <!-- EKRAN 3: REGISTER -->
+    <div id="screen-register" class="screen hidden fixed inset-0 z-50 flex flex-col p-6 bg-white/90 backdrop-blur-xl">
+        <button onclick="window.show('screen-welcome')" class="self-start p-2 mb-8"><i class="fas fa-arrow-left text-xl"></i></button>
+        <h2 class="text-3xl font-bold mb-1">Hesap Oluştur</h2>
+        <p class="text-slate-400 mb-8">LoveSync dünyasına katıl.</p>
+        
+        <div class="space-y-4">
+            <input type="email" id="reg-email" placeholder="E-posta Adresi" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-pink-300 transition">
+            <input type="password" id="reg-pass" placeholder="Şifre (En az 6 karakter)" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-pink-300 transition">
+            <button onclick="handleRegister()" class="w-full py-4 mt-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg">
+                Kayıt Ol
+            </button>
+        </div>
+    </div>
+
+    <!-- EKRAN 4: PROFILE SETUP (Kayıt Sonrası) -->
+    <div id="screen-profile-setup" class="screen hidden fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-white/95 backdrop-blur-xl">
+        <h2 class="text-2xl font-bold mb-6">Profilini Düzenle</h2>
+        
+        <div class="mb-8 relative group cursor-pointer">
+            <input type="file" id="setup-avatar" class="hidden" accept="image/*">
+            <label for="setup-avatar">
+                <div class="avatar-container w-32 h-32">
+                    <img id="setup-preview" src="https://ui-avatars.com/api/?name=User&background=cbd5e1&color=fff" class="avatar-img w-full h-full object-cover">
+                </div>
+                <div class="absolute bottom-0 right-0 w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white border-4 border-white">
+                    <i class="fas fa-camera"></i>
+                </div>
+            </label>
+        </div>
+
+        <div class="w-full max-w-sm space-y-4">
+            <input type="text" id="setup-name" placeholder="Görünecek İsim" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-pink-100 text-center font-bold">
+            <input type="text" id="setup-bio" placeholder="Kısa bir biyografi..." class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-pink-100 text-center">
+            
+            <button onclick="handleProfileSave()" class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-2xl font-bold shadow-lg hover:shadow-pink-200 transition transform active:scale-95">
+                Başla
+            </button>
+        </div>
+    </div>
+
+    <!-- EKRAN 5: MAIN APP -->
+    <div id="screen-main" class="screen hidden flex flex-col h-full bg-transparent">
+        <!-- Header -->
+        <header class="glass-panel mx-4 mt-4 p-4 rounded-2xl flex justify-between items-center shadow-sm">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-heart text-pink-500 text-xl animate-pulse"></i>
+                <h1 class="font-bold text-lg text-slate-800">LoveSync</h1>
+            </div>
+            <button onclick="handleLogout()" class="text-slate-400 hover:text-red-500 transition"><i class="fas fa-sign-out-alt"></i></button>
+        </header>
+
+        <!-- Content Views -->
+        <div class="flex-1 overflow-y-auto p-4 relative">
+            
+            <!-- People Tab -->
+            <div id="view-people" class="tab-view">
+                <h2 class="text-slate-500 text-sm font-semibold mb-3 uppercase tracking-wider ml-1">Çevrimiçi Kişiler</h2>
+                <div id="people-list" class="pb-20">
+                    <!-- JS ile dolar -->
+                    <div class="text-center mt-10 text-slate-400">Kimse yok mu? Davet et!</div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="view-profile" class="tab-view hidden flex flex-col items-center pt-10">
+                <div class="avatar-container w-32 h-32 mb-4 shadow-xl">
+                    <img id="profile-tab-img" src="" class="avatar-img w-full h-full object-cover">
+                </div>
+                <h2 id="profile-tab-name" class="text-2xl font-bold text-slate-800">...</h2>
+                <div class="mt-6 w-full space-y-3">
+                    <div class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                        <span class="text-slate-600">Bildirimler</span>
+                        <div class="w-10 h-6 bg-pink-500 rounded-full relative"><div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Nav -->
+        <div class="glass-panel mx-4 mb-4 p-2 rounded-2xl flex justify-around items-center shadow-lg">
+            <button id="nav-people" onclick="switchTab('people')" class="bottom-nav-item active w-12 h-12 flex items-center justify-center text-slate-400 text-xl"><i class="fas fa-users"></i></button>
+            <button id="nav-profile" onclick="switchTab('profile')" class="bottom-nav-item w-12 h-12 flex items-center justify-center text-slate-400 text-xl"><i class="fas fa-user"></i></button>
+        </div>
+    </div>
+
+    <!-- EKRAN 6: CHAT ROOM -->
+    <div id="screen-chat" class="screen hidden fixed inset-0 z-40 bg-[#fefefe] flex flex-col">
+        <!-- Chat Header -->
+        <div class="glass-panel p-4 pb-2 border-b border-gray-100 flex items-center gap-4 z-10">
+            <button onclick="window.show('screen-main')" class="w-8 h-8 flex items-center justify-center bg-gray-50 rounded-full text-slate-600"><i class="fas fa-arrow-left"></i></button>
+            <div class="avatar-container w-10 h-10">
+                <img id="chat-user-img" src="" class="avatar-img w-full h-full object-cover">
+            </div>
+            <div class="flex-1">
+                <h3 id="chat-user-name" class="font-bold text-slate-800 text-sm">...</h3>
+                <span class="text-xs text-green-500 font-medium">● Çevrimiçi</span>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 bg-slate-50 space-y-2">
+            <!-- Messages injected here -->
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-4 bg-white pb-safe border-t border-gray-100">
+            <div class="glass-input p-1.5 rounded-full flex items-center gap-2 pr-2">
+                <input type="file" id="chat-file-input" class="hidden" accept="image/*">
+                <button id="btn-cam" onclick="triggerFile()" class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-pink-500 transition flex items-center justify-center">
+                    <i class="fas fa-camera"></i>
+                </button>
+                <input type="text" id="msg-input" placeholder="Mesaj..." class="flex-1 bg-transparent border-none outline-none text-slate-700 text-sm px-2">
+                <button onclick="sendMessage()" class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg hover:bg-pink-500 transition">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
