@@ -3,129 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BizimGram</title>
+    <title>BizimGram Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
     
     <style>
-        /* --- 1. TEMEL AYARLAR --- */
+        /* --- CORE CSS --- */
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #fff; color: #262626; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, Roboto, sans-serif; background-color: #fff; color: #262626; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* Ekran Yönetimi */
         .screen { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding-bottom: 50px; background: #fff; }
         .screen.active { display: flex; }
         
-        /* Butonlar & Linkler */
-        .btn-primary { background: #0095f6; color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: 600; width: 100%; cursor: pointer; transition: opacity 0.2s; }
-        .btn-primary:active { opacity: 0.7; }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .text-link { color: #0095f6; font-weight: 600; cursor: pointer; font-size: 14px; }
+        /* UI Elements */
+        .btn-primary { background: #0095f6; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .btn-primary:active { opacity: 0.7; transform: scale(0.98); }
+        .input-group { margin-bottom: 12px; }
+        .custom-input { width: 100%; padding: 12px; border: 1px solid #dbdbdb; border-radius: 6px; background: #fafafa; font-size: 14px; }
+        .custom-input:focus { border-color: #a8a8a8; }
 
         /* Header */
-        .app-header { height: 44px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #fff; z-index: 10; position: sticky; top: 0; }
-        .logo { font-family: 'Cursive', serif; font-size: 24px; font-weight: bold; margin-top: 5px; cursor: pointer; }
+        .app-header { height: 50px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #fff; z-index: 10; position: sticky; top: 0; }
+        .logo { font-family: 'Cursive', serif; font-size: 24px; font-weight: bold; margin-top: 5px; }
 
-        /* --- 2. HİKAYELER --- */
-        .stories-bar { padding: 10px 0; border-bottom: 1px solid #efefef; overflow-x: auto; white-space: nowrap; display: flex; -ms-overflow-style: none; scrollbar-width: none; }
-        .stories-bar::-webkit-scrollbar { display: none; } /* Scrollbar gizle */
-        
-        .story-item { display: flex; flex-direction: column; align-items: center; margin-left: 15px; cursor: pointer; width: 70px; flex-shrink: 0; }
-        .story-ring { 
-            width: 66px; height: 66px; border-radius: 50%; padding: 2px; 
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            display: flex; align-items: center; justify-content: center; position: relative;
-        }
-        .story-ring.none { background: transparent; border: 1px solid #dbdbdb; padding: 1px; }
-        .story-avatar { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; object-fit: cover; background: #eee; }
-        .story-username { font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; text-align: center; }
-        .plus-badge { position: absolute; bottom: 0; right: 0; background: #0095f6; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 18px; text-align: center; line-height: 20px; border: 2px solid white; }
+        /* Stories */
+        .stories-bar { padding: 10px 0; border-bottom: 1px solid #efefef; overflow-x: auto; display: flex; scrollbar-width: none; }
+        .story-item { display: flex; flex-direction: column; align-items: center; margin-left: 15px; cursor: pointer; flex-shrink: 0; width: 70px; }
+        .story-ring { width: 68px; height: 68px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); display: flex; align-items: center; justify-content: center; position: relative; }
+        .story-ring.none { background: transparent; border: 1px solid #dbdbdb; }
+        .story-avatar { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; object-fit: cover; }
+        .plus-badge { position: absolute; bottom: 0; right: 0; background: #0095f6; color: white; border-radius: 50%; width: 22px; height: 22px; text-align: center; line-height: 20px; border: 2px solid white; font-weight: bold; }
 
-        /* --- 3. GÖNDERİLER --- */
-        .post { padding-bottom: 15px; border-bottom: 1px solid #efefef; }
+        /* Post */
+        .post { margin-bottom: 10px; }
         .post-header { padding: 10px; display: flex; align-items: center; }
-        .user-avatar-small { width: 32px; height: 32px; border-radius: 50%; background: #eee; margin-right: 10px; object-fit: cover; }
-        .post-img { width: 100%; display: block; min-height: 200px; background: #fafafa; object-fit: cover; }
-        .post-actions { padding: 10px; display: flex; gap: 15px; }
-        .post-caption { padding: 0 10px; font-size: 14px; line-height: 1.4; }
-
-        /* --- 4. PROFİL --- */
-        .profile-top { padding: 15px 15px 0 15px; display: flex; align-items: center; }
+        .user-avatar-small { width: 32px; height: 32px; border-radius: 50%; margin-right: 10px; object-fit: cover; border: 1px solid #eee; }
+        .post-img { width: 100%; display: block; min-height: 250px; background: #f0f0f0; object-fit: cover; }
+        
+        /* Profile */
+        .profile-top { padding: 20px 15px 0; display: flex; align-items: center; }
         .profile-pic-lg { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; object-fit: cover; border: 1px solid #dbdbdb; }
-        .profile-stats { flex: 1; display: flex; justify-content: space-around; text-align: center; font-size: 14px; }
+        .profile-stats { flex: 1; display: flex; justify-content: space-around; text-align: center; }
         .stat-num { font-weight: bold; display: block; font-size: 18px; }
-        .profile-bio-area { padding: 0 15px 15px 15px; font-size: 14px; }
-        .btn-edit-profile { display: block; margin: 0 15px 15px 15px; padding: 6px; text-align: center; border: 1px solid #dbdbdb; border-radius: 4px; font-weight: 600; font-size: 13px; background: #fff; color: #262626; }
+        .btn-edit { display: block; margin: 15px; padding: 8px; text-align: center; border: 1px solid #dbdbdb; border-radius: 4px; font-weight: 600; font-size: 13px; color: #262626; }
         
         .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border-top: 1px solid #dbdbdb; }
-        .grid-item { position: relative; padding-bottom: 100%; background: #eee; cursor: pointer; }
+        .grid-item { position: relative; padding-bottom: 100%; background: #eee; }
         .grid-item img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- 5. MODALLER & UI ELEMANLARI --- */
+        /* Modals & Loading */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 200; flex-direction: column; }
-        .modal-header { padding: 10px 15px; border-bottom: 1px solid #dbdbdb; display: flex; justify-content: space-between; align-items: center; font-weight: 600; height: 44px; }
+        .modal-header { padding: 0 15px; height: 50px; border-bottom: 1px solid #dbdbdb; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
         
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .input-label { font-size: 12px; color: #8e8e8e; margin-bottom: 5px; display: block; }
-        .custom-input { width: 100%; padding: 10px; border: 1px solid #dbdbdb; border-radius: 4px; background: #fafafa; font-size: 14px; }
-        
-        /* Toast Mesaj (Bildirim Baloncuğu) */
-        .toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 12px; position: fixed; z-index: 300; left: 50%; transform: translateX(-50%); bottom: 70px; font-size: 14px; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+        /* Full Screen Loader */
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 500; align-items: center; justify-content: center; flex-direction: column; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0095f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Toast Notification */
+        .toast { visibility: hidden; min-width: 250px; background-color: #262626; color: #fff; text-align: center; border-radius: 4px; padding: 14px; position: fixed; z-index: 600; left: 50%; transform: translateX(-50%); bottom: 70px; font-size: 14px; opacity: 0; transition: 0.3s; }
         .toast.show { visibility: visible; opacity: 1; bottom: 80px; }
 
-        /* Alt Menü */
-        .bottom-nav { height: 48px; border-top: 1px solid #dbdbdb; display: flex; justify-content: space-around; align-items: center; background: #fff; position: fixed; bottom: 0; width: 100%; z-index: 100; }
+        .bottom-nav { height: 50px; border-top: 1px solid #dbdbdb; display: flex; justify-content: space-around; align-items: center; background: #fff; position: fixed; bottom: 0; width: 100%; z-index: 100; }
         
-        /* Chat */
-        .chat-bubble { padding: 8px 12px; border-radius: 18px; max-width: 70%; font-size: 14px; margin-bottom: 5px; word-wrap: break-word; }
+        /* Chat Bubble */
+        .chat-bubble { padding: 10px 14px; border-radius: 18px; max-width: 75%; font-size: 14px; margin-bottom: 6px; word-wrap: break-word; }
         .chat-me { align-self: flex-end; background: #3797f0; color: white; }
         .chat-you { align-self: flex-start; background: #efefef; color: black; }
     </style>
 </head>
 <body>
 
-    <div id="screen-auth" class="screen active" style="justify-content:center; padding:30px; text-align:center;">
-        <h1 style="font-family: 'Cursive', serif; font-size: 40px; margin-bottom: 20px;">BizimGram</h1>
-        <div class="input-group">
-            <input type="email" id="auth-email" class="custom-input" placeholder="E-posta Adresi">
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div style="margin-top:15px; font-weight:600; color:#555;" id="loading-text">İşlem yapılıyor...</div>
+    </div>
+
+    <div id="toast" class="toast">Bildirim</div>
+
+    <div id="screen-auth" class="screen active" style="justify-content:center; padding:40px;">
+        <div style="text-align:center; margin-bottom:30px;">
+            <h1 style="font-family: 'Cursive', serif; font-size: 45px; margin:0;">BizimGram</h1>
+            <p style="color:#666;">Bize özel dünyamız.</p>
         </div>
-        <div class="input-group">
-            <input type="password" id="auth-pass" class="custom-input" placeholder="Şifre">
-        </div>
-        <button id="btn-login" onclick="authAction('login')" class="btn-primary">Giriş Yap</button>
-        <button id="btn-signup" onclick="authAction('signup')" class="btn-primary" style="background:#262626; display:none; margin-top:0;">Kaydol</button>
-        
-        <div style="margin-top:20px;">
-            <span id="auth-switch" class="text-link" onclick="toggleAuth()">Hesabın yok mu? Kaydol</span>
-        </div>
+        <div class="input-group"><input type="email" id="auth-email" class="custom-input" placeholder="E-posta"></div>
+        <div class="input-group"><input type="password" id="auth-pass" class="custom-input" placeholder="Şifre"></div>
+        <button onclick="authAction('login')" class="btn-primary" style="margin-bottom:10px;">Giriş Yap</button>
+        <button onclick="authAction('signup')" class="btn-primary" style="background:#fafafa; color:#262626; border:1px solid #dbdbdb;">Kayıt Ol</button>
     </div>
 
     <div id="screen-home" class="screen">
         <div class="app-header">
             <div class="logo">BizimGram</div>
-            <span class="material-icons-outlined" style="font-size:26px; cursor:pointer;" onclick="openDMList()">near_me</span>
+            <span class="material-icons-outlined" onclick="navTo('screen-dm-list')" style="font-size:28px; cursor:pointer;">near_me</span>
         </div>
-        
         <div class="stories-bar" id="stories-wrapper">
             <div class="story-item" onclick="openUpload('story')">
                 <div class="story-ring none">
                     <img id="my-story-avatar" src="https://via.placeholder.com/60" class="story-avatar">
                     <div class="plus-badge">+</div>
                 </div>
-                <div class="story-username">Hikayen</div>
+                <div style="font-size:11px; margin-top:5px;">Hikayen</div>
             </div>
             <div id="stories-list" style="display:flex;"></div>
         </div>
-
-        <div id="feed-container"></div>
+        <div id="feed-container" style="padding-top:10px;"></div>
     </div>
 
     <div id="screen-profile" class="screen">
         <div class="app-header">
-            <span style="font-weight:bold; font-size:16px;" id="header-username">...</span>
+            <span style="font-weight:bold;" id="header-username">...</span>
             <span class="material-icons-outlined" onclick="logout()">logout</span>
         </div>
-        
         <div class="profile-top">
             <img id="profile-img-main" src="https://via.placeholder.com/150" class="profile-pic-lg">
             <div class="profile-stats">
@@ -134,13 +123,11 @@
                 <div><span class="stat-num">0</span>Takip</div>
             </div>
         </div>
-        
-        <div class="profile-bio-area">
-            <div style="font-weight:bold;" id="bio-fullname">...</div>
-            <div style="white-space:pre-wrap;" id="bio-text">...</div>
+        <div style="padding:0 15px 10px;">
+            <div style="font-weight:bold;" id="bio-fullname"></div>
+            <div style="white-space:pre-wrap;" id="bio-text"></div>
         </div>
-
-        <div class="btn-edit-profile" onclick="openEditModal()">Profili Düzenle</div>
+        <div class="btn-edit" onclick="openEditModal()">Profili Düzenle</div>
         <div class="grid-container" id="profile-grid"></div>
     </div>
 
@@ -148,64 +135,66 @@
         <div class="modal-header">
             <span onclick="closeModal('modal-edit')" style="cursor:pointer;">İptal</span>
             <span>Profili Düzenle</span>
-            <span onclick="saveProfile()" style="color:#0095f6; font-weight:bold; cursor:pointer;" id="save-profile-btn">Bitti</span>
+            <span onclick="saveProfile()" style="color:#0095f6; font-weight:bold; cursor:pointer;">Bitti</span>
         </div>
-        <div style="padding:20px; text-align:center;">
-            <img id="edit-preview" src="" style="width:100px; height:100px; border-radius:50%; margin-bottom:10px; object-fit:cover;">
-            <div class="text-link" onclick="document.getElementById('edit-file').click()" style="margin-bottom:20px;">Profil Fotoğrafını Değiştir</div>
+        <div style="padding:20px; display:flex; flex-direction:column; align-items:center;">
+            <img id="edit-preview" src="" style="width:100px; height:100px; border-radius:50%; margin-bottom:15px; object-fit:cover; border:1px solid #ddd;">
+            <div style="color:#0095f6; font-weight:600; margin-bottom:20px; cursor:pointer;" onclick="document.getElementById('edit-file').click()">Fotoğrafı Değiştir</div>
             <input type="file" id="edit-file" hidden accept="image/*">
             
-            <div class="input-group">
-                <label class="input-label">Adın</label>
-                <input type="text" id="edit-fullname" class="custom-input">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Kullanıcı Adı</label>
-                <input type="text" id="edit-username" class="custom-input">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Biyografi</label>
-                <textarea id="edit-bio" class="custom-input" rows="3"></textarea>
+            <div style="width:100%; text-align:left;">
+                <div class="input-group">
+                    <label style="font-size:12px; color:#666;">Adın</label>
+                    <input type="text" id="edit-fullname" class="custom-input">
+                </div>
+                <div class="input-group">
+                    <label style="font-size:12px; color:#666;">Kullanıcı Adı</label>
+                    <input type="text" id="edit-username" class="custom-input">
+                </div>
+                <div class="input-group">
+                    <label style="font-size:12px; color:#666;">Biyografi</label>
+                    <textarea id="edit-bio" class="custom-input" rows="3"></textarea>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="modal-upload" class="modal">
         <div class="modal-header">
-            <span onclick="closeModal('modal-upload')">Kapat</span>
-            <b>Paylaş</b>
-            <span onclick="performUpload()" style="color:#0095f6; font-weight:bold; cursor:pointer;" id="share-btn">Paylaş</span>
+            <span onclick="closeModal('modal-upload')">İptal</span>
+            <b>Yeni Gönderi</b>
+            <span onclick="performUpload()" style="color:#0095f6; font-weight:bold; cursor:pointer;">Paylaş</span>
         </div>
         <div style="flex:1; background:#000; display:flex; align-items:center; justify-content:center;">
             <img id="upload-preview" style="max-width:100%; max-height:100%;">
         </div>
-        <div style="padding:10px; border-top:1px solid #dbdbdb;">
-            <input type="text" id="upload-caption" placeholder="Açıklama yaz..." style="width:100%; border:none; padding:10px;">
+        <div style="padding:15px; border-top:1px solid #eee;">
+            <input type="text" id="upload-caption" placeholder="Bir açıklama yaz..." style="width:100%; border:none; font-size:15px;">
         </div>
         <input type="file" id="upload-file" hidden accept="image/*">
     </div>
 
-    <div id="modal-chat" class="modal" style="z-index:250;">
+    <div id="screen-dm-list" class="screen">
+        <div class="app-header"><span class="material-icons" onclick="navTo('screen-home')">arrow_back</span><b>Mesajlar</b><span></span></div>
+        <div id="dm-list-container" style="padding:10px; color:#999; text-align:center;">Sohbet etmek için arama yapın.</div>
+    </div>
+
+    <div id="modal-chat" class="modal" style="z-index:300;">
         <div class="modal-header">
             <span class="material-icons" onclick="closeModal('modal-chat')">arrow_back</span>
-            <b id="chat-header-name">Kullanıcı</b>
+            <b id="chat-header-name">Chat</b>
             <span></span>
         </div>
-        <div id="chat-messages" style="flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column;"></div>
+        <div id="chat-messages" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column;"></div>
         <div style="padding:10px; border-top:1px solid #eee; display:flex;">
-            <input type="text" id="chat-input" class="custom-input" style="border-radius:20px; margin:0;" placeholder="Mesaj...">
-            <button onclick="sendChatMessage()" style="border:none; background:none; color:#0095f6; font-weight:bold; margin-left:10px;">Gönder</button>
+            <input id="chat-input" class="custom-input" style="border-radius:20px; margin:0;" placeholder="Mesaj...">
+            <button onclick="sendChatMessage()" style="border:none; background:none; color:#0095f6; font-weight:bold; margin-left:10px;">GÖNDER</button>
         </div>
     </div>
 
     <div id="screen-search" class="screen">
         <div style="padding:10px;"><input type="text" oninput="doSearch(this.value)" class="custom-input" placeholder="Ara..." style="background:#efefef; border:none;"></div>
         <div id="search-results"></div>
-    </div>
-    
-    <div id="screen-dmlist" class="screen">
-        <div class="app-header"><span class="material-icons" onclick="navTo('screen-home')">arrow_back</span><b>Mesajlar</b><span></span></div>
-        <div id="dm-list-container"></div>
     </div>
 
     <div class="bottom-nav" id="bottom-nav" style="display:none;">
@@ -215,15 +204,13 @@
         <span class="material-icons nav-icon" onclick="openMyProfile()">person</span>
     </div>
 
-    <div id="toast" class="toast">Bildirim</div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, updateDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-        // CONFIG
+        // CONFIG (Senin Anahtarların)
         const firebaseConfig = {
             apiKey: "AIzaSyA90T44N_om_KnTs3Wg06m8pBry0L20nVw",
             authDomain: "sosyal-medya-a46b6.firebaseapp.com",
@@ -243,23 +230,28 @@
         let uploadType = 'post';
         let activeChatUid = null;
 
-        // --- YARDIMCI FONKSİYONLAR ---
-        window.showToast = (msg) => {
+        // UI HELPERS
+        const showLoading = (text) => {
+            document.getElementById('loading-text').innerText = text;
+            document.getElementById('loading-overlay').style.display = 'flex';
+        };
+        const hideLoading = () => document.getElementById('loading-overlay').style.display = 'none';
+        
+        const showToast = (msg) => {
             const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.className = "toast show";
-            setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000);
+            t.innerText = msg; t.className = "toast show";
+            setTimeout(() => t.className = t.className.replace("show", ""), 3000);
         };
 
         // --- AUTH ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // Veriyi canlı dinle
-                onSnapshot(doc(db, "users", user.uid), (doc) => {
-                    if(doc.exists()) {
-                        userData = doc.data();
-                        updateProfileUI(); // Arayüzü güncelle
+                // Kullanıcı verisini canlı dinle (Update olunca anında değişsin)
+                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+                    if (docSnap.exists()) {
+                        userData = docSnap.data();
+                        updateUI();
                     }
                 });
                 
@@ -274,60 +266,65 @@
             }
         });
 
-        function updateProfileUI() {
-            // Null check yaparak hata önleyelim
+        function updateUI() {
             const pic = userData.photoURL || "https://via.placeholder.com/150";
-            const name = userData.username || "Kullanıcı";
-            
             document.getElementById('my-story-avatar').src = pic;
             document.getElementById('profile-img-main').src = pic;
-            document.getElementById('header-username').innerText = name;
+            document.getElementById('header-username').innerText = userData.username || "Kullanıcı";
             document.getElementById('bio-fullname').innerText = userData.fullname || "";
             document.getElementById('bio-text').innerText = userData.bio || "";
         }
 
-        window.toggleAuth = () => {
-            const login = document.getElementById('btn-login');
-            const sign = document.getElementById('btn-signup');
-            const text = document.getElementById('auth-switch');
-            
-            if (login.style.display !== 'none') {
-                login.style.display = 'none'; sign.style.display = 'block';
-                text.innerText = "Zaten hesabın var mı? Giriş Yap";
-            } else {
-                login.style.display = 'block'; sign.style.display = 'none';
-                text.innerText = "Hesabın yok mu? Kaydol";
-            }
-        };
-
         window.authAction = async (type) => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
-            
-            if(!email || !pass) return showToast("Alanları doldur!");
+            if(!email || !pass) return showToast("Bilgileri girin!");
 
+            showLoading(type === 'login' ? "Giriş yapılıyor..." : "Kayıt olunuyor...");
             try {
-                if(type === 'login') {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                } else {
+                if(type === 'login') await signInWithEmailAndPassword(auth, email, pass);
+                else {
                     const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                    // Boş profil oluştur
+                    // Güvenli kayıt: setDoc ile oluştur
                     await setDoc(doc(db, "users", cred.user.uid), {
                         uid: cred.user.uid,
                         email: email,
-                        username: email.split('@')[0], // Varsayılan kullanıcı adı
-                        fullname: '',
-                        bio: '',
-                        photoURL: "https://via.placeholder.com/150"
+                        username: email.split('@')[0],
+                        fullname: '', bio: '', photoURL: "https://via.placeholder.com/150"
                     });
-                    showToast("Kayıt başarılı!");
+                    showToast("Hoşgeldin!");
                 }
             } catch(e) { showToast(e.message); }
+            finally { hideLoading(); }
         };
 
         window.logout = () => signOut(auth);
 
-        // --- PROFİL GÜNCELLEME (BUG FİX EDİLDİ) ---
+        // --- RESİM SIKIŞTIRMA (SPEED BOOSTER) ---
+        const compressImage = (file) => {
+            return new Promise((resolve) => {
+                const img = document.createElement("img");
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement("canvas");
+                        const ctx = canvas.getContext("2d");
+                        const MAX_WIDTH = 800; // 800px yeterli
+                        const scale = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scale;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob((blob) => {
+                            resolve(blob); // Sıkıştırılmış dosya
+                        }, 'image/jpeg', 0.7); // %70 Kalite
+                    };
+                };
+            });
+        };
+
+        // --- PROFİL GÜNCELLEME (FIXED) ---
         window.openEditModal = () => {
             document.getElementById('edit-username').value = userData.username || "";
             document.getElementById('edit-fullname').value = userData.fullname || "";
@@ -341,48 +338,39 @@
         };
 
         window.saveProfile = async () => {
-            const btn = document.getElementById('save-profile-btn');
-            btn.innerText = "Kaydediliyor...";
-            btn.style.pointerEvents = "none";
-
+            showLoading("Profil kaydediliyor...");
             try {
-                const newUsername = document.getElementById('edit-username').value;
-                const newFullname = document.getElementById('edit-fullname').value;
-                const newBio = document.getElementById('edit-bio').value;
+                const username = document.getElementById('edit-username').value;
+                const fullname = document.getElementById('edit-fullname').value;
+                const bio = document.getElementById('edit-bio').value;
                 const file = document.getElementById('edit-file').files[0];
 
-                let finalPhotoUrl = userData.photoURL;
+                let photoURL = userData.photoURL;
 
-                // Dosya seçildiyse yükle
-                if (file) {
-                    const sRef = ref(storage, "avatars/" + currentUser.uid);
-                    await uploadBytes(sRef, file);
-                    finalPhotoUrl = await getDownloadURL(sRef);
+                if(file) {
+                    const compressedFile = await compressImage(file);
+                    const sRef = ref(storage, "avatars/" + currentUser.uid + "_" + Date.now()); // Benzersiz isim (Cache sorunu için)
+                    await uploadBytes(sRef, compressedFile);
+                    photoURL = await getDownloadURL(sRef);
                 }
 
-                // Firestore Güncelle
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    username: newUsername,
-                    fullname: newFullname,
-                    bio: newBio,
-                    photoURL: finalPhotoUrl
-                });
+                // setDoc + merge:true = Garanti Kayıt
+                await setDoc(doc(db, "users", currentUser.uid), {
+                    username, fullname, bio, photoURL
+                }, { merge: true });
 
                 showToast("Profil Güncellendi! ✅");
                 closeModal('modal-edit');
-
             } catch(e) {
                 console.error(e);
                 showToast("Hata: " + e.message);
             } finally {
-                btn.innerText = "Bitti";
-                btn.style.pointerEvents = "auto";
+                hideLoading();
             }
         };
 
         window.openMyProfile = async () => {
             navTo('screen-profile');
-            // Kişinin postlarını çek
             const q = query(collection(db, "posts"), where("uid", "==", currentUser.uid), orderBy("date", "desc"));
             onSnapshot(q, (snap) => {
                 document.getElementById('stat-posts').innerText = snap.size;
@@ -394,31 +382,27 @@
             });
         };
 
-        // --- HİKAYELER & AKIŞ ---
+        // --- HİKAYELER ---
         function loadStories() {
-            const container = document.getElementById('stories-list');
+            const list = document.getElementById('stories-list');
             const yesterday = new Date(Date.now() - 24*60*60*1000);
             
-            const q = query(collection(db, "stories"), orderBy("date", "desc"));
-            onSnapshot(q, async (snapshot) => {
-                container.innerHTML = "";
-                const seenUsers = new Set(); // Aynı kişiyi tekrar gösterme
+            onSnapshot(query(collection(db, "stories"), orderBy("date", "desc")), async (snap) => {
+                list.innerHTML = "";
+                const seen = new Set();
                 
-                for(const d of snapshot.docs) {
+                for(const d of snap.docs) {
                     const s = d.data();
                     const sDate = s.date ? new Date(s.date.seconds*1000) : new Date();
                     
-                    if(sDate > yesterday && s.uid !== currentUser.uid && !seenUsers.has(s.uid)) {
-                        seenUsers.add(s.uid);
-                        // Kullanıcı fotosunu bulmamız lazım
+                    if(sDate > yesterday && s.uid !== currentUser.uid && !seen.has(s.uid)) {
+                        seen.add(s.uid);
                         const uSnap = await getDoc(doc(db, "users", s.uid));
                         if(uSnap.exists()) {
                             const u = uSnap.data();
-                            container.innerHTML += `
+                            list.innerHTML += `
                                 <div class="story-item" onclick="window.open('${s.imageUrl}', '_blank')">
-                                    <div class="story-ring">
-                                        <img src="${u.photoURL}" class="story-avatar">
-                                    </div>
+                                    <div class="story-ring"><img src="${u.photoURL}" class="story-avatar"></div>
                                     <div class="story-username">${u.username}</div>
                                 </div>
                             `;
@@ -428,29 +412,29 @@
             });
         }
 
+        // --- PAYLAŞIM ---
         function loadFeed() {
-            const container = document.getElementById('feed-container');
-            const q = query(collection(db, "posts"), orderBy("date", "desc"));
-            onSnapshot(q, async (snapshot) => {
-                container.innerHTML = "";
-                for(const d of snapshot.docs) {
-                    const post = d.data();
-                    const uSnap = await getDoc(doc(db, "users", post.uid));
-                    const u = uSnap.exists() ? uSnap.data() : { username: '...', photoURL: '' };
+            const cont = document.getElementById('feed-container');
+            onSnapshot(query(collection(db, "posts"), orderBy("date", "desc")), async (snap) => {
+                cont.innerHTML = "";
+                for(const d of snap.docs) {
+                    const p = d.data();
+                    const uSnap = await getDoc(doc(db, "users", p.uid));
+                    const u = uSnap.exists() ? uSnap.data() : {username:'...', photoURL:''};
                     
-                    container.innerHTML += `
+                    cont.innerHTML += `
                         <div class="post">
                             <div class="post-header">
                                 <img src="${u.photoURL}" class="user-avatar-small">
                                 <span style="font-weight:600;">${u.username}</span>
                             </div>
-                            <img src="${post.imageUrl}" class="post-img">
+                            <img src="${p.imageUrl}" class="post-img">
                             <div class="post-actions">
                                 <span class="material-icons-outlined">favorite_border</span>
                                 <span class="material-icons-outlined">mode_comment</span>
                             </div>
                             <div class="post-caption">
-                                <span style="font-weight:600;">${u.username}</span> ${post.caption}
+                                <span style="font-weight:600;">${u.username}</span> ${p.caption}
                             </div>
                         </div>
                     `;
@@ -458,7 +442,6 @@
             });
         }
 
-        // --- YÜKLEME ---
         window.openUpload = (type) => {
             uploadType = type;
             document.getElementById('upload-file').click();
@@ -471,41 +454,39 @@
         };
 
         window.performUpload = async () => {
-            const btn = document.getElementById('share-btn');
-            btn.innerText = "Yükleniyor...";
-            
+            showLoading("Yükleniyor...");
             try {
                 const file = document.getElementById('upload-file').files[0];
                 const caption = document.getElementById('upload-caption').value;
-                const refS = ref(storage, uploadType + "s/" + Date.now());
+                const compressed = await compressImage(file); // Sıkıştır
                 
-                await uploadBytes(refS, file);
+                const refS = ref(storage, uploadType + "s/" + Date.now());
+                await uploadBytes(refS, compressed);
                 const url = await getDownloadURL(refS);
                 
                 await addDoc(collection(db, uploadType + "s"), {
-                    uid: currentUser.uid, imageUrl: url, caption: caption, date: serverTimestamp()
+                    uid: currentUser.uid, imageUrl: url, caption, date: serverTimestamp()
                 });
                 
-                showToast("Paylaşıldı! 🚀");
+                showToast("Paylaşıldı!");
                 closeModal('modal-upload');
                 document.getElementById('upload-caption').value = "";
-                
-            } catch(e) { showToast("Hata: " + e.message); }
-            finally { btn.innerText = "Paylaş"; }
+            } catch(e) { showToast(e.message); }
+            finally { hideLoading(); }
         };
 
-        // --- ARAMA & DM (Fix Edildi) ---
+        // --- ARAMA & CHAT ---
         window.doSearch = async (val) => {
             if(val.length < 1) return;
             val = val.toLowerCase();
-            const res = document.getElementById('search-results');
-            res.innerHTML = "";
+            const div = document.getElementById('search-results');
+            div.innerHTML = "";
             
             const snap = await getDocs(collection(db, "users"));
             snap.forEach(d => {
                 const u = d.data();
                 if(u.username && u.username.toLowerCase().includes(val) && u.uid !== currentUser.uid) {
-                    res.innerHTML += `
+                    div.innerHTML += `
                         <div onclick="openChat('${u.uid}', '${u.username}')" style="padding:15px; border-bottom:1px solid #eee; display:flex; align-items:center;">
                             <img src="${u.photoURL}" class="user-avatar-small">
                             <span style="font-weight:bold;">${u.username}</span>
@@ -515,14 +496,6 @@
             });
         };
 
-        window.openDMList = async () => {
-            navTo('screen-dmlist');
-            const cont = document.getElementById('dm-list-container');
-            cont.innerHTML = "<div style='padding:15px; color:#999;'>Sohbet etmek için birini ara...</div>";
-            // Normalde burada mevcut sohbetler listelenir ama basitlik için aramaya yönlendiriyoruz.
-            // Arama ekranından tıklayınca sohbet açılıyor.
-        };
-
         window.openChat = (uid, name) => {
             activeChatUid = uid;
             document.getElementById('chat-header-name').innerText = name;
@@ -530,15 +503,13 @@
             
             const chatId = [currentUser.uid, uid].sort().join("_");
             const q = query(collection(db, "chats", chatId, "messages"), orderBy("date", "asc"));
-            
             onSnapshot(q, (snap) => {
                 const div = document.getElementById('chat-messages');
                 div.innerHTML = "";
                 snap.forEach(d => {
                     const m = d.data();
-                    div.innerHTML += `<div class="chat-bubble ${m.sender === currentUser.uid ? 'chat-me' : 'chat-you'}">${m.text}</div>`;
+                    div.innerHTML += `<div class="chat-bubble ${m.sender===currentUser.uid ? 'chat-me' : 'chat-you'}">${m.text}</div>`;
                 });
-                // Auto scroll
                 div.scrollTop = div.scrollHeight;
             });
         };
@@ -550,7 +521,7 @@
             
             const chatId = [currentUser.uid, activeChatUid].sort().join("_");
             await addDoc(collection(db, "chats", chatId, "messages"), {
-                text: text, sender: currentUser.uid, date: serverTimestamp()
+                text, sender: currentUser.uid, date: serverTimestamp()
             });
             inp.value = "";
         };
@@ -559,10 +530,8 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         };
-
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 
     </script>
 </body>
 </html>
-
