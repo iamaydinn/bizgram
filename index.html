@@ -14,12 +14,11 @@
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        primary: '#00a884', /* WhatsApp Green like */
-                        secondary: '#111b21', /* Dark Background */
+                        primary: '#00a884',
+                        secondary: '#111b21',
                         panel: '#202c33',
                         incoming: '#202c33',
                         outgoing: '#005c4b',
-                        accent: '#00a884'
                     }
                 }
             }
@@ -31,16 +30,17 @@
             background-color: #111b21;
             color: #e9edef;
             -webkit-tap-highlight-color: transparent;
-            overflow: hidden; /* App-like feel */
+            overflow: hidden;
+            height: 100dvh; /* Dynamic Height for Mobile Keyboards */
         }
 
-        /* Custom Scrollbar */
+        /* Özel Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #374045; border-radius: 4px; }
 
         /* Loader */
         .spinner {
-            width: 40px; height: 40px;
+            width: 30px; height: 30px;
             border: 3px solid rgba(255,255,255,0.1);
             border-radius: 50%;
             border-top-color: #00a884;
@@ -48,460 +48,402 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Transitions */
-        .screen { transition: transform 0.3s ease-in-out, opacity 0.3s; opacity: 0; pointer-events: none; position: absolute; inset: 0; background: #111b21; z-index: 0; }
-        .screen.active { opacity: 1; pointer-events: auto; z-index: 10; position: relative; }
+        /* Ekran Geçişleri */
+        .screen { 
+            position: absolute; inset: 0; background: #111b21; z-index: 0; 
+            opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+            display: flex; flex-direction: column;
+        }
+        .screen.active { opacity: 1; pointer-events: auto; z-index: 10; }
 
-        /* Toast Notification */
+        /* Toast Bildirim */
         #toast-container {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            z-index: 9999; display: flex; flex-col; gap: 10px; pointer-events: none;
+            z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: 90%; max-width: 350px;
         }
         .toast {
-            background: #202c33; color: white; padding: 12px 24px;
-            border-radius: 50px; shadow: 0 4px 12px rgba(0,0,0,0.3);
-            font-size: 14px; font-weight: 500;
-            opacity: 0; transform: translateY(-20px); transition: all 0.3s;
-            display: flex; items-center; gap: 10px; border: 1px solid #374045;
+            background: #202c33; color: white; padding: 12px 16px;
+            border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            font-size: 14px; opacity: 0; transform: translateY(-20px); transition: all 0.3s;
+            display: flex; items-center; gap: 10px; border-left: 4px solid #00a884;
         }
         .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.error { border-left-color: #ef4444; }
 
-        /* Chat Bubbles */
+        /* Chat Baloncukları */
         .bubble {
-            position: relative;
-            max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14.2px;
-            line-height: 19px;
+            position: relative; max-width: 80%; padding: 6px 10px;
+            border-radius: 8px; font-size: 14.5px; line-height: 19px;
             box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
         }
         .bubble-out { background-color: #005c4b; margin-left: auto; border-top-right-radius: 0; }
         .bubble-in { background-color: #202c33; margin-right: auto; border-top-left-radius: 0; }
-        
-        .msg-time { font-size: 11px; color: rgba(255,255,255,0.6); float: right; margin-left: 8px; margin-top: 4px; display: flex; align-items: center; gap: 2px; }
+        .msg-time { font-size: 10px; color: rgba(255,255,255,0.6); float: right; margin-left: 8px; margin-top: 6px; }
 
-        /* Tab Bar Animation */
-        .nav-item { position: relative; color: #8696a0; transition: color 0.2s; }
-        .nav-item.active { color: #00a884; }
-        .nav-item.active::after {
-            content: ''; position: absolute; top: -12px; left: 0; right: 0; height: 3px; background: #00a884;
-        }
+        /* Alt Navigasyon (Tab) */
+        .nav-item { flex: 1; text-align: center; padding: 12px 0; color: #8696a0; border-bottom: 3px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .nav-item.active { color: #00a884; border-bottom-color: #00a884; }
     </style>
 </head>
-<body class="flex flex-col h-screen">
+<body>
 
-    <!-- Toast Container -->
+    <!-- Bildirim Alanı -->
     <div id="toast-container"></div>
 
-    <!-- GLOBAL LOADER -->
-    <div id="global-loader" class="fixed inset-0 z-50 bg-[#111b21] flex flex-col items-center justify-center">
+    <!-- Global Yükleniyor Ekranı -->
+    <div id="global-loader" class="fixed inset-0 z-50 bg-[#111b21] flex flex-col items-center justify-center hidden">
         <div class="spinner mb-4"></div>
-        <p class="text-[#00a884] font-medium tracking-wide text-sm animate-pulse" id="loader-text">Başlatılıyor...</p>
-        <button id="retry-btn" onclick="location.reload()" class="hidden mt-6 text-gray-400 text-sm underline">Çok uzun sürdü, yenile?</button>
+        <p class="text-[#00a884] font-medium text-sm animate-pulse" id="loader-text">Yükleniyor...</p>
     </div>
 
-    <!-- FIREBASE MODULE -->
+    <!-- Firebase Modülü -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp, query, where, updateDoc, arrayUnion, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp, query, where, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONFIGURATION ---
-        const userProvidedConfig = {
-            apiKey: "AIzaSyD9TSJoNxqly-dsFrqLK2fb5_fAxAa4wGk",
+        // --- KONFIGURASYON ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "AIzaSyD9TSJoNxqly-dsFrqLK2fb5_fAxAa4wGk", // Demo Fallback
             authDomain: "sosyal-medya-2.firebaseapp.com",
-            databaseURL: "https://sosyal-medya-2-default-rtdb.firebaseio.com",
-            projectId: "sosyal-medya-2",
-            storageBucket: "sosyal-medya-2.firebasestorage.app",
-            messagingSenderId: "640354012132",
-            appId: "1:640354012132:web:085a9489861f780b9095f1",
-            measurementId: "G-XMY4N1ZVXM"
+            projectId: "sosyal-medya-2"
         };
-        const activeConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userProvidedConfig;
-        const activeAppId = typeof __app_id !== 'undefined' ? __app_id : userProvidedConfig.projectId;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : firebaseConfig.projectId;
 
-        const app = initializeApp(activeConfig);
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const IMGBB_API_KEY = "16e22819e49d2faf7921c4df3b067359";
 
-        // --- STATE ---
+        // --- DEĞİŞKENLER ---
         let currentUser = null;
         let myProfile = null;
         let activeChatId = null;
         let unsubscribeChat = null;
-        
-        // --- UTILS ---
-        window.showToast = (msg, type='info') => {
+        let unsubscribeRequests = null;
+        let unsubscribeContacts = null;
+
+        // --- YARDIMCI FONKSİYONLAR ---
+        window.showToast = (msg, type='success') => {
             const container = document.getElementById('toast-container');
             const el = document.createElement('div');
-            el.className = 'toast';
-            el.innerHTML = type === 'success' ? `<i class="fas fa-check-circle text-green-500"></i> ${msg}` : 
-                           type === 'error' ? `<i class="fas fa-exclamation-circle text-red-500"></i> ${msg}` : msg;
+            el.className = `toast ${type}`;
+            el.innerHTML = type === 'error' ? `<i class="fas fa-exclamation-circle text-red-400"></i> ${msg}` : `<i class="fas fa-check-circle text-green-400"></i> ${msg}`;
             container.appendChild(el);
-            setTimeout(() => el.classList.add('show'), 10);
-            setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3000);
+            // Animasyonlar
+            requestAnimationFrame(() => el.classList.add('show'));
+            setTimeout(() => {
+                el.classList.remove('show');
+                el.addEventListener('transitionend', () => el.remove());
+            }, 3000);
         };
 
-        window.setLoading = (active, text="Yükleniyor...") => {
+        window.setLoading = (active, text="İşlem yapılıyor...") => {
             const el = document.getElementById('global-loader');
             const txt = document.getElementById('loader-text');
-            const retry = document.getElementById('retry-btn');
-            
             if(active) {
                 el.classList.remove('hidden');
                 txt.innerText = text;
-                // Safety valve: 10sn sonra retry göster
-                setTimeout(() => retry.classList.remove('hidden'), 10000);
             } else {
                 el.classList.add('hidden');
-                retry.classList.add('hidden');
             }
         };
 
         window.navigateTo = (screenId) => {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none'); // Hard hide
-            
-            const target = document.getElementById(screenId);
-            target.style.display = 'flex'; // Flex layout restore
-            setTimeout(() => target.classList.add('active'), 10);
+            document.getElementById(screenId).classList.add('active');
         };
 
-        // --- AUTH & INIT ---
+        // --- AUTH YÖNETİMİ ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                window.setLoading(true, "Veriler senkronize ediliyor...");
+                window.setLoading(true, "Bağlanılıyor...");
+                
+                // Profil Kontrolü
                 try {
-                    // Check Profile
-                    const docRef = doc(db, 'artifacts', activeAppId, 'users', user.uid, 'profile', 'data');
+                    const docRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data');
                     const snap = await getDoc(docRef);
                     
                     if (snap.exists()) {
                         myProfile = snap.data();
-                        updateMyProfileUI();
-                        listenFriendRequests(); // Dinlemeye başla
-                        listenFriends(); // Arkadaşlarımı dinle
+                        initAppListeners(); // Dinleyicileri başlat
                         window.navigateTo('screen-home');
                     } else {
                         window.navigateTo('screen-setup');
                     }
-                } catch (e) {
-                    console.error(e);
-                    window.showToast("Bağlantı hatası", "error");
+                } catch (error) {
+                    console.error("Profil hatası:", error);
+                    window.showToast("Profil yüklenemedi", "error");
                 }
                 window.setLoading(false);
             } else {
+                // Temizlik
+                if(unsubscribeChat) unsubscribeChat();
+                if(unsubscribeRequests) unsubscribeRequests();
+                if(unsubscribeContacts) unsubscribeContacts();
                 window.navigateTo('screen-auth');
-                window.setLoading(false);
             }
         });
 
-        // Safe Fallback for Auth Errors
-        async function fallbackAuth() {
-            window.showToast("E-posta servisi meşgul, misafir girişi yapılıyor...", "info");
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
-        }
-
-        // --- AUTH ACTIONS ---
-        window.doLogin = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-            if(!email || !pass) return window.showToast("Bilgileri doldurun", "error");
+        // --- İŞLEMLER ---
+        
+        // 1. GİRİŞ / KAYIT
+        window.handleAuth = async (mode) => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
             
-            window.setLoading(true, "Giriş yapılıyor...");
+            if(!email || !pass) return window.showToast("Lütfen alanları doldurun.", "error");
+            
+            window.setLoading(true, mode === 'login' ? "Giriş yapılıyor..." : "Kayıt olunuyor...");
+            
             try {
-                await signInWithEmailAndPassword(auth, email, pass);
-            } catch (e) {
-                if(e.code === 'auth/operation-not-allowed') await fallbackAuth();
-                else { window.showToast("Hatalı giriş: " + e.message, "error"); window.setLoading(false); }
+                if(mode === 'login') {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, pass);
+                }
+            } catch (error) {
+                if(error.code === 'auth/operation-not-allowed') {
+                    // Demo ortamı için fallback
+                    window.showToast("Demo modu: Misafir girişi yapılıyor...", "success");
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } else {
+                    window.showToast("Hata: " + error.message, "error");
+                    window.setLoading(false);
+                }
             }
         };
 
-        window.doRegister = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-            if(!email || !pass) return window.showToast("Bilgileri doldurun", "error");
-
-            window.setLoading(true, "Hesap oluşturuluyor...");
-            try {
-                await createUserWithEmailAndPassword(auth, email, pass);
-            } catch (e) {
-                if(e.code === 'auth/operation-not-allowed') await fallbackAuth();
-                else { window.showToast("Hata: " + e.message, "error"); window.setLoading(false); }
-            }
-        };
-
-        window.doLogout = () => {
-            if(confirm("Çıkış yapmak istiyor musunuz?")) signOut(auth);
-        };
-
-        // --- PROFILE SETUP ---
+        // 2. PROFİL OLUŞTURMA
         window.saveProfile = async () => {
-            const name = document.getElementById('setup-name').value;
-            const status = document.getElementById('setup-status').value;
+            const name = document.getElementById('setup-name').value.trim();
+            const status = document.getElementById('setup-status').value.trim();
             const file = document.getElementById('setup-file').files[0];
-            
-            if(!name) return window.showToast("İsim gerekli", "error");
 
-            window.setLoading(true, "Profil oluşturuluyor (Resim yükleniyor)...");
-            
+            if(!name) return window.showToast("İsim zorunludur", "error");
+
+            window.setLoading(true, "Profil kaydediliyor...");
+
             let photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00a884&color=fff`;
-            
+
             if(file) {
                 try {
-                    const url = await uploadImage(file);
-                    if(url) photoURL = url;
-                } catch(e) { window.showToast("Resim yüklenemedi, varsayılan kullanılıyor.", "error"); }
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if(data.success) photoURL = data.data.url;
+                } catch(e) {
+                    console.warn("Resim yükleme hatası, varsayılan kullanılıyor.");
+                }
             }
 
-            const data = {
+            const profileData = {
                 uid: currentUser.uid,
-                email: currentUser.email,
+                email: currentUser.email || 'anon',
                 displayName: name,
                 status: status || "ProConnect kullanıyorum!",
                 photoURL: photoURL,
-                searchKey: name.toLowerCase(), // Arama için
-                updatedAt: serverTimestamp()
+                searchKey: name.toLowerCase(),
+                createdAt: serverTimestamp()
             };
 
-            // 1. Private Profile
-            await setDoc(doc(db, 'artifacts', activeAppId, 'users', currentUser.uid, 'profile', 'data'), data);
-            // 2. Public Directory (Searchable)
-            await setDoc(doc(db, 'artifacts', activeAppId, 'public', 'directory', currentUser.uid), data);
+            // İki yere kaydet: Biri private, biri public arama için
+            await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'profile', 'data'), profileData);
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'directory', currentUser.uid), profileData);
 
-            myProfile = data;
+            myProfile = profileData;
+            initAppListeners();
             window.navigateTo('screen-home');
             window.setLoading(false);
         };
 
-        // --- IMAGE UPLOAD ENGINE ---
-        async function uploadImage(file) {
-            const formData = new FormData();
-            formData.append('image', file);
-            
-            // Timeout'lu fetch
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), 15000); // 15sn limit
+        // --- APP MANTIĞI VE DİNLEYİCİLER ---
 
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: 'POST',
-                    body: formData,
-                    signal: controller.signal
-                });
-                clearTimeout(id);
-                const json = await res.json();
-                if(json.success) return json.data.url;
-                else throw new Error("API Error");
-            } catch(e) {
-                throw e;
-            }
+        function initAppListeners() {
+            // Profil resmini güncelle
+            document.getElementById('header-avatar').src = myProfile.photoURL;
+
+            // 1. Arkadaşlık İsteklerini Dinle
+            const reqQuery = query(collection(db, 'artifacts', appId, 'public', 'requests'), where('to', '==', currentUser.uid));
+            unsubscribeRequests = onSnapshot(reqQuery, (snap) => {
+                const list = document.getElementById('requests-list');
+                const badge = document.getElementById('req-badge');
+                list.innerHTML = '';
+                
+                if(snap.empty) {
+                    badge.classList.add('hidden');
+                    list.innerHTML = '<div class="text-center text-gray-500 py-4">Bekleyen istek yok.</div>';
+                } else {
+                    badge.classList.remove('hidden');
+                    badge.innerText = snap.size;
+                    
+                    snap.forEach(d => {
+                        const r = d.data();
+                        list.innerHTML += `
+                            <div class="bg-[#202c33] p-3 rounded-lg flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-3">
+                                    <img src="${r.fromPhoto}" class="w-10 h-10 rounded-full object-cover">
+                                    <span class="font-medium text-white">${r.fromName}</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="respondRequest('${d.id}', '${r.from}', '${r.fromName}', '${r.fromPhoto}', true)" class="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center"><i class="fas fa-check text-white"></i></button>
+                                    <button onclick="respondRequest('${d.id}', null, null, null, false)" class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center"><i class="fas fa-times text-white"></i></button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            });
+
+            // 2. Arkadaşlarımı (Sohbetleri) Dinle
+            const contactsRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'contacts');
+            unsubscribeContacts = onSnapshot(contactsRef, (snap) => {
+                const list = document.getElementById('chats-list');
+                list.innerHTML = '';
+                
+                if(snap.empty) {
+                    list.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-64 text-[#8696a0]">
+                            <i class="fas fa-user-friends text-4xl mb-4 opacity-50"></i>
+                            <p class="text-center text-sm">Henüz arkadaşın yok.<br>"EKLE" sekmesinden yeni kişiler bul!</p>
+                        </div>
+                    `;
+                } else {
+                    snap.forEach(d => {
+                        const u = d.data();
+                        list.innerHTML += `
+                            <div onclick="openChat('${u.uid}', '${u.name}', '${u.photo}')" class="flex items-center gap-4 p-4 border-b border-[#202c33] cursor-pointer hover:bg-[#202c33] transition">
+                                <img src="${u.photo}" class="w-12 h-12 rounded-full object-cover">
+                                <div class="flex-1">
+                                    <h4 class="text-white font-medium text-lg">${u.name}</h4>
+                                    <p class="text-[#8696a0] text-sm">Sohbet etmek için dokun</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            });
         }
 
-        // --- FRIEND SYSTEM ---
-        
-        // 1. Kullanıcı Ara
+        // --- KULLANICI ARAMA VE EKLEME ---
         window.searchUsers = async () => {
             const term = document.getElementById('search-input').value.toLowerCase().trim();
-            if(term.length < 3) return window.showToast("En az 3 harf girin", "info");
+            if(term.length < 3) return window.showToast("En az 3 harf girin", "error");
 
-            const list = document.getElementById('search-results');
-            list.innerHTML = '<div class="text-center text-gray-500 py-4"><div class="spinner w-6 h-6 mx-auto border-gray-500"></div></div>';
+            const resultsDiv = document.getElementById('search-results');
+            resultsDiv.innerHTML = '<div class="text-center py-4"><div class="spinner mx-auto w-6 h-6"></div></div>';
 
-            const q = query(collection(db, 'artifacts', activeAppId, 'public', 'directory'), 
+            // Basit search
+            const q = query(collection(db, 'artifacts', appId, 'public', 'directory'), 
                             where('searchKey', '>=', term), 
-                            where('searchKey', '<=', term + '\uf8ff')); // Firestore startsWith hack
-
-            const snap = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then(m => m.getDocs(q));
+                            where('searchKey', '<=', term + '\uf8ff'));
             
-            list.innerHTML = '';
-            if(snap.empty) return list.innerHTML = '<div class="text-center text-gray-500 py-4">Kullanıcı bulunamadı.</div>';
+            // onSnapshot YERİNE getDocs kullanıyoruz (Search bir kere yapılır)
+            // Dinamik import ile getDocs alıyoruz scope hatası olmasın diye
+            const { getDocs } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+            const snap = await getDocs(q);
+
+            resultsDiv.innerHTML = '';
+            if(snap.empty) return resultsDiv.innerHTML = '<div class="text-center text-gray-500 py-4">Kullanıcı bulunamadı.</div>';
 
             snap.forEach(d => {
                 const u = d.data();
-                if(u.uid === currentUser.uid) return; // Kendini gösterme
-                
-                list.innerHTML += `
+                if(u.uid === currentUser.uid) return;
+
+                resultsDiv.innerHTML += `
                     <div class="flex items-center justify-between p-3 border-b border-[#202c33]">
                         <div class="flex items-center gap-3">
                             <img src="${u.photoURL}" class="w-10 h-10 rounded-full object-cover">
                             <div>
-                                <h4 class="text-white font-medium">${u.displayName}</h4>
-                                <p class="text-xs text-gray-400 truncate w-32">${u.status}</p>
+                                <div class="text-white font-medium">${u.displayName}</div>
+                                <div class="text-xs text-gray-400">${u.status}</div>
                             </div>
                         </div>
-                        <button onclick="sendRequest('${u.uid}')" class="bg-[#00a884] text-black px-3 py-1.5 rounded-full text-xs font-bold hover:bg-[#008f6f]">Ekle</button>
+                        <button onclick="sendRequest('${u.uid}')" class="bg-[#00a884] text-black text-xs font-bold px-3 py-1.5 rounded-full hover:bg-[#008f6f]">EKLE</button>
                     </div>
                 `;
             });
         };
 
-        // 2. İstek Gönder
-        window.sendRequest = async (targetUid) => {
-            // Check if already sent? (Skipping for demo brevity)
-            const reqRef = collection(db, 'artifacts', activeAppId, 'public', 'requests');
-            await addDoc(reqRef, {
+        window.sendRequest = async (toUid) => {
+            await addDoc(collection(db, 'artifacts', appId, 'public', 'requests'), {
                 from: currentUser.uid,
                 fromName: myProfile.displayName,
                 fromPhoto: myProfile.photoURL,
-                to: targetUid,
-                status: 'pending',
+                to: toUid,
                 ts: serverTimestamp()
             });
             window.showToast("İstek gönderildi!", "success");
         };
 
-        // 3. İstekleri Dinle (Notification Tab)
-        function listenFriendRequests() {
-            const q = query(collection(db, 'artifacts', activeAppId, 'public', 'requests'), 
-                            where('to', '==', currentUser.uid), 
-                            where('status', '==', 'pending'));
-            
-            onSnapshot(q, (snap) => {
-                const badge = document.getElementById('req-badge');
-                const list = document.getElementById('requests-list');
-                
-                if(!snap.empty) {
-                    badge.classList.remove('hidden');
-                    badge.innerText = snap.size;
-                } else {
-                    badge.classList.add('hidden');
-                }
+        window.respondRequest = async (reqId, fromUid, fromName, fromPhoto, accept) => {
+            // İsteği sil
+            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'requests', reqId));
 
-                list.innerHTML = '';
-                if(snap.empty) list.innerHTML = '<div class="text-center text-gray-500 mt-10">Bekleyen istek yok.</div>';
-
-                snap.forEach(d => {
-                    const req = d.data();
-                    list.innerHTML += `
-                         <div class="bg-[#202c33] p-4 rounded-lg flex items-center justify-between mb-2">
-                            <div class="flex items-center gap-3">
-                                <img src="${req.fromPhoto}" class="w-10 h-10 rounded-full">
-                                <span class="font-bold">${req.fromName}</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="acceptRequest('${d.id}', '${req.from}', '${req.fromName}', '${req.fromPhoto}')" class="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center"><i class="fas fa-check"></i></button>
-                                <button onclick="rejectRequest('${d.id}')" class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center"><i class="fas fa-times"></i></button>
-                            </div>
-                         </div>
-                    `;
+            if(accept) {
+                // Benim listeme ekle
+                await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'contacts', fromUid), {
+                    uid: fromUid, name: fromName, photo: fromPhoto, addedAt: serverTimestamp()
                 });
-            });
-        }
-
-        window.acceptRequest = async (reqId, fromUid, fromName, fromPhoto) => {
-            // 1. İstek sil
-            await deleteDoc(doc(db, 'artifacts', activeAppId, 'public', 'requests', reqId));
-            
-            // 2. Arkadaş listesine ekle (Çift taraflı - Subcollection yerine basitçe kendi profilimin altına ekliyorum demo için)
-            // Daha sağlam yol: 'friendships' koleksiyonu. Burada basitlik için 'contacts' subcollection kullanacağım.
-            
-            const myContactRef = doc(db, 'artifacts', activeAppId, 'users', currentUser.uid, 'contacts', fromUid);
-            await setDoc(myContactRef, { uid: fromUid, name: fromName, photo: fromPhoto, addedAt: serverTimestamp() });
-
-            // Karşı tarafın da beni eklemesi lazım (Bu demo'da sadece kendi tarafımıza ekliyoruz, karşı taraf yenileyince görür ya da ona da yazabiliriz)
-            const theirContactRef = doc(db, 'artifacts', activeAppId, 'users', fromUid, 'contacts', currentUser.uid);
-            await setDoc(theirContactRef, { uid: currentUser.uid, name: myProfile.displayName, photo: myProfile.photoURL, addedAt: serverTimestamp() });
-
-            window.showToast("Arkadaş eklendi!", "success");
+                // Onun listesine ekle (Karşılıklı)
+                await setDoc(doc(db, 'artifacts', appId, 'users', fromUid, 'contacts', currentUser.uid), {
+                    uid: currentUser.uid, name: myProfile.displayName, photo: myProfile.photoURL, addedAt: serverTimestamp()
+                });
+                window.showToast("Arkadaş eklendi!", "success");
+            } else {
+                window.showToast("İstek reddedildi.", "success");
+            }
         };
 
-        window.rejectRequest = async (reqId) => {
-            await deleteDoc(doc(db, 'artifacts', activeAppId, 'public', 'requests', reqId));
-            window.showToast("Reddedildi", "info");
-        };
-
-        // 4. Arkadaşları Listele (Home Tab)
-        function listenFriends() {
-            const ref = collection(db, 'artifacts', activeAppId, 'users', currentUser.uid, 'contacts');
-            onSnapshot(ref, (snap) => {
-                const list = document.getElementById('chat-list');
-                list.innerHTML = '';
-                
-                if(snap.empty) {
-                    list.innerHTML = `
-                        <div class="flex flex-col items-center justify-center h-64 text-center px-6">
-                            <div class="w-16 h-16 bg-[#202c33] rounded-full flex items-center justify-center mb-4">
-                                <i class="fas fa-user-plus text-2xl text-[#8696a0]"></i>
-                            </div>
-                            <p class="text-[#8696a0]">Henüz hiç sohbetin yok.<br>"Ekle" sekmesinden arkadaşlarını bul!</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                snap.forEach(d => {
-                    const u = d.data();
-                    list.innerHTML += `
-                        <div onclick="openChat('${u.uid}', '${u.name}', '${u.photo}')" class="flex items-center gap-4 p-4 hover:bg-[#202c33] cursor-pointer border-b border-[#202c33] transition">
-                            <img src="${u.photo}" class="w-12 h-12 rounded-full object-cover">
-                            <div class="flex-1">
-                                <div class="flex justify-between items-center mb-1">
-                                    <h3 class="text-[#e9edef] font-medium text-lg">${u.name}</h3>
-                                    <span class="text-xs text-[#8696a0]">Şimdi</span>
-                                </div>
-                                <p class="text-sm text-[#8696a0] truncate">Sohbeti başlatmak için dokun.</p>
-                            </div>
-                        </div>
-                    `;
-                });
-            });
-        }
-
-        // --- CHAT SYSTEM ---
+        // --- SOHBET SİSTEMİ ---
         window.openChat = (uid, name, photo) => {
             const ids = [currentUser.uid, uid].sort();
             activeChatId = `chat_${ids[0]}_${ids[1]}`;
-            
-            // UI Setup
-            document.getElementById('chat-user-name').innerText = name;
-            document.getElementById('chat-user-img').src = photo;
-            document.getElementById('chat-messages').innerHTML = ''; // Clear old
+
+            document.getElementById('chat-header-name').innerText = name;
+            document.getElementById('chat-header-img').src = photo;
+            document.getElementById('chat-messages').innerHTML = ''; // Temizle
 
             window.navigateTo('screen-chat');
-            
-            // Listen
-            if(unsubscribeChat) unsubscribeChat();
-            const msgRef = collection(db, 'artifacts', activeAppId, 'public', 'messages', activeChatId, 'msgs');
-            const q = query(msgRef, import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then(m => m.orderBy('ts', 'asc'))); // Dynamic import fix for orderBy conflict
 
-            // Fix orderBy usage:
-            // Due to limitations in single file modular imports mixed with scope, we use basic array sort client side for robustness
-            unsubscribeChat = onSnapshot(collection(db, 'artifacts', activeAppId, 'public', 'messages', activeChatId, 'msgs'), (snap) => {
+            if(unsubscribeChat) unsubscribeChat();
+            
+            // Mesajları Dinle (Scope hatasını önlemek için async kullanma!)
+            const msgsRef = collection(db, 'artifacts', appId, 'public', 'messages', activeChatId, 'msgs');
+            // Sıralama client-side yapılacak (query limitleri yüzünden)
+            unsubscribeChat = onSnapshot(msgsRef, (snap) => {
                 const msgs = [];
                 snap.forEach(d => msgs.push(d.data()));
+                // Tarihe göre sırala
                 msgs.sort((a,b) => (a.ts?.seconds || 0) - (b.ts?.seconds || 0));
-                renderMessages(msgs);
+                renderChat(msgs);
             });
         };
 
-        function renderMessages(msgs) {
+        function renderChat(msgs) {
             const container = document.getElementById('chat-messages');
             container.innerHTML = '';
-            
+
             msgs.forEach(msg => {
                 const isMine = msg.sender === currentUser.uid;
                 const time = msg.ts ? new Date(msg.ts.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...';
                 
-                let content = msg.text;
+                let content = `<span class="text-[#e9edef]">${msg.text}</span>`;
                 if(msg.type === 'image') {
-                    content = `<img src="${msg.text}" class="rounded-lg mb-1 max-w-[240px] border border-white/10 cursor-pointer" onclick="window.open(this.src)">`;
+                    content = `<img src="${msg.text}" class="rounded-lg max-w-[240px] border border-white/10 mb-1">`;
                 }
 
-                const checkIcon = isMine ? `<i class="fas fa-check-double text-[#53bdeb] text-[10px]"></i>` : '';
-
                 container.innerHTML += `
-                    <div class="flex w-full mb-2 ${isMine ? 'justify-end' : 'justify-start'}">
+                    <div class="flex w-full mb-1 ${isMine ? 'justify-end' : 'justify-start'}">
                         <div class="bubble ${isMine ? 'bubble-out' : 'bubble-in'}">
-                            <span class="text-[#e9edef]">${content}</span>
-                            <div class="msg-time">${time} ${checkIcon}</div>
+                            ${content}
+                            <div class="msg-time">${time} ${isMine ? '<i class="fas fa-check-double text-blue-300 ml-1"></i>' : ''}</div>
                         </div>
                     </div>
                 `;
@@ -509,18 +451,21 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        window.sendMessage = async (type='text', val=null) => {
+        window.sendMessage = async (type='text', content=null) => {
             const input = document.getElementById('msg-input');
-            const text = val || input.value.trim();
+            const text = content || input.value.trim();
+            
             if(!text) return;
 
-            const msgRef = collection(db, 'artifacts', activeAppId, 'public', 'messages', activeChatId, 'msgs');
-            await addDoc(msgRef, {
+            const msgData = {
                 text: text,
                 type: type,
                 sender: currentUser.uid,
                 ts: serverTimestamp()
-            });
+            };
+
+            const ref = collection(db, 'artifacts', appId, 'public', 'messages', activeChatId, 'msgs');
+            await addDoc(ref, msgData);
 
             if(type === 'text') input.value = '';
         };
@@ -529,157 +474,163 @@
             const file = document.getElementById('chat-file').files[0];
             if(!file) return;
 
-            window.showToast("Resim gönderiliyor...", "info");
+            window.setLoading(true, "Resim gönderiliyor...");
             try {
-                const url = await uploadImage(file);
-                await sendMessage('image', url);
-            } catch(e) { window.showToast("Gönderilemedi", "error"); }
+                const formData = new FormData();
+                formData.append('image', file);
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if(data.success) {
+                    await sendMessage('image', data.data.url);
+                }
+            } catch(e) {
+                window.showToast("Gönderim başarısız", "error");
+            }
+            window.setLoading(false);
         };
 
-        // --- UI HELPERS ---
-        function updateMyProfileUI() {
-            document.getElementById('my-avatar').src = myProfile.photoURL;
-        }
+        // --- UI ---
+        window.switchTab = (tabId) => {
+            // Tab içeriklerini gizle/göster
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
 
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            
+            // Tab buton aktifliği
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(`nav-${tab}`).classList.add('active');
+            document.getElementById(`nav-${tabId}`).classList.add('active');
         };
-
-        // Input enter
-        document.getElementById('msg-input').addEventListener('keypress', e => { if(e.key==='Enter') window.sendMessage(); });
+        
+        // Enter ile gönder
+        document.getElementById('msg-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') window.sendMessage();
+        });
 
     </script>
 
     <!-- 1. AUTH SCREEN -->
-    <div id="screen-auth" class="screen flex flex-col items-center justify-center p-8 bg-[#111b21] active">
-        <div class="w-20 h-20 bg-[#00a884] rounded-full flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(0,168,132,0.4)]">
-            <i class="fas fa-comments text-4xl text-white"></i>
+    <div id="screen-auth" class="screen flex flex-col items-center justify-center p-8 active">
+        <div class="w-20 h-20 bg-[#00a884] rounded-full flex items-center justify-center mb-6 shadow-lg shadow-[#00a884]/20">
+            <i class="fas fa-shield-alt text-4xl text-[#111b21]"></i>
         </div>
         <h1 class="text-2xl font-semibold text-white mb-2">ProConnect</h1>
-        <p class="text-[#8696a0] mb-8 text-center text-sm">Dünyayla profesyonelce bağlantı kur.</p>
+        <p class="text-[#8696a0] mb-8 text-center text-sm">Güvenli, Hızlı, Profesyonel.</p>
 
         <div class="w-full max-w-sm space-y-4">
-            <div class="bg-[#202c33] rounded-lg p-2 border border-gray-700 flex items-center">
-                <i class="fas fa-envelope text-[#8696a0] ml-3 mr-3"></i>
-                <input type="email" id="email" placeholder="E-posta" class="bg-transparent w-full text-white outline-none h-10">
+            <div class="bg-[#202c33] rounded-lg px-4 py-2 border border-gray-800">
+                <input type="email" id="auth-email" placeholder="E-posta adresi" class="bg-transparent w-full text-white outline-none h-10">
             </div>
-            <div class="bg-[#202c33] rounded-lg p-2 border border-gray-700 flex items-center">
-                <i class="fas fa-lock text-[#8696a0] ml-3 mr-3"></i>
-                <input type="password" id="pass" placeholder="Şifre" class="bg-transparent w-full text-white outline-none h-10">
+            <div class="bg-[#202c33] rounded-lg px-4 py-2 border border-gray-800">
+                <input type="password" id="auth-pass" placeholder="Şifre" class="bg-transparent w-full text-white outline-none h-10">
             </div>
 
-            <button onclick="doLogin()" class="w-full bg-[#00a884] hover:bg-[#008f6f] text-black font-bold py-3 rounded-full transition transform active:scale-95">Giriş Yap</button>
-            <button onclick="doRegister()" class="w-full border border-[#00a884] text-[#00a884] font-bold py-3 rounded-full transition hover:bg-[#202c33]">Kayıt Ol</button>
+            <button onclick="handleAuth('login')" class="w-full bg-[#00a884] text-black font-bold py-3 rounded-full hover:bg-[#008f6f] transition active:scale-95">GİRİŞ YAP</button>
+            <button onclick="handleAuth('register')" class="w-full border border-[#00a884] text-[#00a884] font-bold py-3 rounded-full hover:bg-[#202c33] transition">KAYIT OL</button>
         </div>
     </div>
 
     <!-- 2. SETUP SCREEN -->
     <div id="screen-setup" class="screen flex flex-col items-center justify-center p-6">
-        <h2 class="text-xl font-medium mb-6">Profilini Tamamla</h2>
+        <h2 class="text-xl font-medium text-white mb-6">Profilini Oluştur</h2>
         
-        <div class="mb-6 relative">
+        <div class="mb-6 relative group">
             <input type="file" id="setup-file" class="hidden" accept="image/*" onchange="document.getElementById('setup-preview').src = window.URL.createObjectURL(this.files[0])">
-            <label for="setup-file" class="cursor-pointer">
-                <img id="setup-preview" src="https://via.placeholder.com/150/00a884/FFFFFF?text=USER" class="w-32 h-32 rounded-full object-cover border-4 border-[#202c33]">
+            <label for="setup-file" class="cursor-pointer block">
+                <img id="setup-preview" src="https://via.placeholder.com/150/202c33/8696a0?text=USER" class="w-32 h-32 rounded-full object-cover border-4 border-[#202c33]">
                 <div class="absolute bottom-0 right-0 bg-[#00a884] w-10 h-10 rounded-full flex items-center justify-center border-2 border-[#111b21]">
                     <i class="fas fa-camera text-white"></i>
                 </div>
             </label>
         </div>
 
-        <input type="text" id="setup-name" placeholder="Adın Soyadın" class="bg-[#202c33] w-full max-w-sm p-4 rounded-lg text-white mb-3 outline-none border border-gray-700 focus:border-[#00a884]">
-        <input type="text" id="setup-status" placeholder="Durum (Örn: Müsait)" class="bg-[#202c33] w-full max-w-sm p-4 rounded-lg text-white mb-6 outline-none border border-gray-700 focus:border-[#00a884]">
+        <input type="text" id="setup-name" placeholder="Ad Soyad" class="bg-[#202c33] w-full max-w-sm p-4 rounded-lg text-white mb-3 outline-none border border-gray-800 focus:border-[#00a884]">
+        <input type="text" id="setup-status" placeholder="Durum (Örn: Müsait)" class="bg-[#202c33] w-full max-w-sm p-4 rounded-lg text-white mb-6 outline-none border border-gray-800 focus:border-[#00a884]">
 
-        <button onclick="saveProfile()" class="w-full max-w-sm bg-[#00a884] text-black font-bold py-3 rounded-full">Devam Et</button>
+        <button onclick="saveProfile()" class="w-full max-w-sm bg-[#00a884] text-black font-bold py-3 rounded-full shadow-lg">BAŞLAT</button>
     </div>
 
-    <!-- 3. HOME SCREEN (MAIN) -->
+    <!-- 3. HOME SCREEN -->
     <div id="screen-home" class="screen flex flex-col">
         <!-- Header -->
         <header class="bg-[#202c33] p-4 flex justify-between items-center shadow-md z-10">
-            <h1 class="text-xl font-bold text-[#8696a0]">ProConnect</h1>
+            <h1 class="text-lg font-bold text-[#8696a0]">ProConnect</h1>
             <div class="flex items-center gap-4">
-                <i class="fas fa-search text-[#8696a0] text-lg cursor-pointer" onclick="switchTab('search')"></i>
                 <div class="relative cursor-pointer" onclick="switchTab('requests')">
-                    <i class="fas fa-bell text-[#8696a0] text-lg"></i>
-                    <span id="req-badge" class="hidden absolute -top-2 -right-2 bg-[#00a884] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    <i class="fas fa-bell text-[#8696a0] text-xl"></i>
+                    <span id="req-badge" class="hidden absolute -top-1 -right-1 bg-[#00a884] text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
                 </div>
-                <img id="my-avatar" onclick="doLogout()" src="" class="w-8 h-8 rounded-full object-cover cursor-pointer border border-[#8696a0]">
+                <img id="header-avatar" onclick="location.reload()" src="" class="w-8 h-8 rounded-full object-cover border border-[#8696a0] cursor-pointer">
             </div>
         </header>
 
-        <!-- Nav Tabs -->
-        <div class="bg-[#202c33] flex justify-between px-4 pt-2 border-b border-[#374045]">
-            <button id="nav-chats" onclick="switchTab('chats')" class="nav-item active flex-1 pb-3 text-center font-medium uppercase text-sm">Sohbetler</button>
-            <button id="nav-search" onclick="switchTab('search')" class="nav-item flex-1 pb-3 text-center font-medium uppercase text-sm">Ekle</button>
-            <button id="nav-requests" onclick="switchTab('requests')" class="nav-item flex-1 pb-3 text-center font-medium uppercase text-sm">İstekler</button>
+        <!-- Tabs -->
+        <div class="flex bg-[#202c33] border-b border-gray-800">
+            <div id="nav-chats" onclick="switchTab('chats')" class="nav-item active text-sm font-medium uppercase">Sohbetler</div>
+            <div id="nav-search" onclick="switchTab('search')" class="nav-item text-sm font-medium uppercase">Ekle</div>
+            <div id="nav-requests" onclick="switchTab('requests')" class="nav-item text-sm font-medium uppercase">İstekler</div>
         </div>
 
-        <!-- Content Area -->
+        <!-- Content -->
         <div class="flex-1 overflow-y-auto relative bg-[#111b21]">
             
-            <!-- Tab: Chats -->
-            <div id="tab-chats" class="tab-pane">
-                <div id="chat-list" class="divide-y divide-[#202c33]"></div>
+            <!-- Chats Tab -->
+            <div id="content-chats" class="tab-content">
+                <div id="chats-list"></div>
             </div>
 
-            <!-- Tab: Search -->
-            <div id="tab-search" class="tab-pane hidden p-4">
-                <div class="bg-[#202c33] rounded-full flex items-center px-4 py-2 mb-4 border border-gray-700">
-                    <i class="fas fa-search text-[#8696a0]"></i>
+            <!-- Search Tab -->
+            <div id="content-search" class="tab-content hidden p-4">
+                <div class="flex bg-[#202c33] rounded-lg px-4 py-2 mb-4">
+                    <i class="fas fa-search text-[#8696a0] mt-1"></i>
                     <input type="text" id="search-input" placeholder="İsim ara..." class="bg-transparent border-none outline-none text-white ml-3 w-full" onkeyup="if(event.key==='Enter') searchUsers()">
                 </div>
-                <button onclick="searchUsers()" class="w-full bg-[#00a884] text-black font-bold py-2 rounded-lg mb-4">Ara</button>
-                <div id="search-results" class="space-y-2"></div>
+                <button onclick="searchUsers()" class="w-full bg-[#00a884] text-black font-bold py-2 rounded-lg mb-4 text-sm">ARA</button>
+                <div id="search-results"></div>
             </div>
 
-            <!-- Tab: Requests -->
-            <div id="tab-requests" class="tab-pane hidden p-4">
-                <h3 class="text-[#00a884] font-bold mb-4 uppercase text-xs tracking-wider">Arkadaşlık İstekleri</h3>
+            <!-- Requests Tab -->
+            <div id="content-requests" class="tab-content hidden p-4">
+                <h3 class="text-[#00a884] text-xs font-bold uppercase mb-4 tracking-wider">Gelen İstekler</h3>
                 <div id="requests-list"></div>
             </div>
+
         </div>
     </div>
 
     <!-- 4. CHAT SCREEN -->
     <div id="screen-chat" class="screen flex flex-col bg-[#0b141a]">
         <!-- Chat Header -->
-        <div class="bg-[#202c33] p-2 flex items-center gap-2 shadow-sm z-20">
-            <button onclick="window.navigateTo('screen-home')" class="p-2 text-[#8696a0]"><i class="fas fa-arrow-left"></i></button>
-            <img id="chat-user-img" src="" class="w-9 h-9 rounded-full object-cover">
+        <div class="bg-[#202c33] px-2 py-2 flex items-center gap-2 shadow z-20">
+            <button onclick="navigateTo('screen-home')" class="p-2 text-[#8696a0] hover:text-white"><i class="fas fa-arrow-left"></i></button>
+            <img id="chat-header-img" src="" class="w-9 h-9 rounded-full object-cover">
             <div class="flex-1 cursor-pointer">
-                <h3 id="chat-user-name" class="font-medium text-white text-base">User</h3>
+                <h3 id="chat-header-name" class="font-medium text-white text-base truncate">User</h3>
             </div>
-            <button class="p-2 text-[#8696a0]"><i class="fas fa-video"></i></button>
-            <button class="p-2 text-[#8696a0]"><i class="fas fa-phone"></i></button>
+            <div class="flex gap-1 text-[#8696a0]">
+                <button class="p-2"><i class="fas fa-video"></i></button>
+                <button class="p-2"><i class="fas fa-phone"></i></button>
+            </div>
         </div>
 
-        <!-- Wallpaper & Messages -->
-        <div class="flex-1 relative overflow-hidden flex flex-col">
-            <!-- Doodle Background -->
-            <div class="absolute inset-0 opacity-[0.06]" style="background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat;"></div>
-            
+        <!-- Messages Area (Doodle Background) -->
+        <div class="flex-1 relative flex flex-col overflow-hidden">
+            <div class="absolute inset-0 opacity-[0.06] bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat"></div>
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2 z-10">
-                <!-- Messages will load here -->
+                <!-- Mesajlar buraya -->
             </div>
         </div>
 
         <!-- Input Area -->
         <div class="bg-[#202c33] p-2 flex items-end gap-2 z-20">
             <div class="flex-1 bg-[#2a3942] rounded-2xl flex items-center px-2 py-1 min-h-[44px]">
-                <button class="p-2 text-[#8696a0] text-xl hover:text-white transition" onclick="document.getElementById('chat-file').click()"><i class="fas fa-plus"></i></button>
+                <button class="p-2 text-[#8696a0] text-xl" onclick="document.getElementById('chat-file').click()"><i class="fas fa-plus"></i></button>
                 <input type="file" id="chat-file" class="hidden" accept="image/*" onchange="handleChatImage()">
                 
                 <input type="text" id="msg-input" placeholder="Mesaj yazın" class="bg-transparent border-none outline-none text-white w-full px-2 text-[15px]">
                 
                 <button class="p-2 text-[#8696a0] text-xl"><i class="fas fa-camera"></i></button>
             </div>
-            <button onclick="sendMessage()" class="w-11 h-11 bg-[#00a884] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-[#008f6f] transition transform active:scale-95">
-                <i class="fas fa-paper-plane text-sm pl-1"></i>
+            <button onclick="sendMessage()" class="w-11 h-11 bg-[#00a884] rounded-full flex items-center justify-center text-white shadow-lg hover:bg-[#008f6f] active:scale-95 transition">
+                <i class="fas fa-paper-plane text-sm pl-0.5"></i>
             </button>
         </div>
     </div>
