@@ -3,226 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Instagram</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
-    
+    <title>Windows Live Messenger</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* --- 1. INSTAGRAM CORE CSS --- */
-        :root { --primary: #0095f6; --bg: #fff; --border: #dbdbdb; --text: #262626; --grey: #fafafa; }
+        /* --- MSN STİLİ (AESTHETIC) --- */
+        :root {
+            --msn-blue-top: #b2dcf8;
+            --msn-blue-btm: #eaf5fc;
+            --msn-border: #7aa5d6;
+            --msn-header: linear-gradient(to bottom, #f5fbfe 0%, #c4def3 100%);
+            --msn-bg: linear-gradient(to bottom, #86b4e5 0%, #4687ce 100%);
+        }
+
+        body { 
+            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--msn-bg); height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        /* UI RESET */
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-        
-        .screen { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding-bottom: 50px; background: #fff; }
+        button { cursor: pointer; font-family: inherit; }
+
+        /* EKRANLAR */
+        .screen { display: none; flex: 1; flex-direction: column; height: 100%; padding: 10px; }
         .screen.active { display: flex; }
+
+        /* PENCERE YAPISI */
+        .window-frame {
+            background: #fff; border: 1px solid #4a7ac9; border-radius: 6px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3); flex: 1; display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        .window-header {
+            background: var(--msn-header); padding: 8px 10px; border-bottom: 1px solid #9fbddf;
+            display: flex; justify-content: space-between; align-items: center; height: 40px;
+        }
+        .win-title { font-size: 13px; font-weight: bold; color: #333; text-shadow: 0 1px 0 #fff; display: flex; align-items: center; gap: 5px; }
+
+        /* GİRİŞ EKRANI */
+        .login-box {
+            background: #eef7ff; border: 1px solid #8baeda; border-radius: 5px;
+            padding: 20px; text-align: center; width: 100%; max-width: 320px; margin: auto;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        .msn-avatar-frame {
+            width: 90px; height: 90px; border: 1px solid #aaa; padding: 3px; background: #fff;
+            margin: 0 auto 15px; cursor: pointer; transition: 0.2s;
+        }
+        .msn-avatar-frame:hover { border-color: #4a7ac9; }
+        .msn-avatar-img { width: 100%; height: 100%; object-fit: cover; }
+        .msn-input { width: 100%; padding: 6px; border: 1px solid #8caee2; margin-bottom: 8px; font-size: 13px; }
+        .msn-btn {
+            background: linear-gradient(#fff, #e1e1e1); border: 1px solid #888; padding: 4px 15px; border-radius: 3px; font-size: 12px; margin-top: 5px;
+        }
+        .msn-btn:hover { border-color: #4a7ac9; background: #fdfdfd; }
+
+        /* ANA EKRAN (KİŞİ LİSTESİ) */
+        .my-card {
+            background: linear-gradient(to right, #e3effa, #ffffff); padding: 10px;
+            display: flex; align-items: center; border-bottom: 1px solid #bcd3ec;
+        }
+        .my-pic { width: 60px; height: 60px; border: 1px solid #fff; box-shadow: 0 0 3px #999; object-fit: cover; margin-right: 10px; cursor: pointer; }
+        .my-details { flex: 1; overflow: hidden; }
+        .my-nick { font-weight: bold; font-size: 14px; color: #000; cursor: pointer; }
+        .my-status-msg { font-size: 11px; color: #666; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; border: 1px solid transparent; }
+        .my-status-msg:hover { border: 1px solid #ccc; background: #fff; }
+
+        .list-area { flex: 1; background: #fff; overflow-y: auto; padding: 5px; }
+        .group-title { font-size: 11px; font-weight: bold; color: #444; background: #f0f0f0; padding: 3px; margin-top: 5px; cursor: pointer; border: 1px solid #e0e0e0; }
         
-        /* Butonlar & Inputlar */
-        .btn-primary { background: var(--primary); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .btn-primary:active { opacity: 0.7; }
-        .input-field { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--grey); font-size: 14px; margin-bottom: 10px; }
+        .contact-item {
+            display: flex; align-items: center; padding: 6px; cursor: pointer; border: 1px solid transparent;
+        }
+        .contact-item:hover { background: #eef5fb; border: 1px solid #dcebf8; }
+        .status-icon { width: 10px; height: 10px; margin-right: 6px; } /* Yeşil/Kırmızı/Gri kare */
         
-        /* Header */
-        .app-header { height: 54px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #fff; z-index: 20; position: sticky; top: 0; }
-        .logo { font-family: 'Cursive', serif; font-size: 28px; font-weight: bold; margin-top: 5px; cursor: pointer; }
+        /* STATUS ICONS (CSS Shapes) */
+        .s-online { background: #4cb050; border: 1px solid #2e7d32; }
+        .s-busy { background: #e53935; border: 1px solid #c62828; }
+        .s-offline { background: #bdbdbd; border: 1px solid #757575; }
 
-        /* --- 2. HİKAYELER (STORIES) --- */
-        .stories-bar { padding: 15px 0; border-bottom: 1px solid var(--border); overflow-x: auto; display: flex; scrollbar-width: none; }
-        .story-item { display: flex; flex-direction: column; align-items: center; margin-left: 15px; cursor: pointer; flex-shrink: 0; width: 75px; text-align: center; }
-        .story-ring { width: 68px; height: 68px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); display: flex; align-items: center; justify-content: center; position: relative; }
-        .story-ring.seen { background: #dbdbdb; } /* İzlenmişse gri */
-        .story-avatar { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; object-fit: cover; }
-        .story-username { font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
-        .add-story-badge { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; font-size: 18px; line-height: 18px; text-align: center; font-weight: bold; }
+        /* SOHBET EKRANI */
+        .chat-history { flex: 1; background: #fff; padding: 10px; overflow-y: auto; font-size: 13px; line-height: 1.4; border-bottom: 1px solid #ccc; }
+        .msg-block { margin-bottom: 8px; }
+        .msg-header { color: #666; font-size: 11px; margin-bottom: 2px; }
+        .msg-header b { color: #2e5f94; }
+        .msg-content { margin-left: 5px; color: #000; }
+        .system-msg { color: #e91e63; font-weight: bold; font-style: italic; text-align: center; margin: 10px 0; }
 
-        /* --- 3. GÖNDERİLER (FEED) --- */
-        .post { margin-bottom: 10px; border-bottom: 1px solid var(--border); }
-        .post-header { padding: 10px; display: flex; align-items: center; }
-        .avatar-small { width: 32px; height: 32px; border-radius: 50%; margin-right: 10px; object-fit: cover; border: 1px solid var(--border); }
-        .post-img { width: 100%; display: block; min-height: 300px; background: #f0f0f0; object-fit: cover; }
-        .post-actions { padding: 10px; display: flex; gap: 15px; }
-        .post-caption { padding: 0 10px 10px; font-size: 14px; line-height: 1.4; }
+        .chat-tools { background: #f2f7fc; padding: 4px; display: flex; gap: 8px; border-bottom: 1px solid #e1e1e1; }
+        .tool-icon { cursor: pointer; color: #555; font-size: 18px; }
+        .tool-icon:hover { color: #000; }
 
-        /* --- 4. SOHBETLER (INBOX) - YENİLENMİŞ --- */
-        .inbox-item { display: flex; align-items: center; padding: 12px 15px; cursor: pointer; }
-        .inbox-item:active { background-color: #f5f5f5; }
-        .inbox-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 1px solid var(--border); }
-        .inbox-info { flex: 1; overflow: hidden; }
-        .inbox-name { font-weight: 500; font-size: 16px; margin-bottom: 3px; }
-        .inbox-msg { color: #8e8e8e; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .inbox-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; margin-left: 10px; }
+        .chat-input-area { height: 60px; padding: 5px; display: flex; flex-direction: column; }
+        .chat-textarea { flex: 1; border: none; resize: none; font-family: inherit; font-size: 12px; }
+        .send-bar { text-align: right; background: #f2f7fc; padding: 3px; border-top: 1px solid #e1e1e1; }
 
-        /* --- 5. MESAJLAŞMA (CHAT) --- */
-        .chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; background: #fff; }
-        .msg-bubble { max-width: 70%; padding: 10px 14px; border-radius: 20px; font-size: 15px; margin-bottom: 5px; word-wrap: break-word; position: relative; }
-        .msg-me { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
-        .msg-other { align-self: flex-start; background: #efefef; color: black; border-bottom-left-radius: 4px; }
-        .msg-time { font-size: 10px; margin-top: 3px; opacity: 0.7; text-align: right; }
+        /* MODALS */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); z-index: 999; justify-content: center; align-items: center;
+        }
+        .modal-box {
+            background: #fff; border: 2px solid #4a7ac9; width: 90%; max-width: 300px; padding: 15px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
 
-        /* --- 6. PROFİL --- */
-        .profile-header { padding: 20px 15px; display: flex; align-items: center; }
-        .profile-pic-lg { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; object-fit: cover; border: 1px solid var(--border); }
-        .profile-stats { flex: 1; display: flex; justify-content: space-around; text-align: center; }
-        .stat-val { font-weight: bold; font-size: 18px; display: block; }
-        .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 15px; border-top: 1px solid var(--border); }
-        .grid-img { position: relative; padding-bottom: 100%; background: #eee; }
-        .grid-img img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
-
-        /* --- 7. MODALLAR --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 200; flex-direction: column; }
+        /* TİTREŞİM ANIMASYONU */
+        @keyframes nudgeShake {
+            0% { transform: translate(0, 0); }
+            10% { transform: translate(-5px, -5px); }
+            20% { transform: translate(5px, 5px); }
+            30% { transform: translate(-5px, 5px); }
+            40% { transform: translate(5px, -5px); }
+            50% { transform: translate(0, 0); }
+            100% { transform: translate(0, 0); }
+        }
+        .shaking { animation: nudgeShake 0.4s ease-in-out infinite; }
         
-        /* Loading Spinner */
-        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 999; align-items: center; justify-content: center; flex-direction: column; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* BOTTOM NAV (Mobil Navigasyon) */
+        .bottom-tabs { 
+            display: flex; background: #eef5fb; border-top: 1px solid #9fbddf; height: 45px;
+        }
+        .tab-btn { 
+            flex: 1; display: flex; align-items: center; justify-content: center; 
+            border-right: 1px solid #dae6f2; cursor: pointer; color: #444;
+        }
+        .tab-btn:hover, .tab-btn.active { background: #fff; color: #000; font-weight: bold; }
 
-        .bottom-nav { height: 50px; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; background: #fff; position: fixed; bottom: 0; width: 100%; z-index: 100; }
     </style>
 </head>
-<body>
+<body id="app-body">
 
-    <div id="loading" class="loading-overlay">
-        <div class="spinner"></div>
-        <div style="margin-top:10px; font-weight:600; color:#888;">Yükleniyor...</div>
-    </div>
+    <audio id="snd-login" src="https://www.myinstants.com/media/sounds/msn-messenger-sign-in-sound.mp3"></audio>
+    <audio id="snd-msg" src="https://www.myinstants.com/media/sounds/msn_messenger_new_message.mp3"></audio>
+    <audio id="snd-nudge" src="https://www.myinstants.com/media/sounds/msn-nudge-sound.mp3"></audio>
 
-    <div id="screen-auth" class="screen active" style="justify-content:center; padding:40px;">
-        <h1 style="font-family: 'Cursive', serif; font-size: 45px; text-align:center; margin-bottom:40px;">Instagram</h1>
-        <input type="email" id="auth-email" class="input-field" placeholder="E-posta">
-        <input type="password" id="auth-pass" class="input-field" placeholder="Şifre">
-        <button onclick="authAction('login')" class="btn-primary" style="margin-bottom:15px;">Giriş Yap</button>
-        <button onclick="authAction('signup')" class="btn-primary" style="background:#fff; color:var(--primary); border:1px solid var(--border);">Kayıt Ol</button>
-    </div>
-
-    <div id="screen-home" class="screen">
-        <div class="app-header">
-            <div class="logo">Instagram</div>
-            <span class="material-icons-outlined" onclick="navTo('screen-inbox'); loadInbox();" style="font-size:28px; cursor:pointer;">near_me</span>
+    <div id="screen-auth" class="screen active" style="justify-content:center; align-items:center;">
+        <div class="login-box">
+            <h2 style="color:#3465a4; margin-top:0;">Windows Live Messenger</h2>
+            <div class="msn-avatar-frame" onclick="document.getElementById('auth-file').click()">
+                <img id="auth-preview" src="https://via.placeholder.com/90" class="msn-avatar-img">
+            </div>
+            <input type="file" id="auth-file" hidden accept="image/*">
+            <input type="email" id="auth-email" class="msn-input" placeholder="E-posta adresi">
+            <input type="password" id="auth-pass" class="msn-input" placeholder="Parola">
+            <button onclick="authAction('login')" class="msn-btn">Oturum Aç</button>
+            <button onclick="authAction('signup')" class="msn-btn">Kaydol</button>
+            <div id="loading-text" style="font-size:11px; color:#666; margin-top:10px; display:none;">Yükleniyor...</div>
         </div>
-        
-        <div class="stories-bar" id="stories-container">
-            <div class="story-item" onclick="openUpload('story')">
-                <div class="story-ring" style="background:none; border:1px solid #ddd;">
-                    <img id="my-avatar-story" src="https://via.placeholder.com/60" class="story-avatar">
-                    <div class="add-story-badge">+</div>
+    </div>
+
+    <div id="screen-main" class="screen">
+        <div class="window-frame">
+            <div class="window-header">
+                <span class="win-title"><span class="material-icons" style="font-size:16px; margin-right:5px;">person</span> Messenger</span>
+                <span class="material-icons" onclick="logout()" style="font-size:16px; cursor:pointer;">close</span>
+            </div>
+            
+            <div class="my-card">
+                <img id="my-pic" src="" class="my-pic" onclick="openProfileEdit()">
+                <div class="my-details">
+                    <div id="my-nick" class="my-nick" onclick="openProfileEdit()">Yükleniyor...</div>
+                    <div id="my-msg" class="my-status-msg" onclick="editPersonalMsg()">[Kişisel bir ileti yazın]</div>
+                    <select id="my-status-select" onchange="updateStatus(this.value)" style="border:none; background:transparent; font-size:11px; margin-top:3px;">
+                        <option value="online">🟢 Çevrimiçi</option>
+                        <option value="busy">⛔ Meşgul</option>
+                        <option value="away">🟡 Dışarıda</option>
+                        <option value="offline">⚪ Çevrimdışı Görün</option>
+                    </select>
                 </div>
-                <div class="story-username">Hikayen</div>
-            </div>
             </div>
 
-        <div id="feed-container"></div>
-    </div>
-
-    <div id="screen-inbox" class="screen">
-        <div class="app-header">
-            <span class="material-icons" onclick="navTo('screen-home')" style="cursor:pointer;">arrow_back</span>
-            <b id="inbox-username">Sohbetler</b>
-            <span class="material-icons-outlined" onclick="navTo('screen-search')" style="cursor:pointer;">edit_note</span>
-        </div>
-        <div id="inbox-list"></div>
-    </div>
-
-    <div id="screen-chat" class="modal">
-        <div class="app-header">
-            <span class="material-icons" onclick="closeChat()" style="cursor:pointer;">arrow_back</span>
-            <div style="display:flex; align-items:center; margin-left:10px;">
-                <img id="chat-header-img" src="" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
-                <b id="chat-header-name">...</b>
+            <div style="background:#fcfcfc; border-bottom:1px solid #ddd; display:flex; padding:5px; font-size:11px; gap:10px;">
+                <span onclick="showTab('contacts')" style="cursor:pointer; font-weight:bold; color:#333;">Kişiler</span>
+                <span onclick="showTab('add')" style="cursor:pointer; color:#666;">Arkadaş Ekle</span>
+                <span onclick="showTab('requests')" style="cursor:pointer; color:#666;">İstekler (<span id="req-count">0</span>)</span>
             </div>
-            <span></span>
-        </div>
-        <div id="chat-messages" class="chat-container"></div>
-        <div style="padding:10px; border-top:1px solid #eee; display:flex; align-items:center;">
-            <input id="chat-input" class="input-field" style="border-radius:20px; margin:0;" placeholder="Mesaj yaz...">
-            <button onclick="sendMessage()" style="border:none; background:none; color:var(--primary); font-weight:bold; margin-left:10px;">Gönder</button>
-        </div>
-    </div>
 
-    <div id="screen-profile" class="screen">
-        <div class="app-header">
-            <b id="profile-header-user">...</b>
-            <span class="material-icons-outlined" onclick="logout()" style="cursor:pointer;">logout</span>
-        </div>
-        <div class="profile-header">
-            <img id="profile-img" src="" class="profile-pic-lg">
-            <div class="profile-stats">
-                <div><span class="stat-val" id="stat-posts">0</span>Gönderi</div>
-                <div><span class="stat-val">0</span>Takipçi</div>
-                <div><span class="stat-val">0</span>Takip</div>
+            <div id="tab-contacts" class="list-area">
+                <div class="group-title">▼ Çevrimiçi</div>
+                <div id="list-online"></div>
+                <div class="group-title" style="margin-top:10px;">▼ Çevrimdışı</div>
+                <div id="list-offline"></div>
             </div>
+
+            <div id="tab-add" class="list-area" style="display:none; padding:15px; text-align:center;">
+                <h4 style="margin:0 0 10px 0; color:#4a7ac9;">Kişi Ekle</h4>
+                <input type="text" id="search-input" class="msn-input" placeholder="E-posta veya Ad ara...">
+                <button onclick="searchUsers()" class="msn-btn">Ara</button>
+                <div id="search-results" style="margin-top:15px; text-align:left;"></div>
+            </div>
+
+            <div id="tab-requests" class="list-area" style="display:none;">
+                <div class="group-title">Bekleyen İstekler</div>
+                <div id="request-list"></div>
+            </div>
+
         </div>
-        <div style="padding:0 15px;">
-            <b id="profile-name"></b>
-            <div id="profile-bio" style="white-space:pre-wrap;"></div>
-            <button onclick="openEditProfile()" class="btn-primary" style="background:#fff; color:#000; border:1px solid var(--border); margin-top:15px; padding:6px;">Profili Düzenle</button>
-        </div>
-        <div id="profile-grid" class="profile-grid"></div>
     </div>
 
-    <div id="screen-search" class="screen">
-        <div style="padding:10px;"><input type="text" oninput="doSearch(this.value)" class="input-field" placeholder="Ara..."></div>
-        <div id="search-results"></div>
-    </div>
+    <div id="screen-chat" class="screen">
+        <div class="window-frame">
+            <div class="window-header">
+                <span class="win-title">
+                    <span class="material-icons" style="font-size:16px; margin-right:5px;">chat</span>
+                    <span id="chat-title-name">...</span>
+                </span>
+                <span class="material-icons" onclick="closeChat()" style="font-size:16px; cursor:pointer;">close</span>
+            </div>
+            
+            <div class="chat-tools">
+                <span class="tool-icon material-icons" onclick="sendNudge()" title="Titreşim Gönder">vibration</span>
+                <span class="tool-icon material-icons" onclick="document.getElementById('file-input').click()" title="Fotoğraf Gönder">image</span>
+                <span class="tool-icon material-icons" title="İfadeler">sentiment_satisfied_alt</span>
+            </div>
+            <input type="file" id="file-input" hidden accept="image/*">
 
-    <div id="modal-upload" class="modal">
-        <div class="app-header"><span onclick="closeModal('modal-upload')" style="cursor:pointer;">İptal</span><b>Paylaş</b><span onclick="performUpload()" style="color:var(--primary); font-weight:bold; cursor:pointer;">Paylaş</span></div>
-        <div style="flex:1; background:#000; display:flex; align-items:center; justify-content:center;"><img id="upload-preview" style="max-width:100%; max-height:100%;"></div>
-        <input type="text" id="upload-caption" placeholder="Açıklama yaz..." style="padding:15px; border:none; width:100%;">
-        <input type="file" id="upload-file" hidden accept="image/*">
-    </div>
+            <div id="chat-history" class="chat-history"></div>
 
-    <div id="modal-edit" class="modal">
-        <div class="app-header"><span onclick="closeModal('modal-edit')" style="cursor:pointer;">İptal</span><b>Profili Düzenle</b><span onclick="saveProfile()" style="color:var(--primary); font-weight:bold; cursor:pointer;">Bitti</span></div>
-        <div style="padding:20px; text-align:center;">
-            <img id="edit-img-prev" src="" style="width:100px; height:100px; border-radius:50%; margin-bottom:15px;">
-            <div style="color:var(--primary); font-weight:600; cursor:pointer;" onclick="document.getElementById('edit-file').click()">Fotoğrafı Değiştir</div>
-            <input type="file" id="edit-file" hidden>
-            <div style="text-align:left; margin-top:20px;">
-                <label style="font-size:12px; color:#666;">Adın</label>
-                <input type="text" id="edit-name" class="input-field">
-                <label style="font-size:12px; color:#666;">Kullanıcı Adı</label>
-                <input type="text" id="edit-user" class="input-field">
-                <label style="font-size:12px; color:#666;">Biyografi</label>
-                <textarea id="edit-bio" class="input-field" rows="3"></textarea>
+            <div class="chat-input-area">
+                <textarea id="chat-msg-input" class="chat-textarea"></textarea>
+            </div>
+            <div class="send-bar">
+                <button onclick="sendMessage()" class="msn-btn">Gönder</button>
             </div>
         </div>
     </div>
 
-    <div id="bottom-nav" class="bottom-nav" style="display:none;">
-        <span class="material-icons nav-icon" onclick="navTo('screen-home')">home</span>
-        <span class="material-icons nav-icon" onclick="navTo('screen-search')">search</span>
-        <span class="material-icons-outlined nav-icon" onclick="openUpload('post')">add_box</span>
-        <span class="material-icons nav-icon" onclick="openMyProfile()">person</span>
+    <div id="modal-profile" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color:#4a7ac9;">Seçenekler</h3>
+            <div style="text-align:center; margin-bottom:10px;">
+                <img id="edit-img-prev" src="" style="width:60px; height:60px; border:1px solid #aaa;">
+                <div style="font-size:10px; color:blue; cursor:pointer;" onclick="document.getElementById('edit-file').click()">Resmi Değiştir</div>
+                <input type="file" id="edit-file" hidden>
+            </div>
+            <label style="font-size:11px;">Görüntülenen Ad:</label>
+            <input type="text" id="edit-nick" class="msn-input">
+            <label style="font-size:11px;">Kişisel İleti:</label>
+            <input type="text" id="edit-msg" class="msn-input">
+            <div style="text-align:right;">
+                <button onclick="saveProfile()" class="msn-btn">Tamam</button>
+                <button onclick="document.getElementById('modal-profile').style.display='none'" class="msn-btn">İptal</button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, getDocs, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, getDocs, where, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // IMGBB API
+        // IMGBB KEY (Senin Keyin)
         const IMGBB_KEY = "4e42bfb4bfa830f09e932aa64cc20bb6";
 
-        const firebaseConfig = {
+        const app = initializeApp({
             apiKey: "AIzaSyA90T44N_om_KnTs3Wg06m8pBry0L20nVw",
             authDomain: "sosyal-medya-a46b6.firebaseapp.com",
             projectId: "sosyal-medya-a46b6",
             storageBucket: "sosyal-medya-a46b6.firebasestorage.app",
             messagingSenderId: "990331063740",
             appId: "1:990331063740:web:e18de69584fc82825aafb9"
-        };
+        });
 
-        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         let currentUser = null;
         let userData = {};
         let activeChatId = null;
-        let activeChatUser = null;
-        let uploadType = 'post';
+        let activeChatUser = null; // Karşı tarafın uid'si
 
-        // UI Helpers
-        const loading = (s) => document.getElementById('loading').style.display = s ? 'flex' : 'none';
+        // --- SESLER ---
+        const playSnd = (id) => { document.getElementById(id).currentTime=0; document.getElementById(id).play().catch(()=>{}); };
+
+        // --- YARDIMCI ---
         const uploadImg = async (file) => {
             const fd = new FormData(); fd.append("image", file);
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
@@ -235,269 +290,306 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // Kullanıcı verisini canlı dinle
+                // Kendini dinle
                 onSnapshot(doc(db, "users", user.uid), (s) => {
-                    if (s.exists()) {
+                    if(s.exists()) {
                         userData = s.data();
-                        document.getElementById('my-avatar-story').src = userData.photoURL || "https://via.placeholder.com/60";
-                        document.getElementById('inbox-username').innerText = userData.username;
+                        updateMyUI();
                     }
                 });
+                // Online yap
+                await updateDoc(doc(db, "users", user.uid), { status: 'online' });
+                playSnd('snd-login');
+
                 document.getElementById('screen-auth').classList.remove('active');
-                document.getElementById('bottom-nav').style.display = 'flex';
-                navTo('screen-home');
-                initApp();
+                document.getElementById('screen-main').classList.add('active');
+                loadFriends();
+                loadRequests();
             } else {
-                document.getElementById('bottom-nav').style.display = 'none';
-                navTo('screen-auth');
+                document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+                document.getElementById('screen-auth').classList.add('active');
             }
         });
+
+        function updateMyUI() {
+            document.getElementById('my-pic').src = userData.photoURL || "https://via.placeholder.com/60";
+            document.getElementById('my-nick').innerText = userData.username;
+            document.getElementById('my-msg').innerText = userData.personalMsg || "[Kişisel bir ileti yazın]";
+            document.getElementById('my-status-select').value = userData.status || 'online';
+        }
 
         window.authAction = async (type) => {
             const e = document.getElementById('auth-email').value;
             const p = document.getElementById('auth-pass').value;
             if(!e || !p) return alert("Bilgileri girin");
-            loading(true);
+            document.getElementById('loading-text').style.display='block';
+            
             try {
                 if(type === 'login') await signInWithEmailAndPassword(auth, e, p);
                 else {
                     const c = await createUserWithEmailAndPassword(auth, e, p);
+                    let url = "https://via.placeholder.com/150";
+                    const f = document.getElementById('auth-file').files[0];
+                    if(f) url = await uploadImg(f);
+                    
                     await setDoc(doc(db, "users", c.user.uid), {
-                        uid: c.user.uid, email: e, username: e.split('@')[0], fullname: '', bio: '', photoURL: "https://via.placeholder.com/150"
+                        uid: c.user.uid, email: e, username: e.split('@')[0], 
+                        photoURL: url, status: 'online', personalMsg: '',
+                        friends: [] 
                     }, {merge:true});
                 }
             } catch(err) { alert(err.message); }
-            loading(false);
+            document.getElementById('loading-text').style.display='none';
         };
-        window.logout = () => signOut(auth);
 
-        // --- MAIN APP LOGIC ---
-        function initApp() {
-            // FEED
-            onSnapshot(query(collection(db, "posts"), orderBy("date", "desc")), async (snap) => {
-                const con = document.getElementById('feed-container'); con.innerHTML = "";
-                for(const d of snap.docs) {
-                    const p = d.data();
-                    const u = await getUserData(p.uid);
-                    con.innerHTML += `
-                        <div class="post">
-                            <div class="post-header">
-                                <img src="${u.photoURL}" class="avatar-small">
-                                <b style="font-size:14px;">${u.username}</b>
-                            </div>
-                            <img src="${p.imageUrl}" class="post-img">
-                            <div class="post-actions">
-                                <span class="material-icons-outlined">favorite_border</span>
-                                <span class="material-icons-outlined">mode_comment</span>
-                            </div>
-                            <div class="post-caption"><b style="font-size:14px;">${u.username}</b> ${p.caption}</div>
-                        </div>`;
-                }
-            });
+        window.logout = async () => {
+            if(currentUser) await updateDoc(doc(db, "users", currentUser.uid), { status: 'offline' });
+            signOut(auth);
+        };
 
-            // STORIES (24H LOGIC)
-            onSnapshot(query(collection(db, "stories"), orderBy("date", "desc")), async (snap) => {
-                const con = document.getElementById('stories-container'); 
-                // Reset but keep "Add Story"
-                con.innerHTML = `
-                    <div class="story-item" onclick="openUpload('story')">
-                        <div class="story-ring" style="background:none; border:1px solid #ddd;">
-                            <img id="my-avatar-story-inner" src="${userData.photoURL || 'https://via.placeholder.com/60'}" class="story-avatar">
-                            <div class="add-story-badge">+</div>
-                        </div>
-                        <div class="story-username">Hikayen</div>
-                    </div>`;
+        // --- ARKADAŞLIK SİSTEMİ ---
+        
+        // 1. Arkadaşları Listele
+        function loadFriends() {
+            // Arkadaş listesi users içinde array olarak tutuluyor (Basit model)
+            // Daha gelişmişi: subcollection
+            onSnapshot(doc(db, "users", currentUser.uid), async (s) => {
+                const data = s.data();
+                const friends = data.friends || [];
                 
-                const now = Date.now();
-                const seen = new Set();
-                
-                for(const d of snap.docs) {
-                    const s = d.data();
-                    // Timestamp kontrolü (yeni atılan story null olabilir, null ise 'şimdi' kabul et)
-                    const sTime = s.date ? s.date.seconds * 1000 : now;
-                    
-                    if ((now - sTime) < 86400000 && s.uid !== currentUser.uid && !seen.has(s.uid)) {
-                        seen.add(s.uid);
-                        const u = await getUserData(s.uid);
-                        con.innerHTML += `
-                            <div class="story-item" onclick="window.open('${s.imageUrl}', '_blank')">
-                                <div class="story-ring"><img src="${u.photoURL}" class="story-avatar"></div>
-                                <div class="story-username">${u.username}</div>
-                            </div>`;
+                const onlineDiv = document.getElementById('list-online');
+                const offlineDiv = document.getElementById('list-offline');
+                onlineDiv.innerHTML = ""; offlineDiv.innerHTML = "";
+
+                for(const friendId of friends) {
+                    const fSnap = await getDoc(doc(db, "users", friendId));
+                    if(fSnap.exists()) {
+                        const f = fSnap.data();
+                        const st = f.status || 'offline';
+                        const dotClass = st === 'online' ? 's-online' : (st === 'busy' ? 's-busy' : 's-offline');
+                        
+                        const html = `
+                            <div class="contact-item" onclick="openChat('${f.uid}', '${f.username}')">
+                                <div class="status-icon ${dotClass}"></div>
+                                <div style="flex:1;">
+                                    <span style="font-weight:bold; font-size:13px;">${f.username}</span>
+                                    <span style="color:#666; font-size:11px; margin-left:5px;">${st === 'busy' ? '(Meşgul)' : ''}</span>
+                                    <div style="font-size:10px; color:#888; font-style:italic;">${f.personalMsg || ''}</div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        if(st === 'offline') offlineDiv.innerHTML += html;
+                        else onlineDiv.innerHTML += html;
                     }
                 }
-                document.getElementById('my-avatar-story-inner').src = userData.photoURL;
             });
         }
 
-        // --- INBOX SYSTEM (YENİLENMİŞ) ---
-        // Bu fonksiyon, kullanıcının dahil olduğu sohbetleri listeler
-        window.loadInbox = () => {
-            const q = query(collection(db, "inbox"), where("participants", "array-contains", currentUser.uid), orderBy("lastMsgDate", "desc"));
-            onSnapshot(q, async (snap) => {
-                const list = document.getElementById('inbox-list'); list.innerHTML = "";
-                if(snap.empty) list.innerHTML = "<div style='text-align:center; padding:20px; color:#999;'>Mesajın yok.</div>";
-
-                for(const d of snap.docs) {
-                    const chat = d.data();
-                    // Diğer kullanıcıyı bul
-                    const otherUid = chat.participants.find(id => id !== currentUser.uid);
-                    if(otherUid) {
-                        const u = await getUserData(otherUid);
-                        const date = chat.lastMsgDate ? new Date(chat.lastMsgDate.seconds*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
-                        list.innerHTML += `
-                            <div class="inbox-item" onclick="openChat('${otherUid}', '${u.username}', '${u.photoURL}')">
-                                <img src="${u.photoURL}" class="inbox-avatar">
-                                <div class="inbox-info">
-                                    <div class="inbox-name">${u.username}</div>
-                                    <div class="inbox-msg">${chat.lastMsg} · ${date}</div>
-                                </div>
-                            </div>`;
-                    }
+        // 2. Kullanıcı Ara
+        window.searchUsers = async () => {
+            const val = document.getElementById('search-input').value.toLowerCase();
+            const res = document.getElementById('search-results'); res.innerHTML = "Aranıyor...";
+            
+            // Tüm kullanıcıları çekip filtrele (Küçük ölçek için)
+            const snap = await getDocs(collection(db, "users"));
+            res.innerHTML = "";
+            snap.forEach(d => {
+                const u = d.data();
+                if(u.uid !== currentUser.uid && (u.email.includes(val) || u.username.toLowerCase().includes(val))) {
+                    res.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:5px; border-bottom:1px solid #eee;">
+                            <div>
+                                <b>${u.username}</b><br><small>${u.email}</small>
+                            </div>
+                            <button onclick="sendFriendRequest('${u.uid}')" class="msn-btn">Ekle</button>
+                        </div>
+                    `;
                 }
             });
+            if(res.innerHTML === "") res.innerHTML = "Sonuç bulunamadı.";
         };
 
-        // --- CHAT LOGIC ---
-        window.openChat = (uid, name, photo) => {
-            activeChatUser = uid;
-            document.getElementById('chat-header-name').innerText = name;
-            document.getElementById('chat-header-img').src = photo || "https://via.placeholder.com/30";
-            document.getElementById('screen-chat').style.display = 'flex';
+        // 3. İstek Gönder
+        window.sendFriendRequest = async (targetUid) => {
+            const reqId = [currentUser.uid, targetUid].sort().join("_");
+            await setDoc(doc(db, "friend_requests", reqId), {
+                from: currentUser.uid, to: targetUid, status: 'pending'
+            });
+            alert("İstek gönderildi!");
+        };
+
+        // 4. İstekleri Listele
+        function loadRequests() {
+            const q = query(collection(db, "friend_requests"), where("to", "==", currentUser.uid), where("status", "==", "pending"));
+            onSnapshot(q, async (snap) => {
+                const div = document.getElementById('request-list'); 
+                div.innerHTML = "";
+                document.getElementById('req-count').innerText = snap.size;
+
+                for(const d of snap.docs) {
+                    const req = d.data();
+                    const uSnap = await getDoc(doc(db, "users", req.from));
+                    const u = uSnap.data();
+                    
+                    div.innerHTML += `
+                        <div style="padding:10px; border-bottom:1px solid #ccc; background:#fff;">
+                            <b>${u.username}</b> sizi eklemek istiyor.
+                            <div style="margin-top:5px;">
+                                <button onclick="acceptRequest('${d.id}', '${req.from}')" class="msn-btn">Kabul Et</button>
+                                <button onclick="rejectRequest('${d.id}')" class="msn-btn">Reddet</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        window.acceptRequest = async (docId, friendUid) => {
+            // İki tarafın da friends arrayine ekle
+            const myRef = doc(db, "users", currentUser.uid);
+            const friendRef = doc(db, "users", friendUid);
             
-            // Chat ID oluştur (Alfabetik sıra ile)
+            // Arkadaş listelerini güncelle (ArrayUnion kullanmak daha iyi ama basit push yapalım)
+            // Önce oku
+            const me = (await getDoc(myRef)).data();
+            const him = (await getDoc(friendRef)).data();
+            
+            const myFriends = me.friends || [];
+            const hisFriends = him.friends || [];
+            
+            if(!myFriends.includes(friendUid)) myFriends.push(friendUid);
+            if(!hisFriends.includes(currentUser.uid)) hisFriends.push(currentUser.uid);
+            
+            await updateDoc(myRef, { friends: myFriends });
+            await updateDoc(friendRef, { friends: hisFriends });
+            
+            // İsteği sil
+            await deleteDoc(doc(db, "friend_requests", docId));
+            alert("Kişi eklendi!");
+        };
+
+        window.rejectRequest = async (id) => await deleteDoc(doc(db, "friend_requests", id));
+
+
+        // --- CHAT ---
+        window.openChat = (uid, name) => {
+            activeChatUser = uid;
+            document.getElementById('chat-title-name').innerText = name;
+            document.getElementById('screen-main').classList.remove('active');
+            document.getElementById('screen-chat').classList.add('active');
+            
             activeChatId = [currentUser.uid, uid].sort().join("_");
             
-            // Mesajları Dinle
-            onSnapshot(query(collection(db, "inbox", activeChatId, "messages"), orderBy("date", "asc")), (snap) => {
-                const con = document.getElementById('chat-messages'); con.innerHTML = "";
-                snap.forEach(d => {
-                    const m = d.data();
-                    const time = m.date ? new Date(m.date.seconds*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
-                    con.innerHTML += `
-                        <div class="msg-bubble ${m.sender === currentUser.uid ? 'msg-me' : 'msg-other'}">
-                            ${m.text}
-                            <div class="msg-time">${time}</div>
-                        </div>`;
+            onSnapshot(query(collection(db, "chats", activeChatId, "messages"), orderBy("date", "asc")), (snap) => {
+                const hist = document.getElementById('chat-history');
+                hist.innerHTML = "";
+                snap.docChanges().forEach((c) => {
+                    if(c.type === 'added') {
+                        const m = c.doc.data();
+                        
+                        if(m.type === 'nudge') {
+                            hist.innerHTML += `<div class="system-msg">--- ${m.senderName} size bir titreşim gönderdi! ---</div>`;
+                            if(m.sender !== currentUser.uid) {
+                                playSnd('snd-nudge');
+                                document.getElementById('app-body').classList.add('shaking');
+                                setTimeout(()=>document.getElementById('app-body').classList.remove('shaking'), 1000);
+                            }
+                        } else if (m.type === 'image') {
+                            hist.innerHTML += `
+                                <div class="msg-block">
+                                    <div class="msg-header"><b>${m.senderName}</b> diyor ki:</div>
+                                    <div class="msg-content"><img src="${m.text}" style="max-width:200px; border:2px solid #fff; box-shadow:0 0 5px #ccc;"></div>
+                                </div>
+                            `;
+                            if(m.sender !== currentUser.uid) playSnd('snd-msg');
+                        } else {
+                            hist.innerHTML += `
+                                <div class="msg-block">
+                                    <div class="msg-header"><b>${m.senderName}</b> diyor ki:</div>
+                                    <div class="msg-content">${m.text}</div>
+                                </div>
+                            `;
+                            if(m.sender !== currentUser.uid) playSnd('snd-msg');
+                        }
+                    }
                 });
-                con.scrollTop = con.scrollHeight;
+                hist.scrollTop = hist.scrollHeight;
             });
         };
 
         window.sendMessage = async () => {
-            const inp = document.getElementById('chat-input');
-            const txt = inp.value.trim();
+            const txt = document.getElementById('chat-msg-input').value.trim();
             if(!txt) return;
-
-            // 1. Mesajı Kaydet
-            await addDoc(collection(db, "inbox", activeChatId, "messages"), {
-                text: txt, sender: currentUser.uid, date: serverTimestamp()
+            await addDoc(collection(db, "chats", activeChatId, "messages"), {
+                text: txt, sender: currentUser.uid, senderName: userData.username, type: 'text', date: serverTimestamp()
             });
-
-            // 2. Inbox (Sohbet Listesi) Güncelle
-            // Eğer belge yoksa oluşturur (setDoc + merge)
-            await setDoc(doc(db, "inbox", activeChatId), {
-                participants: [currentUser.uid, activeChatUser],
-                lastMsg: txt,
-                lastMsgDate: serverTimestamp()
-            }, { merge: true });
-
-            inp.value = "";
+            document.getElementById('chat-msg-input').value = "";
         };
 
-        window.closeChat = () => document.getElementById('screen-chat').style.display = 'none';
-
-        // --- SEARCH ---
-        window.doSearch = async (val) => {
-            if(val.length < 1) return;
-            const res = document.getElementById('search-results'); res.innerHTML = "";
-            const snap = await getDocs(collection(db, "users"));
-            snap.forEach(d => {
-                const u = d.data();
-                if(u.username && u.username.toLowerCase().includes(val.toLowerCase()) && u.uid !== currentUser.uid) {
-                    res.innerHTML += `
-                        <div onclick="openChat('${u.uid}', '${u.username}', '${u.photoURL}')" class="inbox-item">
-                            <img src="${u.photoURL}" class="inbox-avatar" style="width:40px; height:40px;">
-                            <div class="inbox-name">${u.username}</div>
-                        </div>`;
-                }
+        window.sendNudge = async () => {
+             await addDoc(collection(db, "chats", activeChatId, "messages"), {
+                text: "TITRESIM", sender: currentUser.uid, senderName: userData.username, type: 'nudge', date: serverTimestamp()
             });
+            // Kendim de salla
+            document.getElementById('app-body').classList.add('shaking');
+            setTimeout(()=>document.getElementById('app-body').classList.remove('shaking'), 1000);
         };
-
-        // --- PROFILE & UPLOAD ---
-        window.openMyProfile = async () => {
-            navTo('screen-profile');
-            document.getElementById('profile-img').src = userData.photoURL;
-            document.getElementById('profile-header-user').innerText = userData.username;
-            document.getElementById('profile-name').innerText = userData.fullname;
-            document.getElementById('profile-bio').innerText = userData.bio;
-
-            const snap = await getDocs(query(collection(db, "posts"), where("uid", "==", currentUser.uid), orderBy("date", "desc")));
-            document.getElementById('stat-posts').innerText = snap.size;
-            
-            const grid = document.getElementById('profile-grid'); grid.innerHTML = "";
-            snap.forEach(d => grid.innerHTML += `<div class="grid-img"><img src="${d.data().imageUrl}"></div>`);
-        };
-
-        window.openUpload = (t) => { uploadType = t; document.getElementById('upload-file').click(); };
-        document.getElementById('upload-file').onchange = (e) => {
-            if(e.target.files[0]) {
-                document.getElementById('upload-preview').src = URL.createObjectURL(e.target.files[0]);
-                document.getElementById('modal-upload').style.display = 'flex';
-            }
-        };
-
-        window.performUpload = async () => {
-            loading(true);
-            try {
-                const file = document.getElementById('upload-file').files[0];
-                const caption = document.getElementById('upload-caption').value;
-                const url = await uploadImg(file);
-                await addDoc(collection(db, uploadType + "s"), {
-                    uid: currentUser.uid, imageUrl: url, caption, date: serverTimestamp()
+        
+        document.getElementById('file-input').onchange = async (e) => {
+             if(e.target.files[0]) {
+                 const url = await uploadImg(e.target.files[0]);
+                 await addDoc(collection(db, "chats", activeChatId, "messages"), {
+                    text: url, sender: currentUser.uid, senderName: userData.username, type: 'image', date: serverTimestamp()
                 });
-                closeModal('modal-upload');
-            } catch(e) { alert("Hata: " + e.message); }
-            loading(false);
+             }
         };
 
-        window.openEditProfile = () => {
-            document.getElementById('edit-name').value = userData.fullname || "";
-            document.getElementById('edit-user').value = userData.username || "";
-            document.getElementById('edit-bio').value = userData.bio || "";
+        window.closeChat = () => {
+            document.getElementById('screen-chat').classList.remove('active');
+            document.getElementById('screen-main').classList.add('active');
+        };
+
+        // --- PROFİL DÜZENLEME ---
+        window.openProfileEdit = () => {
+            document.getElementById('edit-nick').value = userData.username;
+            document.getElementById('edit-msg').value = userData.personalMsg || "";
             document.getElementById('edit-img-prev').src = userData.photoURL;
-            document.getElementById('modal-edit').style.display = 'block';
+            document.getElementById('modal-profile').style.display = 'flex';
         };
-        document.getElementById('edit-file').onchange = (e) => { if(e.target.files[0]) document.getElementById('edit-img-prev').src = URL.createObjectURL(e.target.files[0]); };
-
+        document.getElementById('edit-file').onchange = (e) => {
+             if(e.target.files[0]) document.getElementById('edit-img-prev').src = URL.createObjectURL(e.target.files[0]);
+        };
         window.saveProfile = async () => {
-            loading(true);
-            try {
-                const f = document.getElementById('edit-file').files[0];
-                let url = userData.photoURL;
-                if(f) url = await uploadImg(f);
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    fullname: document.getElementById('edit-name').value,
-                    username: document.getElementById('edit-user').value,
-                    bio: document.getElementById('edit-bio').value,
-                    photoURL: url
-                });
-                closeModal('modal-edit');
-            } catch(e) { alert(e.message); }
-            loading(false);
+            const nick = document.getElementById('edit-nick').value;
+            const msg = document.getElementById('edit-msg').value;
+            const f = document.getElementById('edit-file').files[0];
+            let url = userData.photoURL;
+            if(f) url = await uploadImg(f);
+            
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                username: nick, personalMsg: msg, photoURL: url
+            });
+            document.getElementById('modal-profile').style.display = 'none';
+        };
+        
+        // Kişisel ileti kısayolu
+        window.editPersonalMsg = async () => {
+            const m = prompt("İletiniz:", userData.personalMsg);
+            if(m !== null) await updateDoc(doc(db, "users", currentUser.uid), { personalMsg: m });
+        };
+        
+        // Durum güncelle
+        window.updateStatus = async (val) => {
+            await updateDoc(doc(db, "users", currentUser.uid), { status: val });
         };
 
-        // Cache User Data to reduce reads
-        const userCache = {};
-        async function getUserData(uid) {
-            if(userCache[uid]) return userCache[uid];
-            const s = await getDoc(doc(db, "users", uid));
-            if(s.exists()) { userCache[uid] = s.data(); return s.data(); }
-            return { username: 'Instagram User', photoURL: 'https://via.placeholder.com/150' };
-        }
+        // TAB GECISLERI
+        window.showTab = (tab) => {
+            document.querySelectorAll('.list-area').forEach(e => e.style.display = 'none');
+            document.getElementById('tab-'+tab).style.display = 'block';
+        };
 
-        window.navTo = (id) => { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
-        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
     </script>
 </body>
 </html>
