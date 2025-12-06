@@ -3,139 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BizimGram Pro Max</title>
+    <title>BizimGram Pro (Final)</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
     
     <style>
-        /* CSS AYARLARI */
+        /* --- CSS RESET & TEMEL --- */
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; color: #262626; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
         .screen { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding-bottom: 50px; background: #fff; }
         .screen.active { display: flex; }
         
-        .btn-primary { background: #0095f6; color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: 600; width: 100%; cursor: pointer; font-size: 14px; }
-        .btn-secondary { background: #efefef; color: #262626; border: 1px solid #dbdbdb; padding: 10px; border-radius: 6px; font-weight: 600; width: 100%; cursor: pointer; font-size: 14px; }
-        
+        /* UI Bileşenleri */
+        .btn-primary { background: #0095f6; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; font-size: 14px; }
         .custom-input { width: 100%; padding: 12px; border: 1px solid #dbdbdb; border-radius: 6px; background: #fafafa; font-size: 14px; margin-bottom: 10px; }
-        
-        .app-header { height: 50px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #fff; z-index: 10; position: sticky; top: 0; }
-        .logo { font-family: 'Cursive', serif; font-size: 24px; font-weight: bold; margin-top: 5px; }
+        .app-header { height: 54px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #fff; z-index: 10; position: sticky; top: 0; }
+        .logo { font-family: 'Cursive', serif; font-size: 26px; font-weight: bold; margin-top: 5px; cursor: pointer; }
 
-        /* Profil Stilleri */
-        .profile-top { padding: 20px 15px 0; display: flex; align-items: center; }
-        .profile-pic-lg { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; object-fit: cover; border: 1px solid #dbdbdb; }
-        .profile-stats { flex: 1; display: flex; justify-content: space-around; text-align: center; }
-        .stat-num { font-weight: bold; font-size: 18px; }
-        
-        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border-top: 1px solid #dbdbdb; margin-top:10px; }
-        .grid-item { position: relative; padding-bottom: 100%; background: #eee; }
-        .grid-item img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
-
-        /* Stories */
-        .stories-bar { padding: 10px 0; border-bottom: 1px solid #efefef; overflow-x: auto; display: flex; scrollbar-width: none; }
-        .story-item { display: flex; flex-direction: column; align-items: center; margin-left: 15px; cursor: pointer; flex-shrink: 0; width: 70px; }
-        .story-ring { width: 68px; height: 68px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); display: flex; align-items: center; justify-content: center; position: relative; }
+        /* Hikayeler */
+        .stories-bar { padding: 15px 0; border-bottom: 1px solid #efefef; overflow-x: auto; display: flex; scrollbar-width: none; }
+        .story-item { display: flex; flex-direction: column; align-items: center; margin-left: 15px; cursor: pointer; flex-shrink: 0; width: 72px; }
+        .story-ring { width: 66px; height: 66px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); display: flex; align-items: center; justify-content: center; position: relative; }
+        .story-ring.seen { background: #dbdbdb; }
         .story-avatar { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; object-fit: cover; }
+        .story-username { font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; text-align: center; }
 
-        /* Post */
-        .post { margin-bottom: 10px; border-bottom: 1px solid #efefef; padding-bottom: 10px; }
-        .post-header { padding: 10px; display: flex; align-items: center; }
-        .user-avatar-small { width: 32px; height: 32px; border-radius: 50%; margin-right: 10px; object-fit: cover; border: 1px solid #eee; }
-        .post-img { width: 100%; display: block; min-height: 250px; background: #f0f0f0; object-fit: cover; }
+        /* Sohbet Listesi */
+        .dm-item { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #fafafa; cursor: pointer; transition: background 0.2s; }
+        .dm-item:active { background: #f0f0f0; }
+        .dm-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 1px solid #eee; }
+        .dm-info { flex: 1; }
+        .dm-name { font-weight: 600; font-size: 14px; }
+        .dm-last-msg { color: #8e8e8e; font-size: 13px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
 
-        /* Chat */
-        .chat-bubble { padding: 10px 14px; border-radius: 18px; max-width: 75%; font-size: 14px; margin-bottom: 6px; word-wrap: break-word; }
-        .chat-me { align-self: flex-end; background: #3797f0; color: white; }
-        .chat-you { align-self: flex-start; background: #efefef; color: black; }
+        /* Mesaj Baloncukları */
+        .chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background: #fff; }
+        .chat-bubble { padding: 10px 14px; border-radius: 20px; max-width: 75%; font-size: 14px; word-wrap: break-word; position: relative; }
+        .chat-me { align-self: flex-end; background: #3797f0; color: white; border-bottom-right-radius: 4px; }
+        .chat-you { align-self: flex-start; background: #efefef; color: black; border-bottom-left-radius: 4px; }
+        .chat-time { font-size: 9px; margin-top: 4px; opacity: 0.7; text-align: right; }
 
-        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 500; align-items: center; justify-content: center; flex-direction: column; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0095f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 200; flex-direction: column; }
-        .modal-header { padding: 0 15px; height: 50px; border-bottom: 1px solid #dbdbdb; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-        
+        /* Alt Menü */
         .bottom-nav { height: 50px; border-top: 1px solid #dbdbdb; display: flex; justify-content: space-around; align-items: center; background: #fff; position: fixed; bottom: 0; width: 100%; z-index: 100; }
+        .nav-icon { font-size: 28px; color: #262626; cursor: pointer; }
+        
+        /* Loading & Modals */
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 999; align-items: center; justify-content: center; flex-direction: column; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #0095f6; border-radius: 50%; width: 30px; height: 30px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 200; flex-direction: column; }
+        
+        /* Post */
+        .post { margin-bottom: 10px; border-bottom: 1px solid #efefef; }
+        .post-header { padding: 10px; display: flex; align-items: center; }
+        .post-img { width: 100%; display: block; min-height: 300px; background: #efefef; object-fit: cover; }
+        
+        /* Story Viewer */
+        .story-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 500; flex-direction: column; justify-content: center; }
+        .story-progress { height: 3px; background: rgba(255,255,255,0.3); margin: 10px; border-radius: 2px; position: absolute; top: 0; left: 0; right: 0; z-index: 501; }
+        .story-bar { height: 100%; background: #fff; width: 0%; }
     </style>
 </head>
 <body>
 
-    <div id="loading-overlay" class="loading-overlay"><div class="spinner"></div><div id="loading-text" style="margin-top:10px; font-weight:600;">Yükleniyor...</div></div>
+    <div id="loading" class="loading-overlay">
+        <div class="spinner"></div>
+        <div style="margin-top:10px; font-weight:600; font-size:12px;">Yükleniyor...</div>
+    </div>
 
     <div id="screen-auth" class="screen active" style="justify-content:center; padding:40px;">
-        <h1 style="font-family: 'Cursive', serif; font-size: 45px; margin-bottom:30px; text-align:center;">BizimGram</h1>
-        <input type="email" id="auth-email" class="custom-input" placeholder="E-posta">
-        <input type="password" id="auth-pass" class="custom-input" placeholder="Şifre">
-        <button onclick="authAction('login')" class="btn-primary" style="margin-bottom:10px;">Giriş Yap</button>
-        <button onclick="authAction('signup')" class="btn-secondary">Kayıt Ol</button>
+        <h1 style="font-family: 'Cursive', serif; font-size: 45px; text-align:center; margin-bottom:30px;">BizimGram</h1>
+        <input type="email" id="email" class="custom-input" placeholder="E-posta">
+        <input type="password" id="pass" class="custom-input" placeholder="Şifre">
+        <button onclick="auth('login')" class="btn-primary" style="margin-bottom:10px;">Giriş Yap</button>
+        <button onclick="auth('signup')" class="btn-primary" style="background:#fff; color:#262626; border:1px solid #dbdbdb;">Kayıt Ol</button>
     </div>
 
     <div id="screen-home" class="screen">
         <div class="app-header">
             <div class="logo">BizimGram</div>
-            <span class="material-icons-outlined" onclick="navTo('screen-dm-list')" style="font-size:28px; cursor:pointer;">near_me</span>
+            <span class="material-icons-outlined" onclick="navTo('screen-dmlist')" style="font-size:28px; cursor:pointer;">near_me</span>
         </div>
-        <div class="stories-bar" id="stories-wrapper">
+        
+        <div class="stories-bar" id="stories-container">
             <div class="story-item" onclick="openUpload('story')">
-                <div class="story-ring" style="background:transparent; border:1px solid #ddd;">
-                    <img id="my-story-avatar" src="https://via.placeholder.com/60" class="story-avatar">
+                <div class="story-ring" style="background:none; border:1px solid #dbdbdb;">
+                    <img id="my-avatar-story" src="https://via.placeholder.com/60" class="story-avatar">
+                    <div style="position:absolute; bottom:0; right:0; background:#0095f6; color:#fff; border-radius:50%; width:20px; height:20px; font-size:16px; text-align:center; border:2px solid #fff;">+</div>
                 </div>
-                <div style="font-size:11px; margin-top:5px;">Hikayen</div>
+                <div class="story-username">Hikayen</div>
             </div>
-            <div id="stories-list" style="display:flex;"></div>
-        </div>
+            </div>
+
         <div id="feed-container"></div>
     </div>
 
-    <div id="screen-my-profile" class="screen">
+    <div id="screen-dmlist" class="screen">
         <div class="app-header">
-            <span style="font-weight:bold;" id="header-username">...</span>
-            <span class="material-icons-outlined" onclick="logout()">logout</span>
-        </div>
-        <div class="profile-top">
-            <img id="profile-img-main" src="https://via.placeholder.com/150" class="profile-pic-lg">
-            <div class="profile-stats">
-                <div><span class="stat-num" id="stat-posts">0</span>Gönderi</div>
-                <div><span class="stat-num" id="stat-followers">0</span>Takipçi</div>
-                <div><span class="stat-num" id="stat-following">0</span>Takip</div>
-            </div>
-        </div>
-        <div style="padding:0 15px 10px;">
-            <div style="font-weight:bold;" id="bio-fullname"></div>
-            <div style="white-space:pre-wrap;" id="bio-text"></div>
-        </div>
-        <div style="padding:0 15px;">
-            <div class="btn-secondary" onclick="openEditModal()" style="text-align:center;">Profili Düzenle</div>
-        </div>
-        <div class="grid-container" id="profile-grid"></div>
-    </div>
-
-    <div id="screen-user-profile" class="screen">
-        <div class="app-header">
-            <span class="material-icons" onclick="navTo('screen-search')">arrow_back</span>
-            <b id="user-header-username">Kullanıcı</b>
+            <span class="material-icons" onclick="navTo('screen-home')">arrow_back</span>
+            <b>Sohbetler</b>
             <span></span>
         </div>
-        <div class="profile-top">
-            <img id="user-img-main" src="https://via.placeholder.com/150" class="profile-pic-lg">
-            <div class="profile-stats">
-                <div><span class="stat-num" id="user-stat-posts">0</span>Gönderi</div>
-                <div><span class="stat-num" id="user-stat-followers">0</span>Takipçi</div>
-                <div><span class="stat-num" id="user-stat-following">0</span>Takip</div>
+        <div id="dm-list-wrapper">
             </div>
-        </div>
-        <div style="padding:0 15px 10px;">
-            <div style="font-weight:bold;" id="user-bio-fullname"></div>
-            <div style="white-space:pre-wrap;" id="user-bio-text"></div>
-        </div>
-        
-        <div style="padding:0 15px;">
-            <button id="btn-follow-action" class="btn-primary" onclick="toggleFollow()">Takip Et</button>
-        </div>
+    </div>
 
-        <div class="grid-container" id="user-profile-grid"></div>
+    <div id="screen-chat" class="modal">
+        <div class="app-header">
+            <span class="material-icons" onclick="closeChat()">arrow_back</span>
+            <div style="display:flex; align-items:center;">
+                <img id="chat-header-img" src="" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
+                <b id="chat-header-name">Kullanıcı</b>
+            </div>
+            <span></span>
+        </div>
+        <div id="chat-msgs" class="chat-container"></div>
+        <div style="padding:10px; border-top:1px solid #eee; display:flex; align-items:center;">
+            <input id="chat-input" class="custom-input" style="border-radius:20px; margin:0;" placeholder="Mesaj yaz...">
+            <button onclick="sendMsg()" style="border:none; background:none; color:#0095f6; font-weight:bold; margin-left:10px;">GÖNDER</button>
+        </div>
     </div>
 
     <div id="screen-search" class="screen">
@@ -143,48 +131,61 @@
         <div id="search-results"></div>
     </div>
 
-    <div id="modal-edit" class="modal">
-        <div class="modal-header">
-            <span onclick="closeModal('modal-edit')">İptal</span><span>Profili Düzenle</span><span onclick="saveProfile()" style="color:#0095f6; font-weight:bold;">Bitti</span>
+    <div id="screen-profile" class="screen">
+        <div class="app-header">
+            <b id="profile-username">...</b>
+            <span class="material-icons-outlined" onclick="logout()">logout</span>
         </div>
-        <div style="padding:20px; text-align:center;">
-            <img id="edit-preview" src="" style="width:100px; height:100px; border-radius:50%; margin-bottom:15px; object-fit:cover;">
-            <div style="color:#0095f6; font-weight:600; margin-bottom:20px;" onclick="document.getElementById('edit-file').click()">Fotoğrafı Değiştir</div>
-            <input type="file" id="edit-file" hidden accept="image/*">
-            <input type="text" id="edit-fullname" class="custom-input" placeholder="Ad Soyad">
-            <input type="text" id="edit-username" class="custom-input" placeholder="Kullanıcı Adı">
-            <textarea id="edit-bio" class="custom-input" rows="3" placeholder="Biyografi"></textarea>
+        <div style="padding:20px; display:flex; align-items:center;">
+            <img id="profile-img" src="" style="width:80px; height:80px; border-radius:50%; margin-right:20px; border:1px solid #ddd;">
+            <div style="flex:1; display:flex; justify-content:space-around; text-align:center;">
+                <div><b style="font-size:18px;">0</b><br>Takipçi</div>
+                <div><b style="font-size:18px;">0</b><br>Takip</div>
+            </div>
         </div>
+        <div style="padding:0 20px 10px;">
+            <b id="profile-fullname"></b>
+            <div id="profile-bio"></div>
+        </div>
+        <div style="padding:0 15px;">
+            <button onclick="openEditProfile()" class="btn-primary" style="background:#fff; color:#000; border:1px solid #dbdbdb;">Profili Düzenle</button>
+        </div>
+        <div id="profile-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:15px; border-top:1px solid #eee;"></div>
     </div>
 
     <div id="modal-upload" class="modal">
-        <div class="modal-header">
-            <span onclick="closeModal('modal-upload')">Kapat</span><b>Paylaş</b><span onclick="performUpload()" style="color:#0095f6; font-weight:bold;">Paylaş</span>
+        <div class="app-header">
+            <span onclick="closeModal('modal-upload')">İptal</span><b>Paylaş</b><span onclick="performUpload()" style="color:#0095f6; font-weight:bold;">Paylaş</span>
         </div>
-        <div style="flex:1; background:#000; display:flex; align-items:center; justify-content:center;"><img id="upload-preview" style="max-width:100%; max-height:100%;"></div>
-        <input type="text" id="upload-caption" placeholder="Bir açıklama yaz..." style="padding:15px; border:none; width:100%;">
+        <div style="flex:1; background:#000; display:flex; align-items:center; justify-content:center;">
+            <img id="upload-preview" style="max-width:100%; max-height:100%;">
+        </div>
+        <input type="text" id="upload-caption" placeholder="Açıklama..." style="padding:15px; border:none;">
         <input type="file" id="upload-file" hidden accept="image/*">
     </div>
 
-    <div id="screen-dm-list" class="screen">
-        <div class="app-header"><span class="material-icons" onclick="navTo('screen-home')">arrow_back</span><b>Mesajlar</b><span></span></div>
-        <div id="dm-list-container" style="padding:20px; text-align:center; color:#999;"></div>
-    </div>
-
-    <div id="modal-chat" class="modal" style="z-index:300;">
-        <div class="modal-header">
-            <span class="material-icons" onclick="closeModal('modal-chat')">arrow_back</span>
-            <b id="chat-header-name">Chat</b>
-            <span></span>
-        </div>
-        <div id="chat-messages" style="flex:1; overflow-y:auto; padding:15px; display:flex; flex-direction:column;"></div>
-        <div style="padding:10px; border-top:1px solid #eee; display:flex;">
-            <input id="chat-input" class="custom-input" style="border-radius:20px; margin:0;" placeholder="Mesaj...">
-            <button onclick="sendChatMessage()" style="border:none; background:none; color:#0095f6; font-weight:bold; margin-left:10px;">GÖNDER</button>
+    <div id="modal-edit" class="modal">
+        <div style="padding:20px; text-align:center;">
+            <h3>Profili Düzenle</h3>
+            <img id="edit-img-prev" src="" style="width:100px; height:100px; border-radius:50%; margin-bottom:10px;">
+            <div style="color:#0095f6; margin-bottom:20px;" onclick="document.getElementById('edit-file').click()">Fotoğraf Değiştir</div>
+            <input type="file" id="edit-file" hidden>
+            <input type="text" id="edit-name" class="custom-input" placeholder="Ad Soyad">
+            <input type="text" id="edit-user" class="custom-input" placeholder="Kullanıcı Adı">
+            <textarea id="edit-bio" class="custom-input" placeholder="Biyografi"></textarea>
+            <button onclick="saveProfile()" class="btn-primary">Kaydet</button>
+            <button onclick="closeModal('modal-edit')" class="btn-primary" style="background:#ddd; color:#000; margin-top:10px;">İptal</button>
         </div>
     </div>
 
-    <div class="bottom-nav" id="bottom-nav" style="display:none;">
+    <div id="story-viewer" class="story-viewer">
+        <div class="story-progress"><div id="story-bar" class="story-bar"></div></div>
+        <img id="story-full-img" style="width:100%; max-height:80vh; object-fit:contain;">
+        <span onclick="closeStory()" style="position:absolute; top:20px; right:20px; color:#fff; font-size:30px;">&times;</span>
+        <div id="story-owner" style="position:absolute; top:30px; left:20px; color:#fff; font-weight:bold;"></div>
+    </div>
+
+    <div id="bottom-nav" class="bottom-nav" style="display:none;">
         <span class="material-icons nav-icon" onclick="navTo('screen-home')">home</span>
         <span class="material-icons nav-icon" onclick="navTo('screen-search')">search</span>
         <span class="material-icons-outlined nav-icon" onclick="openUpload('post')">add_box</span>
@@ -194,167 +195,210 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, getDocs, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, getDocs, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // IMGBB API
-        const IMGBB_API_KEY = "4e42bfb4bfa830f09e932aa64cc20bb6"; 
+        const IMGBB_KEY = "4e42bfb4bfa830f09e932aa64cc20bb6";
 
-        const firebaseConfig = {
+        const app = initializeApp({
             apiKey: "AIzaSyA90T44N_om_KnTs3Wg06m8pBry0L20nVw",
             authDomain: "sosyal-medya-a46b6.firebaseapp.com",
             projectId: "sosyal-medya-a46b6",
             storageBucket: "sosyal-medya-a46b6.firebasestorage.app",
             messagingSenderId: "990331063740",
             appId: "1:990331063740:web:e18de69584fc82825aafb9"
-        };
+        });
 
-        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         let currentUser = null;
         let userData = {};
-        let uploadType = 'post';
         let activeChatUid = null;
-        let viewedUserUid = null; // Şu an profilini incelediğimiz kişi
+        let uploadType = 'post';
 
-        const showLoading = (t) => { document.getElementById('loading-text').innerText = t; document.getElementById('loading-overlay').style.display = 'flex'; };
-        const hideLoading = () => document.getElementById('loading-overlay').style.display = 'none';
-
-        // ImgBB Upload
-        const uploadToImgBB = async (file) => {
-            const formData = new FormData();
-            formData.append("image", file);
-            const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData });
+        // --- YARDIMCI FONKSİYONLAR ---
+        const loading = (s) => document.getElementById('loading').style.display = s ? 'flex' : 'none';
+        
+        const uploadImg = async (file) => {
+            const fd = new FormData(); fd.append("image", file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
             const data = await response.json();
-            if(data.success) return data.data.url;
-            throw new Error("Resim yüklenemedi.");
+            return data.data.url;
         };
+        // Düzeltme: fetch yanıtını json'a çevirme hatası için
+        const uploadImgFixed = async (file) => {
+            const fd = new FormData(); fd.append("image", file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
+            const data = await res.json();
+            if(data.success) return data.data.url;
+            throw new Error("Resim yüklenemedi");
+        }
 
-        // Auth
+        // --- AUTH ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
-                    if (docSnap.exists()) { userData = docSnap.data(); updateMyProfileUI(); }
+                onSnapshot(doc(db, "users", user.uid), (s) => {
+                    if (s.exists()) {
+                        userData = s.data();
+                        document.getElementById('my-avatar-story').src = userData.photoURL || "https://via.placeholder.com/60";
+                    }
                 });
                 document.getElementById('screen-auth').classList.remove('active');
                 document.getElementById('bottom-nav').style.display = 'flex';
                 navTo('screen-home');
-                loadFeed(); loadStories();
+                initListeners();
             } else {
                 document.getElementById('bottom-nav').style.display = 'none';
                 navTo('screen-auth');
             }
         });
 
-        function updateMyProfileUI() {
-            const pic = userData.photoURL || "https://via.placeholder.com/150";
-            document.getElementById('my-story-avatar').src = pic;
-            document.getElementById('profile-img-main').src = pic;
-            document.getElementById('header-username').innerText = userData.username || "Kullanıcı";
-            document.getElementById('bio-fullname').innerText = userData.fullname || "";
-            document.getElementById('bio-text').innerText = userData.bio || "";
-        }
-
-        window.authAction = async (type) => {
-            const email = document.getElementById('auth-email').value;
-            const pass = document.getElementById('auth-pass').value;
-            if(!email || !pass) return alert("Bilgileri girin");
-            showLoading("İşlem yapılıyor...");
+        window.auth = async (type) => {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('pass').value;
+            if(!e || !p) return alert("Bilgileri girin");
+            loading(true);
             try {
-                if(type === 'login') await signInWithEmailAndPassword(auth, email, pass);
+                if(type === 'login') await signInWithEmailAndPassword(auth, e, p);
                 else {
-                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                    await setDoc(doc(db, "users", cred.user.uid), {
-                        uid: cred.user.uid, email, username: email.split('@')[0],
-                        fullname: '', bio: '', photoURL: "https://via.placeholder.com/150"
-                    }, { merge: true });
+                    const c = await createUserWithEmailAndPassword(auth, e, p);
+                    await setDoc(doc(db, "users", c.user.uid), {
+                        uid: c.user.uid, email: e, username: e.split('@')[0], fullname: '', bio: '', photoURL: "https://via.placeholder.com/150"
+                    }, {merge:true});
                 }
-            } catch(e) { alert("Hata: " + e.message); } finally { hideLoading(); }
+            } catch(err) { alert(err.message); }
+            loading(false);
         };
 
         window.logout = () => signOut(auth);
 
-        // --- PROFİL GÖRÜNTÜLEME & TAKİP ---
-        window.openUserProfile = async (targetUid) => {
-            if(targetUid === currentUser.uid) { openMyProfile(); return; }
-            
-            viewedUserUid = targetUid;
-            navTo('screen-user-profile');
-            showLoading("Profil yükleniyor...");
+        // --- ANA AKIŞ & HİKAYELER ---
+        function initListeners() {
+            // FEED
+            onSnapshot(query(collection(db, "posts"), orderBy("date", "desc")), async (snap) => {
+                const con = document.getElementById('feed-container'); con.innerHTML = "";
+                for(const d of snap.docs) {
+                    const p = d.data();
+                    const u = await getUserData(p.uid);
+                    con.innerHTML += `
+                        <div class="post">
+                            <div class="post-header">
+                                <img src="${u.photoURL}" style="width:32px; height:32px; border-radius:50%; margin-right:10px;">
+                                <b>${u.username}</b>
+                            </div>
+                            <img src="${p.imageUrl}" class="post-img">
+                            <div style="padding:10px;"><b>${u.username}</b> ${p.caption}</div>
+                        </div>`;
+                }
+            });
 
-            try {
-                // Kullanıcı bilgilerini çek
-                const uSnap = await getDoc(doc(db, "users", targetUid));
-                const uData = uSnap.data();
-
-                document.getElementById('user-header-username').innerText = uData.username;
-                document.getElementById('user-img-main').src = uData.photoURL;
-                document.getElementById('user-bio-fullname').innerText = uData.fullname;
-                document.getElementById('user-bio-text').innerText = uData.bio;
-
-                // Takip durumunu kontrol et (Ben bu kişiyi takip ediyor muyum?)
-                // Takip ID mantığı: ben_hedef
-                const relId = `${currentUser.uid}_${targetUid}`;
-                const relSnap = await getDoc(doc(db, "relationships", relId));
+            // STORIES (DÜZELTİLDİ: 24 SAAT KURALI)
+            onSnapshot(query(collection(db, "stories"), orderBy("date", "desc")), async (snap) => {
+                const con = document.getElementById('stories-list'); con.innerHTML = "";
+                const seen = new Set();
+                const now = Date.now();
                 
-                updateFollowButton(relSnap.exists());
+                for(const d of snap.docs) {
+                    const s = d.data();
+                    const sTime = s.date ? s.date.seconds * 1000 : 0;
+                    // 24 saat = 86400000 ms
+                    if ((now - sTime) < 86400000 && s.uid !== currentUser.uid && !seen.has(s.uid)) {
+                        seen.add(s.uid);
+                        const u = await getUserData(s.uid);
+                        con.innerHTML += `
+                            <div class="story-item" onclick="viewStory('${s.imageUrl}', '${u.username}')">
+                                <div class="story-ring"><img src="${u.photoURL}" class="story-avatar"></div>
+                                <div class="story-username">${u.username}</div>
+                            </div>`;
+                    }
+                }
+            });
 
-                // Gönderilerini çek
-                const q = query(collection(db, "posts"), where("uid", "==", targetUid), orderBy("date", "desc"));
-                const pSnap = await getDocs(q);
-                document.getElementById('user-stat-posts').innerText = pSnap.size;
+            // DM LİSTESİ (YENİ SİSTEM: CONTACTS)
+            // Konuştuğum kişileri dinle
+            onSnapshot(query(collection(db, "contacts"), where("participants", "array-contains", currentUser.uid), orderBy("lastMsgDate", "desc")), async (snap) => {
+                const con = document.getElementById('dm-list-wrapper'); con.innerHTML = "";
+                if(snap.empty) con.innerHTML = "<div style='padding:20px; text-align:center; color:#999;'>Henüz mesaj yok.</div>";
                 
-                const grid = document.getElementById('user-profile-grid');
-                grid.innerHTML = "";
-                pSnap.forEach(d => {
-                    grid.innerHTML += `<div class="grid-item"><img src="${d.data().imageUrl}"></div>`;
-                });
-
-            } catch(e) { console.error(e); } finally { hideLoading(); }
-        };
-
-        function updateFollowButton(isFollowing) {
-            const btn = document.getElementById('btn-follow-action');
-            if(isFollowing) {
-                btn.innerText = "Mesaj Gönder";
-                btn.className = "btn-secondary";
-                btn.onclick = () => openChat(viewedUserUid, document.getElementById('user-header-username').innerText);
-            } else {
-                btn.innerText = "Takip Et";
-                btn.className = "btn-primary";
-                btn.onclick = toggleFollow;
-            }
+                for(const d of snap.docs) {
+                    const chat = d.data();
+                    // Karşı tarafın ID'sini bul
+                    const otherUid = chat.participants.find(id => id !== currentUser.uid);
+                    if(otherUid) {
+                        const u = await getUserData(otherUid);
+                        const date = chat.lastMsgDate ? new Date(chat.lastMsgDate.seconds*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
+                        con.innerHTML += `
+                            <div class="dm-item" onclick="openChat('${otherUid}', '${u.username}', '${u.photoURL}')">
+                                <img src="${u.photoURL}" class="dm-avatar">
+                                <div class="dm-info">
+                                    <div class="dm-name">${u.username}</div>
+                                    <div class="dm-last-msg">${chat.lastMsg} • ${date}</div>
+                                </div>
+                            </div>`;
+                    }
+                }
+            });
         }
 
-        window.toggleFollow = async () => {
-            const relId = `${currentUser.uid}_${viewedUserUid}`;
-            const btn = document.getElementById('btn-follow-action');
-            
-            if(btn.innerText === "Takip Et") {
-                // Takip etmeye başla
-                await setDoc(doc(db, "relationships", relId), {
-                    follower: currentUser.uid,
-                    following: viewedUserUid,
-                    date: serverTimestamp()
-                });
-                updateFollowButton(true);
-            }
-        };
+        // Cache User Data
+        const userCache = {};
+        async function getUserData(uid) {
+            if(userCache[uid]) return userCache[uid];
+            const s = await getDoc(doc(db, "users", uid));
+            if(s.exists()) { userCache[uid] = s.data(); return s.data(); }
+            return { username: '...', photoURL: '' };
+        }
 
-        // --- KENDİ PROFİLİM ---
-        window.openMyProfile = async () => {
-            navTo('screen-my-profile');
-            onSnapshot(query(collection(db, "posts"), where("uid", "==", currentUser.uid), orderBy("date", "desc")), (snap) => {
-                document.getElementById('stat-posts').innerText = snap.size;
-                const grid = document.getElementById('profile-grid');
-                grid.innerHTML = "";
-                snap.forEach(d => grid.innerHTML += `<div class="grid-item"><img src="${d.data().imageUrl}"></div>`);
+        // --- DM / CHAT MANTIĞI (GÜÇLENDİRİLMİŞ) ---
+        window.openChat = (uid, name, photo) => {
+            activeChatUid = uid;
+            document.getElementById('chat-header-name').innerText = name;
+            document.getElementById('chat-header-img').src = photo || "https://via.placeholder.com/30";
+            document.getElementById('screen-chat').style.display = 'flex';
+            
+            const chatId = [currentUser.uid, uid].sort().join("_");
+            onSnapshot(query(collection(db, "chats", chatId, "messages"), orderBy("date", "asc")), (snap) => {
+                const div = document.getElementById('chat-msgs'); div.innerHTML = "";
+                snap.forEach(d => {
+                    const m = d.data();
+                    const date = m.date ? new Date(m.date.seconds*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
+                    div.innerHTML += `
+                        <div class="chat-bubble ${m.sender === currentUser.uid ? 'chat-me' : 'chat-you'}">
+                            ${m.text}
+                            <div class="chat-time">${date}</div>
+                        </div>`;
+                });
+                div.scrollTop = div.scrollHeight;
             });
         };
 
-        // --- ARAMA ---
+        window.sendMsg = async () => {
+            const inp = document.getElementById('chat-input');
+            const txt = inp.value.trim();
+            if(!txt) return;
+
+            const chatId = [currentUser.uid, activeChatUid].sort().join("_");
+            
+            // 1. Mesajı ekle
+            await addDoc(collection(db, "chats", chatId, "messages"), {
+                text: txt, sender: currentUser.uid, date: serverTimestamp()
+            });
+
+            // 2. Kişi listesini (Contacts) güncelle ki DM kutusuna düşsün
+            const contactRef = doc(db, "contacts", chatId);
+            await setDoc(contactRef, {
+                participants: [currentUser.uid, activeChatUid],
+                lastMsg: txt,
+                lastMsgDate: serverTimestamp()
+            }, { merge: true });
+
+            inp.value = "";
+        };
+
+        window.closeChat = () => document.getElementById('screen-chat').style.display = 'none';
+
+        // --- SEARCH ---
         window.doSearch = async (val) => {
             if(val.length < 1) return;
             const div = document.getElementById('search-results'); div.innerHTML = "";
@@ -362,121 +406,91 @@
             snap.forEach(d => {
                 const u = d.data();
                 if(u.username && u.username.toLowerCase().includes(val.toLowerCase()) && u.uid !== currentUser.uid) {
-                    // TIKLAYINCA ARTIK PROFİLE GİDİYOR
                     div.innerHTML += `
-                        <div onclick="openUserProfile('${u.uid}')" style="padding:15px; border-bottom:1px solid #eee; display:flex; align-items:center;">
-                            <img src="${u.photoURL}" class="user-avatar-small">
-                            <span style="font-weight:bold;">${u.username}</span>
-                        </div>
-                    `;
+                        <div onclick="openChat('${u.uid}', '${u.username}', '${u.photoURL}')" style="padding:15px; border-bottom:1px solid #eee; display:flex; align-items:center; cursor:pointer;">
+                            <img src="${u.photoURL}" style="width:40px; height:40px; border-radius:50%; margin-right:10px;">
+                            <b>${u.username}</b>
+                        </div>`;
                 }
             });
         };
 
-        // --- CHAT SİSTEMİ (DÜZELTİLDİ) ---
-        window.openChat = (uid, name) => {
-            activeChatUid = uid;
-            document.getElementById('chat-header-name').innerText = name;
-            document.getElementById('modal-chat').style.display = 'flex';
+        // --- STORY VIEWER ---
+        window.viewStory = (url, name) => {
+            const v = document.getElementById('story-viewer');
+            v.style.display = 'flex';
+            document.getElementById('story-full-img').src = url;
+            document.getElementById('story-owner').innerText = name;
             
-            // CHAT ID: İki ID'yi alfabetik sıraya göre birleştir (A_B)
-            // Bu sayede A kişisi de B kişisi de aynı odaya bağlanır.
-            const ids = [currentUser.uid, uid].sort();
-            const chatId = ids.join("_");
+            const bar = document.getElementById('story-bar');
+            bar.style.width = "0%";
+            setTimeout(() => bar.style.width = "100%", 100);
+            setTimeout(() => closeStory(), 5000);
+        };
+        window.closeStory = () => document.getElementById('story-viewer').style.display = 'none';
 
-            onSnapshot(query(collection(db, "chats", chatId, "messages"), orderBy("date", "asc")), (snap) => {
-                const div = document.getElementById('chat-messages');
-                div.innerHTML = "";
-                snap.forEach(d => {
-                    const m = d.data();
-                    div.innerHTML += `<div class="chat-bubble ${m.sender===currentUser.uid ? 'chat-me' : 'chat-you'}">${m.text}</div>`;
-                });
-                div.scrollTop = div.scrollHeight;
-            });
+        // --- UPLOAD & PROFILE ---
+        window.openUpload = (t) => { uploadType = t; document.getElementById('upload-file').click(); };
+        document.getElementById('upload-file').onchange = (e) => {
+            if(e.target.files[0]) {
+                document.getElementById('upload-preview').src = URL.createObjectURL(e.target.files[0]);
+                document.getElementById('modal-upload').style.display = 'flex';
+            }
         };
 
-        window.sendChatMessage = async () => {
-            const inp = document.getElementById('chat-input');
-            const text = inp.value.trim();
-            if(!text) return;
-            
-            const ids = [currentUser.uid, activeChatUid].sort();
-            const chatId = ids.join("_");
-            
-            await addDoc(collection(db, "chats", chatId, "messages"), {
-                text, sender: currentUser.uid, date: serverTimestamp()
-            });
-            inp.value = "";
-        };
-
-        // --- UPLOAD & FEED & STORIES (STANDART) ---
-        window.openUpload = (type) => { uploadType = type; document.getElementById('upload-file').click(); };
-        document.getElementById('upload-file').onchange = (e) => { if(e.target.files[0]) { document.getElementById('upload-preview').src = URL.createObjectURL(e.target.files[0]); document.getElementById('modal-upload').style.display = 'flex'; } };
         window.performUpload = async () => {
-            showLoading("Yükleniyor...");
+            loading(true);
             try {
-                const file = document.getElementById('upload-file').files[0];
-                const caption = document.getElementById('upload-caption').value;
-                const url = await uploadToImgBB(file);
-                await addDoc(collection(db, uploadType + "s"), { uid: currentUser.uid, imageUrl: url, caption, date: serverTimestamp() });
-                closeModal('modal-upload'); document.getElementById('upload-caption').value = "";
-            } catch(e) { alert(e.message); } finally { hideLoading(); }
+                const f = document.getElementById('upload-file').files[0];
+                const c = document.getElementById('upload-caption').value;
+                const url = await uploadImgFixed(f);
+                await addDoc(collection(db, uploadType + "s"), {
+                    uid: currentUser.uid, imageUrl: url, caption: c, date: serverTimestamp()
+                });
+                closeModal('modal-upload');
+            } catch(e) { alert(e.message); }
+            loading(false);
         };
 
-        function loadStories() {
-            const list = document.getElementById('stories-list');
-            onSnapshot(query(collection(db, "stories"), orderBy("date", "desc")), async (snap) => {
-                list.innerHTML = "";
-                const seen = new Set();
-                const yesterday = new Date(Date.now() - 24*60*60*1000);
-                for(const d of snap.docs) {
-                    const s = d.data();
-                    const sDate = s.date ? new Date(s.date.seconds*1000) : new Date();
-                    if(sDate > yesterday && s.uid !== currentUser.uid && !seen.has(s.uid)) {
-                        seen.add(s.uid);
-                        const uSnap = await getDoc(doc(db, "users", s.uid));
-                        if(uSnap.exists()) {
-                             list.innerHTML += `<div class="story-item" onclick="window.open('${s.imageUrl}', '_blank')"><div class="story-ring"><img src="${uSnap.data().photoURL}" class="story-avatar"></div><div style="font-size:11px; margin-top:5px;">${uSnap.data().username}</div></div>`;
-                        }
-                    }
-                }
-            });
-        }
-
-        function loadFeed() {
-            const cont = document.getElementById('feed-container');
-            onSnapshot(query(collection(db, "posts"), orderBy("date", "desc")), async (snap) => {
-                cont.innerHTML = "";
-                for(const d of snap.docs) {
-                    const p = d.data();
-                    const uSnap = await getDoc(doc(db, "users", p.uid));
-                    const u = uSnap.exists() ? uSnap.data() : {username:'...', photoURL:''};
-                    cont.innerHTML += `<div class="post"><div class="post-header"><img src="${u.photoURL}" class="user-avatar-small"><span style="font-weight:600;">${u.username}</span></div><img src="${p.imageUrl}" class="post-img"><div style="padding:10px;"><span style="font-weight:600;">${u.username}</span> ${p.caption}</div></div>`;
-                }
-            });
-        }
-
-        // Profil Düzenleme
-        window.openEditModal = () => {
-            document.getElementById('edit-username').value = userData.username || "";
-            document.getElementById('edit-fullname').value = userData.fullname || "";
-            document.getElementById('edit-bio').value = userData.bio || "";
-            document.getElementById('edit-preview').src = userData.photoURL || "https://via.placeholder.com/150";
-            document.getElementById('modal-edit').style.display = 'flex';
+        // Profilim
+        window.openMyProfile = async () => {
+            navTo('screen-profile');
+            document.getElementById('profile-img').src = userData.photoURL;
+            document.getElementById('profile-username').innerText = userData.username;
+            document.getElementById('profile-fullname').innerText = userData.fullname;
+            document.getElementById('profile-bio').innerText = userData.bio;
+            
+            const snap = await getDocs(query(collection(db, "posts"), where("uid", "==", currentUser.uid), orderBy("date", "desc")));
+            const g = document.getElementById('profile-grid'); g.innerHTML = "";
+            snap.forEach(d => g.innerHTML += `<div style="position:relative; padding-bottom:100%;"><img src="${d.data().imageUrl}" style="position:absolute; width:100%; height:100%; object-fit:cover;"></div>`);
         };
-        document.getElementById('edit-file').onchange = (e) => { if(e.target.files[0]) document.getElementById('edit-preview').src = URL.createObjectURL(e.target.files[0]); };
+
+        window.openEditProfile = () => {
+            document.getElementById('edit-name').value = userData.fullname;
+            document.getElementById('edit-user').value = userData.username;
+            document.getElementById('edit-bio').value = userData.bio;
+            document.getElementById('edit-img-prev').src = userData.photoURL;
+            document.getElementById('modal-edit').style.display = 'block';
+        };
+        document.getElementById('edit-file').onchange = (e) => { if(e.target.files[0]) document.getElementById('edit-img-prev').src = URL.createObjectURL(e.target.files[0]); };
+
         window.saveProfile = async () => {
-            showLoading("Kaydediliyor...");
+            loading(true);
             try {
-                const username = document.getElementById('edit-username').value;
-                const fullname = document.getElementById('edit-fullname').value;
-                const bio = document.getElementById('edit-bio').value;
-                const file = document.getElementById('edit-file').files[0];
-                let photoURL = userData.photoURL;
-                if(file) photoURL = await uploadToImgBB(file);
-                await setDoc(doc(db, "users", currentUser.uid), { username, fullname, bio, photoURL }, { merge: true });
-                closeModal('modal-edit'); alert("Güncellendi!");
-            } catch(e) { alert("Hata: " + e.message); } finally { hideLoading(); }
+                const f = document.getElementById('edit-file').files[0];
+                let url = userData.photoURL;
+                if(f) url = await uploadImgFixed(f);
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    fullname: document.getElementById('edit-name').value,
+                    username: document.getElementById('edit-user').value,
+                    bio: document.getElementById('edit-bio').value,
+                    photoURL: url
+                });
+                closeModal('modal-edit');
+                alert("Profil güncellendi, yenileniyor...");
+                window.location.reload();
+            } catch(e) { alert(e.message); }
+            loading(false);
         };
 
         window.navTo = (id) => { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
