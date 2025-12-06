@@ -3,95 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BizimGram Pro (Final)</title>
+    <title>Instagram</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
     
     <style>
-        /* --- CSS RESET & TEMEL --- */
+        /* --- 1. INSTAGRAM CORE CSS --- */
+        :root { --primary: #0095f6; --bg: #fff; --border: #dbdbdb; --text: #262626; --grey: #fafafa; }
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #fff; color: #262626; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
         .screen { display: none; flex: 1; flex-direction: column; overflow-y: auto; padding-bottom: 50px; background: #fff; }
         .screen.active { display: flex; }
         
-        /* UI Bileşenleri */
-        .btn-primary { background: #0095f6; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; font-size: 14px; }
-        .custom-input { width: 100%; padding: 12px; border: 1px solid #dbdbdb; border-radius: 6px; background: #fafafa; font-size: 14px; margin-bottom: 10px; }
-        .app-header { height: 54px; border-bottom: 1px solid #dbdbdb; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #fff; z-index: 10; position: sticky; top: 0; }
-        .logo { font-family: 'Cursive', serif; font-size: 26px; font-weight: bold; margin-top: 5px; cursor: pointer; }
+        /* Butonlar & Inputlar */
+        .btn-primary { background: var(--primary); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .btn-primary:active { opacity: 0.7; }
+        .input-field { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--grey); font-size: 14px; margin-bottom: 10px; }
+        
+        /* Header */
+        .app-header { height: 54px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #fff; z-index: 20; position: sticky; top: 0; }
+        .logo { font-family: 'Cursive', serif; font-size: 28px; font-weight: bold; margin-top: 5px; cursor: pointer; }
 
-        /* Hikayeler */
-        .stories-bar { padding: 15px 0; border-bottom: 1px solid #efefef; overflow-x: auto; display: flex; scrollbar-width: none; }
-        .story-item { display: flex; flex-direction: column; align-items: center; margin-left: 15px; cursor: pointer; flex-shrink: 0; width: 72px; }
-        .story-ring { width: 66px; height: 66px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); display: flex; align-items: center; justify-content: center; position: relative; }
-        .story-ring.seen { background: #dbdbdb; }
+        /* --- 2. HİKAYELER (STORIES) --- */
+        .stories-bar { padding: 15px 0; border-bottom: 1px solid var(--border); overflow-x: auto; display: flex; scrollbar-width: none; }
+        .story-item { display: flex; flex-direction: column; align-items: center; margin-left: 15px; cursor: pointer; flex-shrink: 0; width: 75px; text-align: center; }
+        .story-ring { width: 68px; height: 68px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); display: flex; align-items: center; justify-content: center; position: relative; }
+        .story-ring.seen { background: #dbdbdb; } /* İzlenmişse gri */
         .story-avatar { width: 100%; height: 100%; border-radius: 50%; border: 2px solid #fff; object-fit: cover; }
-        .story-username { font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; text-align: center; }
+        .story-username { font-size: 11px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
+        .add-story-badge { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; font-size: 18px; line-height: 18px; text-align: center; font-weight: bold; }
 
-        /* Sohbet Listesi */
-        .dm-item { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid #fafafa; cursor: pointer; transition: background 0.2s; }
-        .dm-item:active { background: #f0f0f0; }
-        .dm-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 1px solid #eee; }
-        .dm-info { flex: 1; }
-        .dm-name { font-weight: 600; font-size: 14px; }
-        .dm-last-msg { color: #8e8e8e; font-size: 13px; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+        /* --- 3. GÖNDERİLER (FEED) --- */
+        .post { margin-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .post-header { padding: 10px; display: flex; align-items: center; }
+        .avatar-small { width: 32px; height: 32px; border-radius: 50%; margin-right: 10px; object-fit: cover; border: 1px solid var(--border); }
+        .post-img { width: 100%; display: block; min-height: 300px; background: #f0f0f0; object-fit: cover; }
+        .post-actions { padding: 10px; display: flex; gap: 15px; }
+        .post-caption { padding: 0 10px 10px; font-size: 14px; line-height: 1.4; }
 
-        /* Mesaj Baloncukları */
-        .chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; background: #fff; }
-        .chat-bubble { padding: 10px 14px; border-radius: 20px; max-width: 75%; font-size: 14px; word-wrap: break-word; position: relative; }
-        .chat-me { align-self: flex-end; background: #3797f0; color: white; border-bottom-right-radius: 4px; }
-        .chat-you { align-self: flex-start; background: #efefef; color: black; border-bottom-left-radius: 4px; }
-        .chat-time { font-size: 9px; margin-top: 4px; opacity: 0.7; text-align: right; }
+        /* --- 4. SOHBETLER (INBOX) - YENİLENMİŞ --- */
+        .inbox-item { display: flex; align-items: center; padding: 12px 15px; cursor: pointer; }
+        .inbox-item:active { background-color: #f5f5f5; }
+        .inbox-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; object-fit: cover; border: 1px solid var(--border); }
+        .inbox-info { flex: 1; overflow: hidden; }
+        .inbox-name { font-weight: 500; font-size: 16px; margin-bottom: 3px; }
+        .inbox-msg { color: #8e8e8e; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .inbox-dot { width: 8px; height: 8px; background: var(--primary); border-radius: 50%; margin-left: 10px; }
 
-        /* Alt Menü */
-        .bottom-nav { height: 50px; border-top: 1px solid #dbdbdb; display: flex; justify-content: space-around; align-items: center; background: #fff; position: fixed; bottom: 0; width: 100%; z-index: 100; }
-        .nav-icon { font-size: 28px; color: #262626; cursor: pointer; }
-        
-        /* Loading & Modals */
-        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 999; align-items: center; justify-content: center; flex-direction: column; }
-        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #0095f6; border-radius: 50%; width: 30px; height: 30px; animation: spin 0.8s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
+        /* --- 5. MESAJLAŞMA (CHAT) --- */
+        .chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; background: #fff; }
+        .msg-bubble { max-width: 70%; padding: 10px 14px; border-radius: 20px; font-size: 15px; margin-bottom: 5px; word-wrap: break-word; position: relative; }
+        .msg-me { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+        .msg-other { align-self: flex-start; background: #efefef; color: black; border-bottom-left-radius: 4px; }
+        .msg-time { font-size: 10px; margin-top: 3px; opacity: 0.7; text-align: right; }
+
+        /* --- 6. PROFİL --- */
+        .profile-header { padding: 20px 15px; display: flex; align-items: center; }
+        .profile-pic-lg { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; object-fit: cover; border: 1px solid var(--border); }
+        .profile-stats { flex: 1; display: flex; justify-content: space-around; text-align: center; }
+        .stat-val { font-weight: bold; font-size: 18px; display: block; }
+        .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 15px; border-top: 1px solid var(--border); }
+        .grid-img { position: relative; padding-bottom: 100%; background: #eee; }
+        .grid-img img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- 7. MODALLAR --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 200; flex-direction: column; }
         
-        /* Post */
-        .post { margin-bottom: 10px; border-bottom: 1px solid #efefef; }
-        .post-header { padding: 10px; display: flex; align-items: center; }
-        .post-img { width: 100%; display: block; min-height: 300px; background: #efefef; object-fit: cover; }
-        
-        /* Story Viewer */
-        .story-viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 500; flex-direction: column; justify-content: center; }
-        .story-progress { height: 3px; background: rgba(255,255,255,0.3); margin: 10px; border-radius: 2px; position: absolute; top: 0; left: 0; right: 0; z-index: 501; }
-        .story-bar { height: 100%; background: #fff; width: 0%; }
+        /* Loading Spinner */
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 999; align-items: center; justify-content: center; flex-direction: column; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .bottom-nav { height: 50px; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; background: #fff; position: fixed; bottom: 0; width: 100%; z-index: 100; }
     </style>
 </head>
 <body>
 
     <div id="loading" class="loading-overlay">
         <div class="spinner"></div>
-        <div style="margin-top:10px; font-weight:600; font-size:12px;">Yükleniyor...</div>
+        <div style="margin-top:10px; font-weight:600; color:#888;">Yükleniyor...</div>
     </div>
 
     <div id="screen-auth" class="screen active" style="justify-content:center; padding:40px;">
-        <h1 style="font-family: 'Cursive', serif; font-size: 45px; text-align:center; margin-bottom:30px;">BizimGram</h1>
-        <input type="email" id="email" class="custom-input" placeholder="E-posta">
-        <input type="password" id="pass" class="custom-input" placeholder="Şifre">
-        <button onclick="auth('login')" class="btn-primary" style="margin-bottom:10px;">Giriş Yap</button>
-        <button onclick="auth('signup')" class="btn-primary" style="background:#fff; color:#262626; border:1px solid #dbdbdb;">Kayıt Ol</button>
+        <h1 style="font-family: 'Cursive', serif; font-size: 45px; text-align:center; margin-bottom:40px;">Instagram</h1>
+        <input type="email" id="auth-email" class="input-field" placeholder="E-posta">
+        <input type="password" id="auth-pass" class="input-field" placeholder="Şifre">
+        <button onclick="authAction('login')" class="btn-primary" style="margin-bottom:15px;">Giriş Yap</button>
+        <button onclick="authAction('signup')" class="btn-primary" style="background:#fff; color:var(--primary); border:1px solid var(--border);">Kayıt Ol</button>
     </div>
 
     <div id="screen-home" class="screen">
         <div class="app-header">
-            <div class="logo">BizimGram</div>
-            <span class="material-icons-outlined" onclick="navTo('screen-dmlist')" style="font-size:28px; cursor:pointer;">near_me</span>
+            <div class="logo">Instagram</div>
+            <span class="material-icons-outlined" onclick="navTo('screen-inbox'); loadInbox();" style="font-size:28px; cursor:pointer;">near_me</span>
         </div>
         
         <div class="stories-bar" id="stories-container">
             <div class="story-item" onclick="openUpload('story')">
-                <div class="story-ring" style="background:none; border:1px solid #dbdbdb;">
+                <div class="story-ring" style="background:none; border:1px solid #ddd;">
                     <img id="my-avatar-story" src="https://via.placeholder.com/60" class="story-avatar">
-                    <div style="position:absolute; bottom:0; right:0; background:#0095f6; color:#fff; border-radius:50%; width:20px; height:20px; font-size:16px; text-align:center; border:2px solid #fff;">+</div>
+                    <div class="add-story-badge">+</div>
                 </div>
                 <div class="story-username">Hikayen</div>
             </div>
@@ -100,89 +112,79 @@
         <div id="feed-container"></div>
     </div>
 
-    <div id="screen-dmlist" class="screen">
+    <div id="screen-inbox" class="screen">
         <div class="app-header">
-            <span class="material-icons" onclick="navTo('screen-home')">arrow_back</span>
-            <b>Sohbetler</b>
-            <span></span>
+            <span class="material-icons" onclick="navTo('screen-home')" style="cursor:pointer;">arrow_back</span>
+            <b id="inbox-username">Sohbetler</b>
+            <span class="material-icons-outlined" onclick="navTo('screen-search')" style="cursor:pointer;">edit_note</span>
         </div>
-        <div id="dm-list-wrapper">
-            </div>
+        <div id="inbox-list"></div>
     </div>
 
     <div id="screen-chat" class="modal">
         <div class="app-header">
-            <span class="material-icons" onclick="closeChat()">arrow_back</span>
-            <div style="display:flex; align-items:center;">
+            <span class="material-icons" onclick="closeChat()" style="cursor:pointer;">arrow_back</span>
+            <div style="display:flex; align-items:center; margin-left:10px;">
                 <img id="chat-header-img" src="" style="width:30px; height:30px; border-radius:50%; margin-right:10px;">
-                <b id="chat-header-name">Kullanıcı</b>
+                <b id="chat-header-name">...</b>
             </div>
             <span></span>
         </div>
-        <div id="chat-msgs" class="chat-container"></div>
+        <div id="chat-messages" class="chat-container"></div>
         <div style="padding:10px; border-top:1px solid #eee; display:flex; align-items:center;">
-            <input id="chat-input" class="custom-input" style="border-radius:20px; margin:0;" placeholder="Mesaj yaz...">
-            <button onclick="sendMsg()" style="border:none; background:none; color:#0095f6; font-weight:bold; margin-left:10px;">GÖNDER</button>
+            <input id="chat-input" class="input-field" style="border-radius:20px; margin:0;" placeholder="Mesaj yaz...">
+            <button onclick="sendMessage()" style="border:none; background:none; color:var(--primary); font-weight:bold; margin-left:10px;">Gönder</button>
         </div>
-    </div>
-
-    <div id="screen-search" class="screen">
-        <div style="padding:10px;"><input type="text" oninput="doSearch(this.value)" class="custom-input" placeholder="Ara..."></div>
-        <div id="search-results"></div>
     </div>
 
     <div id="screen-profile" class="screen">
         <div class="app-header">
-            <b id="profile-username">...</b>
-            <span class="material-icons-outlined" onclick="logout()">logout</span>
+            <b id="profile-header-user">...</b>
+            <span class="material-icons-outlined" onclick="logout()" style="cursor:pointer;">logout</span>
         </div>
-        <div style="padding:20px; display:flex; align-items:center;">
-            <img id="profile-img" src="" style="width:80px; height:80px; border-radius:50%; margin-right:20px; border:1px solid #ddd;">
-            <div style="flex:1; display:flex; justify-content:space-around; text-align:center;">
-                <div><b style="font-size:18px;">0</b><br>Takipçi</div>
-                <div><b style="font-size:18px;">0</b><br>Takip</div>
+        <div class="profile-header">
+            <img id="profile-img" src="" class="profile-pic-lg">
+            <div class="profile-stats">
+                <div><span class="stat-val" id="stat-posts">0</span>Gönderi</div>
+                <div><span class="stat-val">0</span>Takipçi</div>
+                <div><span class="stat-val">0</span>Takip</div>
             </div>
         </div>
-        <div style="padding:0 20px 10px;">
-            <b id="profile-fullname"></b>
-            <div id="profile-bio"></div>
-        </div>
         <div style="padding:0 15px;">
-            <button onclick="openEditProfile()" class="btn-primary" style="background:#fff; color:#000; border:1px solid #dbdbdb;">Profili Düzenle</button>
+            <b id="profile-name"></b>
+            <div id="profile-bio" style="white-space:pre-wrap;"></div>
+            <button onclick="openEditProfile()" class="btn-primary" style="background:#fff; color:#000; border:1px solid var(--border); margin-top:15px; padding:6px;">Profili Düzenle</button>
         </div>
-        <div id="profile-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-top:15px; border-top:1px solid #eee;"></div>
+        <div id="profile-grid" class="profile-grid"></div>
+    </div>
+
+    <div id="screen-search" class="screen">
+        <div style="padding:10px;"><input type="text" oninput="doSearch(this.value)" class="input-field" placeholder="Ara..."></div>
+        <div id="search-results"></div>
     </div>
 
     <div id="modal-upload" class="modal">
-        <div class="app-header">
-            <span onclick="closeModal('modal-upload')">İptal</span><b>Paylaş</b><span onclick="performUpload()" style="color:#0095f6; font-weight:bold;">Paylaş</span>
-        </div>
-        <div style="flex:1; background:#000; display:flex; align-items:center; justify-content:center;">
-            <img id="upload-preview" style="max-width:100%; max-height:100%;">
-        </div>
-        <input type="text" id="upload-caption" placeholder="Açıklama..." style="padding:15px; border:none;">
+        <div class="app-header"><span onclick="closeModal('modal-upload')" style="cursor:pointer;">İptal</span><b>Paylaş</b><span onclick="performUpload()" style="color:var(--primary); font-weight:bold; cursor:pointer;">Paylaş</span></div>
+        <div style="flex:1; background:#000; display:flex; align-items:center; justify-content:center;"><img id="upload-preview" style="max-width:100%; max-height:100%;"></div>
+        <input type="text" id="upload-caption" placeholder="Açıklama yaz..." style="padding:15px; border:none; width:100%;">
         <input type="file" id="upload-file" hidden accept="image/*">
     </div>
 
     <div id="modal-edit" class="modal">
+        <div class="app-header"><span onclick="closeModal('modal-edit')" style="cursor:pointer;">İptal</span><b>Profili Düzenle</b><span onclick="saveProfile()" style="color:var(--primary); font-weight:bold; cursor:pointer;">Bitti</span></div>
         <div style="padding:20px; text-align:center;">
-            <h3>Profili Düzenle</h3>
-            <img id="edit-img-prev" src="" style="width:100px; height:100px; border-radius:50%; margin-bottom:10px;">
-            <div style="color:#0095f6; margin-bottom:20px;" onclick="document.getElementById('edit-file').click()">Fotoğraf Değiştir</div>
+            <img id="edit-img-prev" src="" style="width:100px; height:100px; border-radius:50%; margin-bottom:15px;">
+            <div style="color:var(--primary); font-weight:600; cursor:pointer;" onclick="document.getElementById('edit-file').click()">Fotoğrafı Değiştir</div>
             <input type="file" id="edit-file" hidden>
-            <input type="text" id="edit-name" class="custom-input" placeholder="Ad Soyad">
-            <input type="text" id="edit-user" class="custom-input" placeholder="Kullanıcı Adı">
-            <textarea id="edit-bio" class="custom-input" placeholder="Biyografi"></textarea>
-            <button onclick="saveProfile()" class="btn-primary">Kaydet</button>
-            <button onclick="closeModal('modal-edit')" class="btn-primary" style="background:#ddd; color:#000; margin-top:10px;">İptal</button>
+            <div style="text-align:left; margin-top:20px;">
+                <label style="font-size:12px; color:#666;">Adın</label>
+                <input type="text" id="edit-name" class="input-field">
+                <label style="font-size:12px; color:#666;">Kullanıcı Adı</label>
+                <input type="text" id="edit-user" class="input-field">
+                <label style="font-size:12px; color:#666;">Biyografi</label>
+                <textarea id="edit-bio" class="input-field" rows="3"></textarea>
+            </div>
         </div>
-    </div>
-
-    <div id="story-viewer" class="story-viewer">
-        <div class="story-progress"><div id="story-bar" class="story-bar"></div></div>
-        <img id="story-full-img" style="width:100%; max-height:80vh; object-fit:contain;">
-        <span onclick="closeStory()" style="position:absolute; top:20px; right:20px; color:#fff; font-size:30px;">&times;</span>
-        <div id="story-owner" style="position:absolute; top:30px; left:20px; color:#fff; font-weight:bold;"></div>
     </div>
 
     <div id="bottom-nav" class="bottom-nav" style="display:none;">
@@ -197,66 +199,63 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, getDocs, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // IMGBB API
         const IMGBB_KEY = "4e42bfb4bfa830f09e932aa64cc20bb6";
 
-        const app = initializeApp({
+        const firebaseConfig = {
             apiKey: "AIzaSyA90T44N_om_KnTs3Wg06m8pBry0L20nVw",
             authDomain: "sosyal-medya-a46b6.firebaseapp.com",
             projectId: "sosyal-medya-a46b6",
             storageBucket: "sosyal-medya-a46b6.firebasestorage.app",
             messagingSenderId: "990331063740",
             appId: "1:990331063740:web:e18de69584fc82825aafb9"
-        });
+        };
 
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         let currentUser = null;
         let userData = {};
-        let activeChatUid = null;
+        let activeChatId = null;
+        let activeChatUser = null;
         let uploadType = 'post';
 
-        // --- YARDIMCI FONKSİYONLAR ---
+        // UI Helpers
         const loading = (s) => document.getElementById('loading').style.display = s ? 'flex' : 'none';
-        
         const uploadImg = async (file) => {
-            const fd = new FormData(); fd.append("image", file);
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
-            const data = await response.json();
-            return data.data.url;
-        };
-        // Düzeltme: fetch yanıtını json'a çevirme hatası için
-        const uploadImgFixed = async (file) => {
             const fd = new FormData(); fd.append("image", file);
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
             const data = await res.json();
             if(data.success) return data.data.url;
             throw new Error("Resim yüklenemedi");
-        }
+        };
 
         // --- AUTH ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
+                // Kullanıcı verisini canlı dinle
                 onSnapshot(doc(db, "users", user.uid), (s) => {
                     if (s.exists()) {
                         userData = s.data();
                         document.getElementById('my-avatar-story').src = userData.photoURL || "https://via.placeholder.com/60";
+                        document.getElementById('inbox-username').innerText = userData.username;
                     }
                 });
                 document.getElementById('screen-auth').classList.remove('active');
                 document.getElementById('bottom-nav').style.display = 'flex';
                 navTo('screen-home');
-                initListeners();
+                initApp();
             } else {
                 document.getElementById('bottom-nav').style.display = 'none';
                 navTo('screen-auth');
             }
         });
 
-        window.auth = async (type) => {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('pass').value;
+        window.authAction = async (type) => {
+            const e = document.getElementById('auth-email').value;
+            const p = document.getElementById('auth-pass').value;
             if(!e || !p) return alert("Bilgileri girin");
             loading(true);
             try {
@@ -270,11 +269,10 @@
             } catch(err) { alert(err.message); }
             loading(false);
         };
-
         window.logout = () => signOut(auth);
 
-        // --- ANA AKIŞ & HİKAYELER ---
-        function initListeners() {
+        // --- MAIN APP LOGIC ---
+        function initApp() {
             // FEED
             onSnapshot(query(collection(db, "posts"), orderBy("date", "desc")), async (snap) => {
                 const con = document.getElementById('feed-container'); con.innerHTML = "";
@@ -284,111 +282,122 @@
                     con.innerHTML += `
                         <div class="post">
                             <div class="post-header">
-                                <img src="${u.photoURL}" style="width:32px; height:32px; border-radius:50%; margin-right:10px;">
-                                <b>${u.username}</b>
+                                <img src="${u.photoURL}" class="avatar-small">
+                                <b style="font-size:14px;">${u.username}</b>
                             </div>
                             <img src="${p.imageUrl}" class="post-img">
-                            <div style="padding:10px;"><b>${u.username}</b> ${p.caption}</div>
+                            <div class="post-actions">
+                                <span class="material-icons-outlined">favorite_border</span>
+                                <span class="material-icons-outlined">mode_comment</span>
+                            </div>
+                            <div class="post-caption"><b style="font-size:14px;">${u.username}</b> ${p.caption}</div>
                         </div>`;
                 }
             });
 
-            // STORIES (DÜZELTİLDİ: 24 SAAT KURALI)
+            // STORIES (24H LOGIC)
             onSnapshot(query(collection(db, "stories"), orderBy("date", "desc")), async (snap) => {
-                const con = document.getElementById('stories-list'); con.innerHTML = "";
-                const seen = new Set();
+                const con = document.getElementById('stories-container'); 
+                // Reset but keep "Add Story"
+                con.innerHTML = `
+                    <div class="story-item" onclick="openUpload('story')">
+                        <div class="story-ring" style="background:none; border:1px solid #ddd;">
+                            <img id="my-avatar-story-inner" src="${userData.photoURL || 'https://via.placeholder.com/60'}" class="story-avatar">
+                            <div class="add-story-badge">+</div>
+                        </div>
+                        <div class="story-username">Hikayen</div>
+                    </div>`;
+                
                 const now = Date.now();
+                const seen = new Set();
                 
                 for(const d of snap.docs) {
                     const s = d.data();
-                    const sTime = s.date ? s.date.seconds * 1000 : 0;
-                    // 24 saat = 86400000 ms
+                    // Timestamp kontrolü (yeni atılan story null olabilir, null ise 'şimdi' kabul et)
+                    const sTime = s.date ? s.date.seconds * 1000 : now;
+                    
                     if ((now - sTime) < 86400000 && s.uid !== currentUser.uid && !seen.has(s.uid)) {
                         seen.add(s.uid);
                         const u = await getUserData(s.uid);
                         con.innerHTML += `
-                            <div class="story-item" onclick="viewStory('${s.imageUrl}', '${u.username}')">
+                            <div class="story-item" onclick="window.open('${s.imageUrl}', '_blank')">
                                 <div class="story-ring"><img src="${u.photoURL}" class="story-avatar"></div>
                                 <div class="story-username">${u.username}</div>
                             </div>`;
                     }
                 }
+                document.getElementById('my-avatar-story-inner').src = userData.photoURL;
             });
+        }
 
-            // DM LİSTESİ (YENİ SİSTEM: CONTACTS)
-            // Konuştuğum kişileri dinle
-            onSnapshot(query(collection(db, "contacts"), where("participants", "array-contains", currentUser.uid), orderBy("lastMsgDate", "desc")), async (snap) => {
-                const con = document.getElementById('dm-list-wrapper'); con.innerHTML = "";
-                if(snap.empty) con.innerHTML = "<div style='padding:20px; text-align:center; color:#999;'>Henüz mesaj yok.</div>";
-                
+        // --- INBOX SYSTEM (YENİLENMİŞ) ---
+        // Bu fonksiyon, kullanıcının dahil olduğu sohbetleri listeler
+        window.loadInbox = () => {
+            const q = query(collection(db, "inbox"), where("participants", "array-contains", currentUser.uid), orderBy("lastMsgDate", "desc"));
+            onSnapshot(q, async (snap) => {
+                const list = document.getElementById('inbox-list'); list.innerHTML = "";
+                if(snap.empty) list.innerHTML = "<div style='text-align:center; padding:20px; color:#999;'>Mesajın yok.</div>";
+
                 for(const d of snap.docs) {
                     const chat = d.data();
-                    // Karşı tarafın ID'sini bul
+                    // Diğer kullanıcıyı bul
                     const otherUid = chat.participants.find(id => id !== currentUser.uid);
                     if(otherUid) {
                         const u = await getUserData(otherUid);
                         const date = chat.lastMsgDate ? new Date(chat.lastMsgDate.seconds*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
-                        con.innerHTML += `
-                            <div class="dm-item" onclick="openChat('${otherUid}', '${u.username}', '${u.photoURL}')">
-                                <img src="${u.photoURL}" class="dm-avatar">
-                                <div class="dm-info">
-                                    <div class="dm-name">${u.username}</div>
-                                    <div class="dm-last-msg">${chat.lastMsg} • ${date}</div>
+                        list.innerHTML += `
+                            <div class="inbox-item" onclick="openChat('${otherUid}', '${u.username}', '${u.photoURL}')">
+                                <img src="${u.photoURL}" class="inbox-avatar">
+                                <div class="inbox-info">
+                                    <div class="inbox-name">${u.username}</div>
+                                    <div class="inbox-msg">${chat.lastMsg} · ${date}</div>
                                 </div>
                             </div>`;
                     }
                 }
             });
-        }
+        };
 
-        // Cache User Data
-        const userCache = {};
-        async function getUserData(uid) {
-            if(userCache[uid]) return userCache[uid];
-            const s = await getDoc(doc(db, "users", uid));
-            if(s.exists()) { userCache[uid] = s.data(); return s.data(); }
-            return { username: '...', photoURL: '' };
-        }
-
-        // --- DM / CHAT MANTIĞI (GÜÇLENDİRİLMİŞ) ---
+        // --- CHAT LOGIC ---
         window.openChat = (uid, name, photo) => {
-            activeChatUid = uid;
+            activeChatUser = uid;
             document.getElementById('chat-header-name').innerText = name;
             document.getElementById('chat-header-img').src = photo || "https://via.placeholder.com/30";
             document.getElementById('screen-chat').style.display = 'flex';
             
-            const chatId = [currentUser.uid, uid].sort().join("_");
-            onSnapshot(query(collection(db, "chats", chatId, "messages"), orderBy("date", "asc")), (snap) => {
-                const div = document.getElementById('chat-msgs'); div.innerHTML = "";
+            // Chat ID oluştur (Alfabetik sıra ile)
+            activeChatId = [currentUser.uid, uid].sort().join("_");
+            
+            // Mesajları Dinle
+            onSnapshot(query(collection(db, "inbox", activeChatId, "messages"), orderBy("date", "asc")), (snap) => {
+                const con = document.getElementById('chat-messages'); con.innerHTML = "";
                 snap.forEach(d => {
                     const m = d.data();
-                    const date = m.date ? new Date(m.date.seconds*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
-                    div.innerHTML += `
-                        <div class="chat-bubble ${m.sender === currentUser.uid ? 'chat-me' : 'chat-you'}">
+                    const time = m.date ? new Date(m.date.seconds*1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : "";
+                    con.innerHTML += `
+                        <div class="msg-bubble ${m.sender === currentUser.uid ? 'msg-me' : 'msg-other'}">
                             ${m.text}
-                            <div class="chat-time">${date}</div>
+                            <div class="msg-time">${time}</div>
                         </div>`;
                 });
-                div.scrollTop = div.scrollHeight;
+                con.scrollTop = con.scrollHeight;
             });
         };
 
-        window.sendMsg = async () => {
+        window.sendMessage = async () => {
             const inp = document.getElementById('chat-input');
             const txt = inp.value.trim();
             if(!txt) return;
 
-            const chatId = [currentUser.uid, activeChatUid].sort().join("_");
-            
-            // 1. Mesajı ekle
-            await addDoc(collection(db, "chats", chatId, "messages"), {
+            // 1. Mesajı Kaydet
+            await addDoc(collection(db, "inbox", activeChatId, "messages"), {
                 text: txt, sender: currentUser.uid, date: serverTimestamp()
             });
 
-            // 2. Kişi listesini (Contacts) güncelle ki DM kutusuna düşsün
-            const contactRef = doc(db, "contacts", chatId);
-            await setDoc(contactRef, {
-                participants: [currentUser.uid, activeChatUid],
+            // 2. Inbox (Sohbet Listesi) Güncelle
+            // Eğer belge yoksa oluşturur (setDoc + merge)
+            await setDoc(doc(db, "inbox", activeChatId), {
+                participants: [currentUser.uid, activeChatUser],
                 lastMsg: txt,
                 lastMsgDate: serverTimestamp()
             }, { merge: true });
@@ -401,35 +410,35 @@
         // --- SEARCH ---
         window.doSearch = async (val) => {
             if(val.length < 1) return;
-            const div = document.getElementById('search-results'); div.innerHTML = "";
+            const res = document.getElementById('search-results'); res.innerHTML = "";
             const snap = await getDocs(collection(db, "users"));
             snap.forEach(d => {
                 const u = d.data();
                 if(u.username && u.username.toLowerCase().includes(val.toLowerCase()) && u.uid !== currentUser.uid) {
-                    div.innerHTML += `
-                        <div onclick="openChat('${u.uid}', '${u.username}', '${u.photoURL}')" style="padding:15px; border-bottom:1px solid #eee; display:flex; align-items:center; cursor:pointer;">
-                            <img src="${u.photoURL}" style="width:40px; height:40px; border-radius:50%; margin-right:10px;">
-                            <b>${u.username}</b>
+                    res.innerHTML += `
+                        <div onclick="openChat('${u.uid}', '${u.username}', '${u.photoURL}')" class="inbox-item">
+                            <img src="${u.photoURL}" class="inbox-avatar" style="width:40px; height:40px;">
+                            <div class="inbox-name">${u.username}</div>
                         </div>`;
                 }
             });
         };
 
-        // --- STORY VIEWER ---
-        window.viewStory = (url, name) => {
-            const v = document.getElementById('story-viewer');
-            v.style.display = 'flex';
-            document.getElementById('story-full-img').src = url;
-            document.getElementById('story-owner').innerText = name;
-            
-            const bar = document.getElementById('story-bar');
-            bar.style.width = "0%";
-            setTimeout(() => bar.style.width = "100%", 100);
-            setTimeout(() => closeStory(), 5000);
-        };
-        window.closeStory = () => document.getElementById('story-viewer').style.display = 'none';
+        // --- PROFILE & UPLOAD ---
+        window.openMyProfile = async () => {
+            navTo('screen-profile');
+            document.getElementById('profile-img').src = userData.photoURL;
+            document.getElementById('profile-header-user').innerText = userData.username;
+            document.getElementById('profile-name').innerText = userData.fullname;
+            document.getElementById('profile-bio').innerText = userData.bio;
 
-        // --- UPLOAD & PROFILE ---
+            const snap = await getDocs(query(collection(db, "posts"), where("uid", "==", currentUser.uid), orderBy("date", "desc")));
+            document.getElementById('stat-posts').innerText = snap.size;
+            
+            const grid = document.getElementById('profile-grid'); grid.innerHTML = "";
+            snap.forEach(d => grid.innerHTML += `<div class="grid-img"><img src="${d.data().imageUrl}"></div>`);
+        };
+
         window.openUpload = (t) => { uploadType = t; document.getElementById('upload-file').click(); };
         document.getElementById('upload-file').onchange = (e) => {
             if(e.target.files[0]) {
@@ -441,34 +450,21 @@
         window.performUpload = async () => {
             loading(true);
             try {
-                const f = document.getElementById('upload-file').files[0];
-                const c = document.getElementById('upload-caption').value;
-                const url = await uploadImgFixed(f);
+                const file = document.getElementById('upload-file').files[0];
+                const caption = document.getElementById('upload-caption').value;
+                const url = await uploadImg(file);
                 await addDoc(collection(db, uploadType + "s"), {
-                    uid: currentUser.uid, imageUrl: url, caption: c, date: serverTimestamp()
+                    uid: currentUser.uid, imageUrl: url, caption, date: serverTimestamp()
                 });
                 closeModal('modal-upload');
-            } catch(e) { alert(e.message); }
+            } catch(e) { alert("Hata: " + e.message); }
             loading(false);
         };
 
-        // Profilim
-        window.openMyProfile = async () => {
-            navTo('screen-profile');
-            document.getElementById('profile-img').src = userData.photoURL;
-            document.getElementById('profile-username').innerText = userData.username;
-            document.getElementById('profile-fullname').innerText = userData.fullname;
-            document.getElementById('profile-bio').innerText = userData.bio;
-            
-            const snap = await getDocs(query(collection(db, "posts"), where("uid", "==", currentUser.uid), orderBy("date", "desc")));
-            const g = document.getElementById('profile-grid'); g.innerHTML = "";
-            snap.forEach(d => g.innerHTML += `<div style="position:relative; padding-bottom:100%;"><img src="${d.data().imageUrl}" style="position:absolute; width:100%; height:100%; object-fit:cover;"></div>`);
-        };
-
         window.openEditProfile = () => {
-            document.getElementById('edit-name').value = userData.fullname;
-            document.getElementById('edit-user').value = userData.username;
-            document.getElementById('edit-bio').value = userData.bio;
+            document.getElementById('edit-name').value = userData.fullname || "";
+            document.getElementById('edit-user').value = userData.username || "";
+            document.getElementById('edit-bio').value = userData.bio || "";
             document.getElementById('edit-img-prev').src = userData.photoURL;
             document.getElementById('modal-edit').style.display = 'block';
         };
@@ -479,7 +475,7 @@
             try {
                 const f = document.getElementById('edit-file').files[0];
                 let url = userData.photoURL;
-                if(f) url = await uploadImgFixed(f);
+                if(f) url = await uploadImg(f);
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     fullname: document.getElementById('edit-name').value,
                     username: document.getElementById('edit-user').value,
@@ -487,15 +483,21 @@
                     photoURL: url
                 });
                 closeModal('modal-edit');
-                alert("Profil güncellendi, yenileniyor...");
-                window.location.reload();
             } catch(e) { alert(e.message); }
             loading(false);
         };
 
+        // Cache User Data to reduce reads
+        const userCache = {};
+        async function getUserData(uid) {
+            if(userCache[uid]) return userCache[uid];
+            const s = await getDoc(doc(db, "users", uid));
+            if(s.exists()) { userCache[uid] = s.data(); return s.data(); }
+            return { username: 'Instagram User', photoURL: 'https://via.placeholder.com/150' };
+        }
+
         window.navTo = (id) => { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); };
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
-
     </script>
 </body>
 </html>
