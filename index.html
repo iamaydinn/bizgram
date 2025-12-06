@@ -3,133 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Windows Live Messenger</title>
+    <title>BizimSpace Messenger</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* --- MSN STİLİ (AESTHETIC) --- */
+        /* --- AERO GLASS THEME --- */
         :root {
-            --msn-blue-top: #b2dcf8;
-            --msn-blue-btm: #eaf5fc;
-            --msn-border: #7aa5d6;
-            --msn-header: linear-gradient(to bottom, #f5fbfe 0%, #c4def3 100%);
-            --msn-bg: linear-gradient(to bottom, #86b4e5 0%, #4687ce 100%);
+            --glass-top: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --msn-header: linear-gradient(to bottom, #f2f9fe 0%, #d6e8ff 100%);
+            --msn-bg: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png') no-repeat center center fixed; 
         }
 
         body { 
-            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--msn-bg); height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+            margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #4facfe;
+            background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            height: 100vh; overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* UI RESET */
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        button { cursor: pointer; font-family: inherit; }
+        /* LOGO (SVG - ASLA KIRILMAZ) */
+        .msn-butterfly {
+            width: 80px; height: 80px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%230099ff' d='M50 50 Q30 10 10 30 T50 50'/%3E%3Cpath fill='%2300cc00' d='M50 50 Q70 10 90 30 T50 50'/%3E%3Cpath fill='%23ffcc00' d='M50 50 Q30 90 10 70 T50 50'/%3E%3Cpath fill='%23ff3300' d='M50 50 Q70 90 90 70 T50 50'/%3E%3Ccircle cx='50' cy='50' r='5' fill='%23fff'/%3E%3C/svg%3E");
+            background-size: cover; margin: 0 auto;
+        }
 
-        /* EKRANLAR */
-        .screen { display: none; flex: 1; flex-direction: column; height: 100%; padding: 10px; }
+        /* EKRAN YÖNETİMİ */
+        .screen { display: none; flex: 1; height: 100%; padding: 10px; justify-content: center; }
         .screen.active { display: flex; }
 
-        /* PENCERE YAPISI */
-        .window-frame {
-            background: #fff; border: 1px solid #4a7ac9; border-radius: 6px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3); flex: 1; display: flex; flex-direction: column; overflow: hidden;
-        }
-
-        .window-header {
-            background: var(--msn-header); padding: 8px 10px; border-bottom: 1px solid #9fbddf;
-            display: flex; justify-content: space-between; align-items: center; height: 40px;
-        }
-        .win-title { font-size: 13px; font-weight: bold; color: #333; text-shadow: 0 1px 0 #fff; display: flex; align-items: center; gap: 5px; }
-
-        /* GİRİŞ EKRANI */
+        /* GİRİŞ KUTUSU (GLASS EFFECT) */
         .login-box {
-            background: #eef7ff; border: 1px solid #8baeda; border-radius: 5px;
-            padding: 20px; text-align: center; width: 100%; max-width: 320px; margin: auto;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 30px; text-align: center; width: 100%; max-width: 350px; margin: auto;
         }
-        .msn-avatar-frame {
-            width: 90px; height: 90px; border: 1px solid #aaa; padding: 3px; background: #fff;
-            margin: 0 auto 15px; cursor: pointer; transition: 0.2s;
+        
+        .msn-input {
+            width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px;
+            border: 1px solid #ccc; font-size: 14px; outline: none;
         }
-        .msn-avatar-frame:hover { border-color: #4a7ac9; }
-        .msn-avatar-img { width: 100%; height: 100%; object-fit: cover; }
-        .msn-input { width: 100%; padding: 6px; border: 1px solid #8caee2; margin-bottom: 8px; font-size: 13px; }
+        
         .msn-btn {
-            background: linear-gradient(#fff, #e1e1e1); border: 1px solid #888; padding: 4px 15px; border-radius: 3px; font-size: 12px; margin-top: 5px;
+            background: linear-gradient(to bottom, #63b8ff 0%, #30588e 100%);
+            color: white; border: 1px solid #204060; padding: 8px 20px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3); margin-top: 5px;
         }
-        .msn-btn:hover { border-color: #4a7ac9; background: #fdfdfd; }
+        .msn-btn:hover { filter: brightness(1.1); }
+        .msn-btn.secondary { background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%); color: #333; }
 
-        /* ANA EKRAN (KİŞİ LİSTESİ) */
+        /* ANA PENCERE */
+        .window-frame {
+            background: #fff; border-radius: 8px; flex: 1; display: flex; flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid #4a7ac9;
+        }
+        
+        .window-header {
+            background: var(--msn-header); height: 50px; display: flex; align-items: center;
+            padding: 0 10px; border-bottom: 1px solid #a0bcdc; justify-content: space-between;
+        }
+
         .my-card {
-            background: linear-gradient(to right, #e3effa, #ffffff); padding: 10px;
-            display: flex; align-items: center; border-bottom: 1px solid #bcd3ec;
+            background: linear-gradient(to right, #eef6fb, #fff); padding: 10px;
+            display: flex; align-items: center; border-bottom: 1px solid #dcebf8;
         }
-        .my-pic { width: 60px; height: 60px; border: 1px solid #fff; box-shadow: 0 0 3px #999; object-fit: cover; margin-right: 10px; cursor: pointer; }
-        .my-details { flex: 1; overflow: hidden; }
-        .my-nick { font-weight: bold; font-size: 14px; color: #000; cursor: pointer; }
-        .my-status-msg { font-size: 11px; color: #666; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; border: 1px solid transparent; }
-        .my-status-msg:hover { border: 1px solid #ccc; background: #fff; }
-
-        .list-area { flex: 1; background: #fff; overflow-y: auto; padding: 5px; }
-        .group-title { font-size: 11px; font-weight: bold; color: #444; background: #f0f0f0; padding: 3px; margin-top: 5px; cursor: pointer; border: 1px solid #e0e0e0; }
+        .my-pic { width: 50px; height: 50px; border: 2px solid #fff; box-shadow: 0 0 5px rgba(0,0,0,0.2); object-fit: cover; border-radius: 4px; cursor: pointer; }
         
+        /* TABS */
+        .tabs { display: flex; background: #f0f6fc; border-bottom: 1px solid #dcebf8; }
+        .tab { flex: 1; text-align: center; padding: 8px; font-size: 12px; cursor: pointer; color: #555; border-right: 1px solid #eef; }
+        .tab.active { background: #fff; font-weight: bold; color: #000; border-bottom: 2px solid #orange; }
+
+        .list-area { flex: 1; overflow-y: auto; background: #fff; padding: 5px; }
+
+        /* ARKADAŞ LİSTESİ */
         .contact-item {
-            display: flex; align-items: center; padding: 6px; cursor: pointer; border: 1px solid transparent;
+            display: flex; align-items: center; padding: 8px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: 0.2s;
         }
-        .contact-item:hover { background: #eef5fb; border: 1px solid #dcebf8; }
-        .status-icon { width: 10px; height: 10px; margin-right: 6px; } /* Yeşil/Kırmızı/Gri kare */
+        .contact-item:hover { background: #eaf4fd; }
+        .status-light { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #fff; box-shadow: 0 0 2px #000; margin-right: 8px; }
+        .green { background: #70d900; } .red { background: #e00; } .grey { background: #ccc; }
+
+        /* SOHBET */
+        .chat-history { flex: 1; background: #fff; padding: 10px; overflow-y: auto; font-size: 13px; }
+        .chat-input-area { background: #eef6fb; padding: 10px; border-top: 1px solid #dcebf8; display: flex; flex-direction: column; height: 100px; }
+        .chat-textarea { flex: 1; border: 1px solid #aaccf0; border-radius: 3px; font-family: inherit; resize: none; padding: 5px; }
         
-        /* STATUS ICONS (CSS Shapes) */
-        .s-online { background: #4cb050; border: 1px solid #2e7d32; }
-        .s-busy { background: #e53935; border: 1px solid #c62828; }
-        .s-offline { background: #bdbdbd; border: 1px solid #757575; }
+        .msg-row { margin-bottom: 8px; }
+        .msg-sender { color: #888; font-size: 10px; margin-bottom: 2px; }
+        .msg-bubble { display: inline-block; padding: 6px 10px; border-radius: 4px; max-width: 80%; }
+        .msg-me { background: #eef6fb; border: 1px solid #dcebf8; color: #000; }
+        .msg-you { background: #fff; border: 1px solid #ddd; color: #000; }
 
-        /* SOHBET EKRANI */
-        .chat-history { flex: 1; background: #fff; padding: 10px; overflow-y: auto; font-size: 13px; line-height: 1.4; border-bottom: 1px solid #ccc; }
-        .msg-block { margin-bottom: 8px; }
-        .msg-header { color: #666; font-size: 11px; margin-bottom: 2px; }
-        .msg-header b { color: #2e5f94; }
-        .msg-content { margin-left: 5px; color: #000; }
-        .system-msg { color: #e91e63; font-weight: bold; font-style: italic; text-align: center; margin: 10px 0; }
-
-        .chat-tools { background: #f2f7fc; padding: 4px; display: flex; gap: 8px; border-bottom: 1px solid #e1e1e1; }
-        .tool-icon { cursor: pointer; color: #555; font-size: 18px; }
-        .tool-icon:hover { color: #000; }
-
-        .chat-input-area { height: 60px; padding: 5px; display: flex; flex-direction: column; }
-        .chat-textarea { flex: 1; border: none; resize: none; font-family: inherit; font-size: 12px; }
-        .send-bar { text-align: right; background: #f2f7fc; padding: 3px; border-top: 1px solid #e1e1e1; }
-
-        /* MODALS */
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); z-index: 999; justify-content: center; align-items: center;
-        }
-        .modal-box {
-            background: #fff; border: 2px solid #4a7ac9; width: 90%; max-width: 300px; padding: 15px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        /* AŞK SAYACI (Unique Feature) */
+        .love-footer {
+            background: #222; color: #fff; font-size: 10px; text-align: center; padding: 5px;
+            font-family: 'Courier New', monospace; letter-spacing: 1px;
         }
 
-        /* TİTREŞİM ANIMASYONU */
-        @keyframes nudgeShake {
-            0% { transform: translate(0, 0); }
-            10% { transform: translate(-5px, -5px); }
-            20% { transform: translate(5px, 5px); }
-            30% { transform: translate(-5px, 5px); }
-            40% { transform: translate(5px, -5px); }
-            50% { transform: translate(0, 0); }
-            100% { transform: translate(0, 0); }
+        /* TİTREŞİM */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
-        .shaking { animation: nudgeShake 0.4s ease-in-out infinite; }
-        
-        /* BOTTOM NAV (Mobil Navigasyon) */
-        .bottom-tabs { 
-            display: flex; background: #eef5fb; border-top: 1px solid #9fbddf; height: 45px;
-        }
-        .tab-btn { 
-            flex: 1; display: flex; align-items: center; justify-content: center; 
-            border-right: 1px solid #dae6f2; cursor: pointer; color: #444;
-        }
-        .tab-btn:hover, .tab-btn.active { background: #fff; color: #000; font-weight: bold; }
-
+        .shaking { animation: shake 0.5s; animation-iteration-count: infinite; }
     </style>
 </head>
 <body id="app-body">
@@ -138,113 +129,98 @@
     <audio id="snd-msg" src="https://www.myinstants.com/media/sounds/msn_messenger_new_message.mp3"></audio>
     <audio id="snd-nudge" src="https://www.myinstants.com/media/sounds/msn-nudge-sound.mp3"></audio>
 
-    <div id="screen-auth" class="screen active" style="justify-content:center; align-items:center;">
+    <div id="screen-auth" class="screen active">
         <div class="login-box">
-            <h2 style="color:#3465a4; margin-top:0;">Windows Live Messenger</h2>
-            <div class="msn-avatar-frame" onclick="document.getElementById('auth-file').click()">
-                <img id="auth-preview" src="https://via.placeholder.com/90" class="msn-avatar-img">
+            <div class="msn-butterfly"></div>
+            <h2 style="color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.5); margin:10px 0;">BizimSpace</h2>
+            
+            <div style="background:#fff; padding:5px; border-radius:5px; margin-bottom:15px; cursor:pointer;" onclick="document.getElementById('auth-file').click()">
+                <img id="auth-preview" src="https://via.placeholder.com/80" style="width:80px; height:80px; object-fit:cover;">
+                <div style="font-size:10px; color:#888;">Resim Seç</div>
             </div>
             <input type="file" id="auth-file" hidden accept="image/*">
-            <input type="email" id="auth-email" class="msn-input" placeholder="E-posta adresi">
+
+            <input type="email" id="auth-email" class="msn-input" placeholder="E-posta Adresi">
             <input type="password" id="auth-pass" class="msn-input" placeholder="Parola">
+            
             <button onclick="authAction('login')" class="msn-btn">Oturum Aç</button>
-            <button onclick="authAction('signup')" class="msn-btn">Kaydol</button>
-            <div id="loading-text" style="font-size:11px; color:#666; margin-top:10px; display:none;">Yükleniyor...</div>
+            <button onclick="authAction('signup')" class="msn-btn secondary">Kaydol</button>
+            <div id="loading-txt" style="color:#fff; font-size:12px; margin-top:10px; display:none;">Lütfen bekleyin...</div>
         </div>
     </div>
 
     <div id="screen-main" class="screen">
         <div class="window-frame">
             <div class="window-header">
-                <span class="win-title"><span class="material-icons" style="font-size:16px; margin-right:5px;">person</span> Messenger</span>
-                <span class="material-icons" onclick="logout()" style="font-size:16px; cursor:pointer;">close</span>
+                <span style="font-weight:bold; color:#2e5f94; display:flex; align-items:center;">
+                    <span class="material-icons" style="font-size:18px; margin-right:5px;">face</span> BizimSpace
+                </span>
+                <span class="material-icons" onclick="logout()" style="cursor:pointer; color:#666;">power_settings_new</span>
             </div>
-            
+
             <div class="my-card">
-                <img id="my-pic" src="" class="my-pic" onclick="openProfileEdit()">
-                <div class="my-details">
-                    <div id="my-nick" class="my-nick" onclick="openProfileEdit()">Yükleniyor...</div>
-                    <div id="my-msg" class="my-status-msg" onclick="editPersonalMsg()">[Kişisel bir ileti yazın]</div>
-                    <select id="my-status-select" onchange="updateStatus(this.value)" style="border:none; background:transparent; font-size:11px; margin-top:3px;">
+                <img id="my-pic" src="" class="my-pic" onclick="editProfile()">
+                <div style="flex:1; margin-left:10px;">
+                    <b id="my-nick" style="color:#2e5f94; cursor:pointer;" onclick="editProfile()">...</b>
+                    <div id="my-msg" style="font-size:11px; color:#666; font-style:italic; cursor:pointer;" onclick="editStatusMsg()">[İleti yazmak için tıklayın]</div>
+                    <select id="my-status" onchange="setStatus(this.value)" style="border:none; background:transparent; font-size:11px; margin-top:3px;">
                         <option value="online">🟢 Çevrimiçi</option>
                         <option value="busy">⛔ Meşgul</option>
-                        <option value="away">🟡 Dışarıda</option>
                         <option value="offline">⚪ Çevrimdışı Görün</option>
                     </select>
                 </div>
             </div>
 
-            <div style="background:#fcfcfc; border-bottom:1px solid #ddd; display:flex; padding:5px; font-size:11px; gap:10px;">
-                <span onclick="showTab('contacts')" style="cursor:pointer; font-weight:bold; color:#333;">Kişiler</span>
-                <span onclick="showTab('add')" style="cursor:pointer; color:#666;">Arkadaş Ekle</span>
-                <span onclick="showTab('requests')" style="cursor:pointer; color:#666;">İstekler (<span id="req-count">0</span>)</span>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('contacts', this)">Kişiler</div>
+                <div class="tab" onclick="switchTab('search', this)">Arkadaş Ekle</div>
+                <div class="tab" onclick="switchTab('requests', this)">İstekler (<span id="req-count">0</span>)</div>
             </div>
 
             <div id="tab-contacts" class="list-area">
-                <div class="group-title">▼ Çevrimiçi</div>
-                <div id="list-online"></div>
-                <div class="group-title" style="margin-top:10px;">▼ Çevrimdışı</div>
-                <div id="list-offline"></div>
+                <div style="padding:5px; font-size:11px; font-weight:bold; color:#4a7ac9;">▼ Arkadaşlarım</div>
+                <div id="friend-list"></div>
             </div>
 
-            <div id="tab-add" class="list-area" style="display:none; padding:15px; text-align:center;">
-                <h4 style="margin:0 0 10px 0; color:#4a7ac9;">Kişi Ekle</h4>
-                <input type="text" id="search-input" class="msn-input" placeholder="E-posta veya Ad ara...">
-                <button onclick="searchUsers()" class="msn-btn">Ara</button>
-                <div id="search-results" style="margin-top:15px; text-align:left;"></div>
+            <div id="tab-search" class="list-area" style="display:none; padding:15px; text-align:center;">
+                <input type="text" id="search-in" class="msn-input" placeholder="İsim veya E-posta ara...">
+                <button onclick="searchUser()" class="msn-btn" style="width:auto;">Ara</button>
+                <div id="search-res" style="margin-top:15px; text-align:left;"></div>
             </div>
 
             <div id="tab-requests" class="list-area" style="display:none;">
-                <div class="group-title">Bekleyen İstekler</div>
-                <div id="request-list"></div>
+                <div id="req-list"></div>
             </div>
 
+            <div class="love-footer" id="love-timer">
+                Birliktelik: Hesaplanıyor...
+            </div>
         </div>
     </div>
 
     <div id="screen-chat" class="screen">
         <div class="window-frame">
-            <div class="window-header">
-                <span class="win-title">
-                    <span class="material-icons" style="font-size:16px; margin-right:5px;">chat</span>
-                    <span id="chat-title-name">...</span>
-                </span>
-                <span class="material-icons" onclick="closeChat()" style="font-size:16px; cursor:pointer;">close</span>
+            <div class="window-header" style="background:linear-gradient(to right, #fff, #eef6fb);">
+                <div style="display:flex; align-items:center;">
+                    <img id="chat-head-img" src="" style="width:30px; height:30px; border-radius:4px; margin-right:5px;">
+                    <span id="chat-head-name" style="font-weight:bold; color:#2e5f94;">...</span>
+                </div>
+                <span class="material-icons" onclick="closeChat()" style="cursor:pointer; color:#666;">close</span>
             </div>
-            
-            <div class="chat-tools">
-                <span class="tool-icon material-icons" onclick="sendNudge()" title="Titreşim Gönder">vibration</span>
-                <span class="tool-icon material-icons" onclick="document.getElementById('file-input').click()" title="Fotoğraf Gönder">image</span>
-                <span class="tool-icon material-icons" title="İfadeler">sentiment_satisfied_alt</span>
-            </div>
-            <input type="file" id="file-input" hidden accept="image/*">
 
-            <div id="chat-history" class="chat-history"></div>
+            <div style="background:#f0f6fc; padding:5px; border-bottom:1px solid #ddd; display:flex; gap:10px;">
+                <button onclick="sendNudge()" style="border:1px solid #ccc; background:#fff; cursor:pointer;" title="Titreşim">📳</button>
+                <button onclick="document.getElementById('chat-file').click()" style="border:1px solid #ccc; background:#fff; cursor:pointer;" title="Resim">📷</button>
+                <input type="file" id="chat-file" hidden accept="image/*">
+            </div>
+
+            <div id="chat-box" class="chat-history"></div>
 
             <div class="chat-input-area">
-                <textarea id="chat-msg-input" class="chat-textarea"></textarea>
-            </div>
-            <div class="send-bar">
-                <button onclick="sendMessage()" class="msn-btn">Gönder</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-profile" class="modal-overlay">
-        <div class="modal-box">
-            <h3 style="margin-top:0; color:#4a7ac9;">Seçenekler</h3>
-            <div style="text-align:center; margin-bottom:10px;">
-                <img id="edit-img-prev" src="" style="width:60px; height:60px; border:1px solid #aaa;">
-                <div style="font-size:10px; color:blue; cursor:pointer;" onclick="document.getElementById('edit-file').click()">Resmi Değiştir</div>
-                <input type="file" id="edit-file" hidden>
-            </div>
-            <label style="font-size:11px;">Görüntülenen Ad:</label>
-            <input type="text" id="edit-nick" class="msn-input">
-            <label style="font-size:11px;">Kişisel İleti:</label>
-            <input type="text" id="edit-msg" class="msn-input">
-            <div style="text-align:right;">
-                <button onclick="saveProfile()" class="msn-btn">Tamam</button>
-                <button onclick="document.getElementById('modal-profile').style.display='none'" class="msn-btn">İptal</button>
+                <textarea id="chat-text" class="chat-textarea"></textarea>
+                <div style="text-align:right; margin-top:5px;">
+                    <button onclick="sendMessage()" class="msn-btn" style="width:auto; padding:4px 15px;">Gönder</button>
+                </div>
             </div>
         </div>
     </div>
@@ -254,9 +230,8 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, setDoc, getDoc, getDocs, where, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // IMGBB KEY (Senin Keyin)
+        // CONFIG
         const IMGBB_KEY = "4e42bfb4bfa830f09e932aa64cc20bb6";
-
         const app = initializeApp({
             apiKey: "AIzaSyA90T44N_om_KnTs3Wg06m8pBry0L20nVw",
             authDomain: "sosyal-medya-a46b6.firebaseapp.com",
@@ -265,64 +240,70 @@
             messagingSenderId: "990331063740",
             appId: "1:990331063740:web:e18de69584fc82825aafb9"
         });
-
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         let currentUser = null;
         let userData = {};
         let activeChatId = null;
-        let activeChatUser = null; // Karşı tarafın uid'si
 
-        // --- SESLER ---
-        const playSnd = (id) => { document.getElementById(id).currentTime=0; document.getElementById(id).play().catch(()=>{}); };
+        // --- AŞK SAYACI (EĞLENCELİ ÖZELLİK) ---
+        // Buraya ilişkinizin başlangıç tarihini girebilirsin (Yıl, Ay-1, Gün)
+        const startDate = new Date(2023, 0, 1); // Örn: 1 Ocak 2023
+        setInterval(() => {
+            const now = new Date();
+            const diff = now - startDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const mins = Math.floor((diff / 1000 / 60) % 60);
+            const secs = Math.floor((diff / 1000) % 60);
+            document.getElementById('love-timer').innerText = `❤️ ${days} Gün ${hours} Sa ${mins} Dk ${secs} Sn ❤️`;
+        }, 1000);
 
         // --- YARDIMCI ---
+        const playSnd = (id) => document.getElementById(id).play().catch(()=>{});
         const uploadImg = async (file) => {
             const fd = new FormData(); fd.append("image", file);
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
             const data = await res.json();
             if(data.success) return data.data.url;
-            throw new Error("Resim yüklenemedi");
+            throw new Error("Hata");
         };
 
         // --- AUTH ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // Kendini dinle
                 onSnapshot(doc(db, "users", user.uid), (s) => {
                     if(s.exists()) {
                         userData = s.data();
-                        updateMyUI();
+                        updateUI();
+                        loadFriends();
+                        loadRequests();
                     }
                 });
-                // Online yap
                 await updateDoc(doc(db, "users", user.uid), { status: 'online' });
                 playSnd('snd-login');
-
                 document.getElementById('screen-auth').classList.remove('active');
                 document.getElementById('screen-main').classList.add('active');
-                loadFriends();
-                loadRequests();
             } else {
-                document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
                 document.getElementById('screen-auth').classList.add('active');
             }
         });
 
-        function updateMyUI() {
+        function updateUI() {
             document.getElementById('my-pic').src = userData.photoURL || "https://via.placeholder.com/60";
             document.getElementById('my-nick').innerText = userData.username;
-            document.getElementById('my-msg').innerText = userData.personalMsg || "[Kişisel bir ileti yazın]";
-            document.getElementById('my-status-select').value = userData.status || 'online';
+            document.getElementById('my-msg').innerText = userData.personalMsg || "[İleti yazmak için tıklayın]";
+            document.getElementById('my-status').value = userData.status || 'online';
         }
 
         window.authAction = async (type) => {
             const e = document.getElementById('auth-email').value;
             const p = document.getElementById('auth-pass').value;
             if(!e || !p) return alert("Bilgileri girin");
-            document.getElementById('loading-text').style.display='block';
+            document.getElementById('loading-txt').style.display='block';
             
             try {
                 if(type === 'login') await signInWithEmailAndPassword(auth, e, p);
@@ -333,13 +314,12 @@
                     if(f) url = await uploadImg(f);
                     
                     await setDoc(doc(db, "users", c.user.uid), {
-                        uid: c.user.uid, email: e, username: e.split('@')[0], 
-                        photoURL: url, status: 'online', personalMsg: '',
-                        friends: [] 
+                        uid: c.user.uid, email: e, username: e.split('@')[0],
+                        photoURL: url, status: 'online', personalMsg: '', friends: []
                     }, {merge:true});
                 }
             } catch(err) { alert(err.message); }
-            document.getElementById('loading-text').style.display='none';
+            document.getElementById('loading-txt').style.display='none';
         };
 
         window.logout = async () => {
@@ -347,202 +327,166 @@
             signOut(auth);
         };
 
-        // --- ARKADAŞLIK SİSTEMİ ---
-        
-        // 1. Arkadaşları Listele
-        function loadFriends() {
-            // Arkadaş listesi users içinde array olarak tutuluyor (Basit model)
-            // Daha gelişmişi: subcollection
-            onSnapshot(doc(db, "users", currentUser.uid), async (s) => {
-                const data = s.data();
-                const friends = data.friends || [];
-                
-                const onlineDiv = document.getElementById('list-online');
-                const offlineDiv = document.getElementById('list-offline');
-                onlineDiv.innerHTML = ""; offlineDiv.innerHTML = "";
-
-                for(const friendId of friends) {
-                    const fSnap = await getDoc(doc(db, "users", friendId));
-                    if(fSnap.exists()) {
-                        const f = fSnap.data();
-                        const st = f.status || 'offline';
-                        const dotClass = st === 'online' ? 's-online' : (st === 'busy' ? 's-busy' : 's-offline');
-                        
-                        const html = `
-                            <div class="contact-item" onclick="openChat('${f.uid}', '${f.username}')">
-                                <div class="status-icon ${dotClass}"></div>
-                                <div style="flex:1;">
-                                    <span style="font-weight:bold; font-size:13px;">${f.username}</span>
-                                    <span style="color:#666; font-size:11px; margin-left:5px;">${st === 'busy' ? '(Meşgul)' : ''}</span>
-                                    <div style="font-size:10px; color:#888; font-style:italic;">${f.personalMsg || ''}</div>
-                                </div>
-                            </div>
-                        `;
-                        
-                        if(st === 'offline') offlineDiv.innerHTML += html;
-                        else onlineDiv.innerHTML += html;
-                    }
-                }
-            });
-        }
-
-        // 2. Kullanıcı Ara
-        window.searchUsers = async () => {
-            const val = document.getElementById('search-input').value.toLowerCase();
-            const res = document.getElementById('search-results'); res.innerHTML = "Aranıyor...";
+        // --- ARKADAŞLIK & ARAMA (DÜZELTİLDİ: Client Side Filter) ---
+        window.searchUser = async () => {
+            const val = document.getElementById('search-in').value.toLowerCase();
+            const res = document.getElementById('search-res'); res.innerHTML = "Aranıyor...";
             
-            // Tüm kullanıcıları çekip filtrele (Küçük ölçek için)
             const snap = await getDocs(collection(db, "users"));
             res.innerHTML = "";
+            let found = false;
+
             snap.forEach(d => {
                 const u = d.data();
-                if(u.uid !== currentUser.uid && (u.email.includes(val) || u.username.toLowerCase().includes(val))) {
+                // Büyük/Küçük harf duyarsız arama
+                if (u.uid !== currentUser.uid && (u.email.toLowerCase().includes(val) || u.username.toLowerCase().includes(val))) {
+                    found = true;
                     res.innerHTML += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:5px; border-bottom:1px solid #eee;">
-                            <div>
-                                <b>${u.username}</b><br><small>${u.email}</small>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding:5px;">
+                            <div style="display:flex; align-items:center;">
+                                <img src="${u.photoURL}" style="width:30px; height:30px; border-radius:3px; margin-right:5px;">
+                                <div><b>${u.username}</b><br><small>${u.email}</small></div>
                             </div>
-                            <button onclick="sendFriendRequest('${u.uid}')" class="msn-btn">Ekle</button>
+                            <button class="msn-btn" style="width:auto; padding:2px 10px;" onclick="addFriend('${u.uid}')">Ekle</button>
                         </div>
                     `;
                 }
             });
-            if(res.innerHTML === "") res.innerHTML = "Sonuç bulunamadı.";
+            if(!found) res.innerHTML = "Sonuç bulunamadı.";
         };
 
-        // 3. İstek Gönder
-        window.sendFriendRequest = async (targetUid) => {
-            const reqId = [currentUser.uid, targetUid].sort().join("_");
-            await setDoc(doc(db, "friend_requests", reqId), {
-                from: currentUser.uid, to: targetUid, status: 'pending'
-            });
+        window.addFriend = async (targetUid) => {
+            const id = [currentUser.uid, targetUid].sort().join("_");
+            await setDoc(doc(db, "requests", id), { from: currentUser.uid, to: targetUid, status: 'pending' });
             alert("İstek gönderildi!");
         };
 
-        // 4. İstekleri Listele
         function loadRequests() {
-            const q = query(collection(db, "friend_requests"), where("to", "==", currentUser.uid), where("status", "==", "pending"));
+            const q = query(collection(db, "requests"), where("to", "==", currentUser.uid), where("status", "==", "pending"));
             onSnapshot(q, async (snap) => {
-                const div = document.getElementById('request-list'); 
-                div.innerHTML = "";
+                const div = document.getElementById('req-list'); div.innerHTML = "";
                 document.getElementById('req-count').innerText = snap.size;
-
+                
                 for(const d of snap.docs) {
                     const req = d.data();
-                    const uSnap = await getDoc(doc(db, "users", req.from));
-                    const u = uSnap.data();
-                    
+                    const u = (await getDoc(doc(db, "users", req.from))).data();
                     div.innerHTML += `
-                        <div style="padding:10px; border-bottom:1px solid #ccc; background:#fff;">
+                        <div style="background:#ffffe0; padding:5px; border:1px solid #ccc; margin-bottom:5px;">
                             <b>${u.username}</b> sizi eklemek istiyor.
                             <div style="margin-top:5px;">
-                                <button onclick="acceptRequest('${d.id}', '${req.from}')" class="msn-btn">Kabul Et</button>
-                                <button onclick="rejectRequest('${d.id}')" class="msn-btn">Reddet</button>
+                                <button onclick="acceptReq('${d.id}', '${req.from}')">Kabul</button>
+                                <button onclick="rejectReq('${d.id}')">Red</button>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 }
             });
         }
 
-        window.acceptRequest = async (docId, friendUid) => {
-            // İki tarafın da friends arrayine ekle
+        window.acceptReq = async (docId, friendUid) => {
             const myRef = doc(db, "users", currentUser.uid);
-            const friendRef = doc(db, "users", friendUid);
+            const frRef = doc(db, "users", friendUid);
+            const myF = userData.friends || []; myF.push(friendUid);
+            const frData = (await getDoc(frRef)).data();
+            const frF = frData.friends || []; frF.push(currentUser.uid);
             
-            // Arkadaş listelerini güncelle (ArrayUnion kullanmak daha iyi ama basit push yapalım)
-            // Önce oku
-            const me = (await getDoc(myRef)).data();
-            const him = (await getDoc(friendRef)).data();
-            
-            const myFriends = me.friends || [];
-            const hisFriends = him.friends || [];
-            
-            if(!myFriends.includes(friendUid)) myFriends.push(friendUid);
-            if(!hisFriends.includes(currentUser.uid)) hisFriends.push(currentUser.uid);
-            
-            await updateDoc(myRef, { friends: myFriends });
-            await updateDoc(friendRef, { friends: hisFriends });
-            
-            // İsteği sil
-            await deleteDoc(doc(db, "friend_requests", docId));
+            await updateDoc(myRef, { friends: myF });
+            await updateDoc(frRef, { friends: frF });
+            await deleteDoc(doc(db, "requests", docId));
             alert("Kişi eklendi!");
         };
+        window.rejectReq = async (id) => await deleteDoc(doc(db, "requests", id));
 
-        window.rejectRequest = async (id) => await deleteDoc(doc(db, "friend_requests", id));
+        function loadFriends() {
+            const list = document.getElementById('friend-list');
+            const friends = userData.friends || [];
+            if(friends.length === 0) list.innerHTML = "<div style='padding:5px; color:#666;'>Listeniz boş. Arkadaş ekleyin.</div>";
+            else list.innerHTML = "";
 
+            friends.forEach(async (uid) => {
+                onSnapshot(doc(db, "users", uid), (s) => {
+                    const f = s.data();
+                    // Var olanı güncelleme yerine basitçe ekliyoruz (Prototip için)
+                    // Gerçek uygulamada ID ile div kontrolü yapılmalı, burada basitlik için geçiyoruz.
+                    // Fakat canlı güncelleme için listeyi temizleyip baştan çekmek daha temiz:
+                    renderFriend(f);
+                });
+            });
+        }
+
+        // Basit render (Duplicate engellemek için div id kontrolü)
+        function renderFriend(f) {
+            const list = document.getElementById('friend-list');
+            let item = document.getElementById('friend-'+f.uid);
+            const stColor = f.status==='online'?'green':(f.status==='busy'?'red':'grey');
+            
+            const html = `
+                <div class="status-light ${stColor}"></div>
+                <div style="flex:1;">
+                    <span style="font-weight:bold; color:#000;">${f.username}</span> 
+                    <span style="font-size:10px; color:#666;">(${f.status})</span>
+                    <div style="font-size:10px; color:#888; font-style:italic;">${f.personalMsg || ''}</div>
+                </div>
+            `;
+
+            if(item) { item.innerHTML = html; }
+            else {
+                item = document.createElement('div');
+                item.className = 'contact-item';
+                item.id = 'friend-'+f.uid;
+                item.innerHTML = html;
+                item.onclick = () => openChat(f.uid, f.username, f.photoURL);
+                list.appendChild(item);
+            }
+        }
 
         // --- CHAT ---
-        window.openChat = (uid, name) => {
-            activeChatUser = uid;
-            document.getElementById('chat-title-name').innerText = name;
+        window.openChat = (uid, name, photo) => {
+            activeChatId = [currentUser.uid, uid].sort().join("_");
+            document.getElementById('chat-head-name').innerText = name;
+            document.getElementById('chat-head-img').src = photo || "";
             document.getElementById('screen-main').classList.remove('active');
             document.getElementById('screen-chat').classList.add('active');
-            
-            activeChatId = [currentUser.uid, uid].sort().join("_");
-            
+
             onSnapshot(query(collection(db, "chats", activeChatId, "messages"), orderBy("date", "asc")), (snap) => {
-                const hist = document.getElementById('chat-history');
-                hist.innerHTML = "";
-                snap.docChanges().forEach((c) => {
-                    if(c.type === 'added') {
-                        const m = c.doc.data();
-                        
-                        if(m.type === 'nudge') {
-                            hist.innerHTML += `<div class="system-msg">--- ${m.senderName} size bir titreşim gönderdi! ---</div>`;
-                            if(m.sender !== currentUser.uid) {
-                                playSnd('snd-nudge');
-                                document.getElementById('app-body').classList.add('shaking');
-                                setTimeout(()=>document.getElementById('app-body').classList.remove('shaking'), 1000);
-                            }
-                        } else if (m.type === 'image') {
-                            hist.innerHTML += `
-                                <div class="msg-block">
-                                    <div class="msg-header"><b>${m.senderName}</b> diyor ki:</div>
-                                    <div class="msg-content"><img src="${m.text}" style="max-width:200px; border:2px solid #fff; box-shadow:0 0 5px #ccc;"></div>
-                                </div>
-                            `;
-                            if(m.sender !== currentUser.uid) playSnd('snd-msg');
-                        } else {
-                            hist.innerHTML += `
-                                <div class="msg-block">
-                                    <div class="msg-header"><b>${m.senderName}</b> diyor ki:</div>
-                                    <div class="msg-content">${m.text}</div>
-                                </div>
-                            `;
-                            if(m.sender !== currentUser.uid) playSnd('snd-msg');
-                        }
+                const box = document.getElementById('chat-box'); box.innerHTML = "";
+                snap.forEach(d => {
+                    const m = d.data();
+                    if(m.type === 'nudge') {
+                        box.innerHTML += `<div class="system-msg">--- ${m.senderName} titreşim gönderdi! ---</div>`;
+                        if(m.sender !== currentUser.uid) { playSnd('snd-nudge'); document.getElementById('app-body').classList.add('shaking'); setTimeout(()=>document.getElementById('app-body').classList.remove('shaking'), 500); }
+                    } else if(m.type === 'image') {
+                        box.innerHTML += `<div class="msg-row"><div class="msg-sender">${m.senderName}:</div><img src="${m.text}" style="max-width:150px; border:4px solid #fff; box-shadow:0 0 5px #ccc;"></div>`;
+                    } else {
+                        box.innerHTML += `<div class="msg-row"><div class="msg-sender">${m.senderName}:</div><div class="msg-bubble ${m.sender===currentUser.uid?'msg-me':'msg-you'}">${m.text}</div></div>`;
+                        if(m.sender !== currentUser.uid) playSnd('snd-msg');
                     }
                 });
-                hist.scrollTop = hist.scrollHeight;
+                box.scrollTop = box.scrollHeight;
             });
         };
 
         window.sendMessage = async () => {
-            const txt = document.getElementById('chat-msg-input').value.trim();
+            const txt = document.getElementById('chat-text').value.trim();
             if(!txt) return;
             await addDoc(collection(db, "chats", activeChatId, "messages"), {
                 text: txt, sender: currentUser.uid, senderName: userData.username, type: 'text', date: serverTimestamp()
             });
-            document.getElementById('chat-msg-input').value = "";
+            document.getElementById('chat-text').value = "";
         };
 
         window.sendNudge = async () => {
-             await addDoc(collection(db, "chats", activeChatId, "messages"), {
-                text: "TITRESIM", sender: currentUser.uid, senderName: userData.username, type: 'nudge', date: serverTimestamp()
+            await addDoc(collection(db, "chats", activeChatId, "messages"), {
+                text: "NUDE", sender: currentUser.uid, senderName: userData.username, type: 'nudge', date: serverTimestamp()
             });
-            // Kendim de salla
-            document.getElementById('app-body').classList.add('shaking');
-            setTimeout(()=>document.getElementById('app-body').classList.remove('shaking'), 1000);
         };
-        
-        document.getElementById('file-input').onchange = async (e) => {
-             if(e.target.files[0]) {
-                 const url = await uploadImg(e.target.files[0]);
-                 await addDoc(collection(db, "chats", activeChatId, "messages"), {
+
+        document.getElementById('chat-file').onchange = async (e) => {
+            if(e.target.files[0]) {
+                const url = await uploadImg(e.target.files[0]);
+                await addDoc(collection(db, "chats", activeChatId, "messages"), {
                     text: url, sender: currentUser.uid, senderName: userData.username, type: 'image', date: serverTimestamp()
                 });
-             }
+            }
         };
 
         window.closeChat = () => {
@@ -550,44 +494,40 @@
             document.getElementById('screen-main').classList.add('active');
         };
 
-        // --- PROFİL DÜZENLEME ---
+        // --- PROFIL ---
+        document.getElementById('auth-file').onchange = (e) => {
+            if(e.target.files[0]) document.getElementById('auth-preview').src = URL.createObjectURL(e.target.files[0]);
+        };
+        document.getElementById('edit-file').onchange = (e) => {
+            if(e.target.files[0]) document.getElementById('edit-img-prev').src = URL.createObjectURL(e.target.files[0]);
+        };
         window.openProfileEdit = () => {
             document.getElementById('edit-nick').value = userData.username;
             document.getElementById('edit-msg').value = userData.personalMsg || "";
             document.getElementById('edit-img-prev').src = userData.photoURL;
-            document.getElementById('modal-profile').style.display = 'flex';
-        };
-        document.getElementById('edit-file').onchange = (e) => {
-             if(e.target.files[0]) document.getElementById('edit-img-prev').src = URL.createObjectURL(e.target.files[0]);
+            document.getElementById('modal-profile').style.display='flex';
         };
         window.saveProfile = async () => {
-            const nick = document.getElementById('edit-nick').value;
-            const msg = document.getElementById('edit-msg').value;
+            const n = document.getElementById('edit-nick').value;
+            const m = document.getElementById('edit-msg').value;
             const f = document.getElementById('edit-file').files[0];
             let url = userData.photoURL;
             if(f) url = await uploadImg(f);
-            
-            await updateDoc(doc(db, "users", currentUser.uid), {
-                username: nick, personalMsg: msg, photoURL: url
-            });
-            document.getElementById('modal-profile').style.display = 'none';
+            await updateDoc(doc(db, "users", currentUser.uid), { username: n, personalMsg: m, photoURL: url });
+            document.getElementById('modal-profile').style.display='none';
         };
-        
-        // Kişisel ileti kısayolu
         window.editPersonalMsg = async () => {
-            const m = prompt("İletiniz:", userData.personalMsg);
+            const m = prompt("Kişisel İletiniz:", userData.personalMsg);
             if(m !== null) await updateDoc(doc(db, "users", currentUser.uid), { personalMsg: m });
         };
-        
-        // Durum güncelle
-        window.updateStatus = async (val) => {
-            await updateDoc(doc(db, "users", currentUser.uid), { status: val });
-        };
+        window.setStatus = async (v) => await updateDoc(doc(db, "users", currentUser.uid), { status: v });
 
-        // TAB GECISLERI
-        window.showTab = (tab) => {
-            document.querySelectorAll('.list-area').forEach(e => e.style.display = 'none');
-            document.getElementById('tab-'+tab).style.display = 'block';
+        // TABS
+        window.switchTab = (name, el) => {
+            document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.list-area').forEach(d=>d.style.display='none');
+            document.getElementById('tab-'+name).style.display='block';
         };
 
     </script>
