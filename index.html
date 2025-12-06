@@ -3,57 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LoveSync Social v2</title>
+    <title>VibeChat - Social</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0f172a; /* Dark theme base */
+            color: #e2e8f0;
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
             overflow: hidden;
         }
 
-        /* --- Animasyonlu Arka Plan --- */
+        /* --- Cyber/Neon Animasyonlu Arka Plan --- */
         .animated-bg {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1;
-            background: #fff0f5;
+            background: #0f172a;
             overflow: hidden;
         }
         .blob {
             position: absolute;
-            background: linear-gradient(180deg, rgba(255, 192, 203, 0.4) 0%, rgba(255, 105, 180, 0.3) 100%);
             border-radius: 50%;
-            filter: blur(40px);
-            animation: floatBlob 10s infinite alternate ease-in-out;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: floatBlob 15s infinite alternate ease-in-out;
         }
-        .blob-1 { width: 300px; height: 300px; top: -50px; left: -50px; animation-delay: 0s; }
-        .blob-2 { width: 250px; height: 250px; bottom: -50px; right: -50px; background: rgba(135, 206, 250, 0.3); animation-delay: -5s; }
+        .blob-1 { 
+            width: 400px; height: 400px; top: -100px; left: -100px; 
+            background: radial-gradient(circle, rgba(124, 58, 237, 1) 0%, rgba(0,0,0,0) 70%); /* Violet */
+        }
+        .blob-2 { 
+            width: 350px; height: 350px; bottom: -50px; right: -50px; 
+            background: radial-gradient(circle, rgba(14, 165, 233, 1) 0%, rgba(0,0,0,0) 70%); /* Sky Blue */
+            animation-delay: -5s; 
+        }
+        .blob-3 {
+            width: 200px; height: 200px; top: 40%; left: 40%;
+            background: radial-gradient(circle, rgba(236, 72, 153, 1) 0%, rgba(0,0,0,0) 70%); /* Pink accent */
+            animation-delay: -10s;
+        }
         
         @keyframes floatBlob {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, 50px) scale(1.1); }
+            100% { transform: translate(40px, 60px) scale(1.1); }
         }
 
-        /* --- Animasyonlu Avatar Çerçevesi --- */
+        /* --- Neon Avatar --- */
         .avatar-container {
             position: relative;
             display: inline-block;
-            padding: 3px;
+            padding: 2px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ff00cc, #3333ff, #ff00cc);
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #ec4899);
             background-size: 200% 200%;
             animation: spinBorder 3s linear infinite;
         }
         .avatar-img {
             display: block;
             border-radius: 50%;
-            background: white;
+            background: #1e293b;
             position: relative;
             z-index: 2;
         }
@@ -63,97 +76,100 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- Sohbet Baloncuk Animasyonları --- */
+        /* --- Mesajlar --- */
         .message-enter {
-            animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: slideInUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(15px);
         }
-        
-        @keyframes slideInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideInUp { to { opacity: 1; transform: translateY(0); } }
 
         .message-bubble {
-            max-width: 80%;
+            max-width: 85%;
             word-wrap: break-word;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             position: relative;
+            font-weight: 500;
         }
 
         .message-mine {
-            background: linear-gradient(135deg, #FF6B6B 0%, #EE5253 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); /* Indigo to Violet */
             color: white;
-            border-radius: 20px 20px 4px 20px;
+            border-radius: 18px 18px 4px 18px;
         }
 
         .message-theirs {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(5px);
-            color: #334155;
-            border-radius: 20px 20px 20px 4px;
-            border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(30, 41, 59, 0.85); /* Slate 800 */
+            backdrop-filter: blur(10px);
+            color: #f1f5f9;
+            border-radius: 18px 18px 18px 4px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Glassmorphism Panel */
+        /* Glassmorphism Panel (Dark Mode) */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
         /* Input Alanı */
         .glass-input {
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(4px);
             transition: all 0.3s ease;
+            color: white;
         }
         .glass-input:focus {
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.1);
-            border-color: #ff69b4;
+            background: rgba(15, 23, 42, 0.9);
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
         }
 
-        /* Genel UI */
-        .bottom-nav-item.active i {
-            color: #EE5253;
+        /* Nav Item */
+        .bottom-nav-item { transition: all 0.3s ease; opacity: 0.6; }
+        .bottom-nav-item.active {
+            opacity: 1;
             transform: translateY(-5px);
-            filter: drop-shadow(0 4px 6px rgba(238, 82, 83, 0.3));
         }
-        .bottom-nav-item i {
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .bottom-nav-item.active i {
+            color: #38bdf8; /* Sky blue */
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
         }
 
+        /* Loader */
         .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #FFF;
-            border-bottom-color: #FF3D00;
+            width: 48px; height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #38bdf8;
             border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
-            animation: rotation 1s linear infinite;
+            animation: spin 1s linear infinite;
         }
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Scrollbar Hide */
+        ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800">
+<body class="h-screen w-screen overflow-hidden flex flex-col">
 
     <!-- Animasyonlu Arka Plan -->
     <div class="animated-bg">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
     </div>
 
-    <!-- Firebase Script -->
+    <!-- Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp, query, where, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Kullanıcının verdiği yapılandırma
+        // Config
         const userProvidedConfig = {
             apiKey: "AIzaSyD9TSJoNxqly-dsFrqLK2fb5_fAxAa4wGk",
             authDomain: "sosyal-medya-2.firebaseapp.com",
@@ -164,9 +180,6 @@
             appId: "1:640354012132:web:085a9489861f780b9095f1",
             measurementId: "G-XMY4N1ZVXM"
         };
-
-        // Bu ortamda çalışması için sistem config'ini fallback olarak kullanacağız.
-        // Eğer kendi domaininde çalıştırırsan userProvidedConfig'i direkt kullanabilirsin.
         const activeConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userProvidedConfig;
         const activeAppId = typeof __app_id !== 'undefined' ? __app_id : userProvidedConfig.projectId;
 
@@ -181,37 +194,53 @@
         let activeChatId = null;
         let unsubscribeMessages = null;
 
-        // UI Helpers - Window'a atayarak global erişim sağlıyoruz
+        // --- GLOBAL HELPERS ---
         window.show = (id) => {
             document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
         };
 
-        // --- AUTH LOGIC ---
-        
-        // 1. Durum Kontrolü
+        window.setLoading = (state, text="Yükleniyor...") => {
+            const loader = document.getElementById('global-loader');
+            if(state) {
+                loader.classList.remove('hidden');
+                loader.querySelector('p').innerText = text;
+            } else {
+                loader.classList.add('hidden');
+            }
+        };
+
+        // --- AUTH LOGIC (Fixed "Stuck" Issue) ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // Profil verisi var mı kontrol et
-                const userDoc = await getDoc(doc(db, 'artifacts', activeAppId, 'users', user.uid, 'profile', 'data'));
-                if (userDoc.exists()) {
-                    myUserProfile = userDoc.data();
-                    updateProfileUI();
-                    window.show('screen-main');
-                    loadPeople();
-                } else {
-                    // Kullanıcı var ama profili yok (yeni kayıt)
-                    window.show('screen-profile-setup');
+                // Profil kontrolü sırasında loader'ı göster
+                window.setLoading(true, "Profil doğrulanıyor...");
+                try {
+                    const userDocRef = doc(db, 'artifacts', activeAppId, 'users', user.uid, 'profile', 'data');
+                    const userDoc = await getDoc(userDocRef);
+                    
+                    if (userDoc.exists()) {
+                        myUserProfile = userDoc.data();
+                        updateProfileUI();
+                        window.show('screen-main');
+                        loadPeople();
+                    } else {
+                        // Kullanıcı var ama profili yok
+                        window.show('screen-profile-setup');
+                    }
+                } catch (error) {
+                    console.error("Profil kontrol hatası:", error);
+                    alert("Bir hata oluştu, lütfen sayfayı yenile.");
                 }
             } else {
                 window.show('screen-welcome');
             }
+            // Her durumda işlem bitince loader'ı kapat
+            window.setLoading(false);
         });
 
-        // Yardımcı Fonksiyon: Demo Ortamı için Güvenli Giriş
         async function safeAuthFallback() {
-            console.log("Demo ortamı fallback çalıştırılıyor...");
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 await signInWithCustomToken(auth, __initial_auth_token);
             } else {
@@ -219,133 +248,119 @@
             }
         }
 
-        // 2. Kayıt Ol
+        // --- HANDLERS ---
         window.handleRegister = async () => {
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-pass').value;
+            if(!email || !pass) return alert("Eksik bilgi!");
             
-            if(!email || !pass) return alert("Bilgileri doldurunuz.");
-            
-            setLoading(true);
+            window.setLoading(true, "Hesap oluşturuluyor...");
             try {
                 await createUserWithEmailAndPassword(auth, email, pass);
+                // Başarılı olursa onAuthStateChanged yakalayacak
             } catch (error) {
                 if (error.code === 'auth/operation-not-allowed') {
-                    // Demo ortamında email auth kapalıysa fallback yap
-                    alert("Demo ortamında E-posta kaydı devre dışı olduğundan test edebilmeniz için Misafir Girişi yapılıyor.");
                     await safeAuthFallback();
                 } else {
-                    console.error(error);
-                    alert("Kayıt hatası: " + error.message);
-                    setLoading(false);
+                    alert("Hata: " + error.message);
+                    window.setLoading(false); // Hata durumunda manuel kapat
                 }
             }
         };
 
-        // 3. Giriş Yap
         window.handleLogin = async () => {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
+            if(!email || !pass) return alert("Eksik bilgi!");
 
-            if(!email || !pass) return alert("Bilgileri doldurunuz.");
-
-            setLoading(true);
+            window.setLoading(true, "Giriş yapılıyor...");
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
             } catch (error) {
                 if (error.code === 'auth/operation-not-allowed') {
-                    // Demo ortamında email auth kapalıysa fallback yap
-                    alert("Demo ortamında E-posta girişi devre dışı olduğundan test edebilmeniz için Misafir Girişi yapılıyor.");
                     await safeAuthFallback();
                 } else {
-                    console.error(error);
-                    alert("Giriş hatası: " + error.message);
-                    setLoading(false);
+                    alert("Hata: " + error.message);
+                    window.setLoading(false); // Hata durumunda manuel kapat
                 }
             }
         };
 
         window.handleLogout = () => {
-            signOut(auth);
-            location.reload();
+            window.setLoading(true, "Çıkış yapılıyor...");
+            signOut(auth).then(() => location.reload());
         };
 
-        // --- PROFILE LOGIC ---
-        
+        // --- PROFILE ---
         window.handleProfileSave = async () => {
             const name = document.getElementById('setup-name').value;
             const bio = document.getElementById('setup-bio').value;
             const file = document.getElementById('setup-avatar').files[0];
 
-            if(!name) return alert("İsim zorunludur.");
+            if(!name) return alert("İsim şart!");
             
-            let photoURL = "https://ui-avatars.com/api/?name=" + encodeURIComponent(name) + "&background=FF6B6B&color=fff";
-
-            setLoading(true, "Fotoğraf Yükleniyor...");
-
+            window.setLoading(true, "Profil oluşturuluyor...");
+            
+            let photoURL = "https://ui-avatars.com/api/?name=" + encodeURIComponent(name) + "&background=0ea5e9&color=fff";
+            
             if(file) {
                 try {
-                    photoURL = await uploadToImgBB(file);
-                } catch(e) {
-                    console.error("Resim hatası", e);
-                }
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if(data.success) photoURL = data.data.url;
+                } catch(e) { console.error("Upload hatası", e); }
             }
 
             const profileData = {
                 uid: currentUser.uid,
                 displayName: name,
-                bio: bio || "Merhaba!",
+                bio: bio || "Hey! VibeChat kullanıyorum.",
                 photoURL: photoURL,
-                email: currentUser.email || "demo@lovesync.app",
+                email: currentUser.email || "anon",
                 lastSeen: serverTimestamp()
             };
 
-            // Profili kaydet (Hem private hem public alana)
             await setDoc(doc(db, 'artifacts', activeAppId, 'users', currentUser.uid, 'profile', 'data'), profileData);
             await setDoc(doc(db, 'artifacts', activeAppId, 'public', 'data', `user_${currentUser.uid}`), profileData);
 
             myUserProfile = profileData;
-            setLoading(false);
+            updateProfileUI();
             window.show('screen-main');
             loadPeople();
+            window.setLoading(false);
         };
 
-        // --- IMGBB ---
-        async function uploadToImgBB(file) {
-            const formData = new FormData();
-            formData.append('image', file);
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
-            const data = await res.json();
-            return data.data.url;
-        }
-
-        // --- APP LOGIC ---
-
+        // --- CHAT & DATA ---
         function loadPeople() {
             const listRef = collection(db, 'artifacts', activeAppId, 'public', 'data');
             onSnapshot(listRef, (snap) => {
                 const listEl = document.getElementById('people-list');
                 listEl.innerHTML = '';
+                let count = 0;
                 snap.forEach(d => {
                     const data = d.data();
                     if(d.id.startsWith('user_') && data.uid !== currentUser.uid) {
+                        count++;
                         listEl.innerHTML += `
                             <div onclick="openChat('${data.uid}', '${data.displayName}', '${data.photoURL}')" 
-                                 class="glass-panel p-3 mb-3 rounded-2xl flex items-center gap-4 cursor-pointer hover:bg-white/50 transition transform hover:scale-[1.02]">
-                                <div class="avatar-container w-14 h-14 shrink-0">
+                                 class="glass-panel p-3 mb-3 rounded-2xl flex items-center gap-4 cursor-pointer hover:bg-white/5 transition transform active:scale-95">
+                                <div class="avatar-container w-12 h-12 shrink-0">
                                     <img src="${data.photoURL}" class="avatar-img w-full h-full object-cover">
                                 </div>
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-gray-800">${data.displayName}</h4>
-                                    <p class="text-xs text-gray-500 truncate">${data.bio}</p>
+                                <div class="flex-1 overflow-hidden">
+                                    <h4 class="font-bold text-gray-200 truncate">${data.displayName}</h4>
+                                    <p class="text-xs text-gray-400 truncate">${data.bio}</p>
                                 </div>
-                                <div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-500">
-                                    <i class="fas fa-comment"></i>
+                                <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-sky-400">
+                                    <i class="fas fa-comment-dots"></i>
                                 </div>
                             </div>
                         `;
                     }
                 });
+                if(count === 0) listEl.innerHTML = '<div class="text-center text-gray-500 mt-10">Kimse yok... Arkadaşlarını davet et!</div>';
             });
         }
 
@@ -379,11 +394,12 @@
                 const isMine = msg.sender === currentUser.uid;
                 let content = `<span class="text-sm">${msg.text}</span>`;
                 
-                if(msg.type === 'image') content = `<img src="${msg.text}" class="rounded-lg max-w-[200px] border-2 border-white/50">`;
-                if(msg.type === 'heart') content = `<i class="fas fa-heart text-5xl text-red-500 animate-pulse drop-shadow-lg"></i>`;
+                if(msg.type === 'image') content = `<img src="${msg.text}" class="rounded-lg max-w-[200px] border border-white/20">`;
+                // Kalp yerine yıldırım/ateş efekti
+                if(msg.type === 'buzz') content = `<i class="fas fa-bolt text-5xl text-yellow-400 animate-pulse drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]"></i>`;
 
                 container.innerHTML += `
-                    <div class="message-enter flex w-full mb-4 ${isMine ? 'justify-end' : 'justify-start'}">
+                    <div class="message-enter flex w-full mb-3 ${isMine ? 'justify-end' : 'justify-start'}">
                         <div class="message-bubble p-3 ${isMine ? 'message-mine' : 'message-theirs'}">
                             ${content}
                         </div>
@@ -396,7 +412,6 @@
         window.sendMessage = async (type = 'text', content = null) => {
             const input = document.getElementById('msg-input');
             const text = content || input.value;
-            
             if(!text) return;
 
             const msgRef = collection(db, 'artifacts', activeAppId, 'public', 'data', `messages_${activeChatId}`);
@@ -406,54 +421,59 @@
                 sender: currentUser.uid,
                 ts: serverTimestamp()
             });
-            
             if(type === 'text') input.value = '';
         };
 
-        // File Selection for Chat
+        // File/Cam
         window.triggerFile = () => document.getElementById('chat-file-input').click();
-        
         document.getElementById('chat-file-input').addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if(file) {
                 const btn = document.getElementById('btn-cam');
-                const originalHtml = btn.innerHTML;
+                const old = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 try {
-                    const url = await uploadToImgBB(file);
-                    window.sendMessage('image', url);
-                } catch(err) { alert('Hata'); }
-                btn.innerHTML = originalHtml;
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if(data.success) window.sendMessage('image', data.data.url);
+                } catch(e) {}
+                btn.innerHTML = old;
             }
         });
 
-        // UI Updates
+        // "Buzz" butonu mantığı
+        const input = document.getElementById('msg-input');
+        const sendBtn = document.getElementById('btn-send');
+        input.addEventListener('input', () => {
+            if(input.value.trim() === '') {
+                sendBtn.innerHTML = '<i class="fas fa-bolt"></i>';
+                sendBtn.onclick = () => window.sendMessage('buzz', 'buzz');
+            } else {
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                sendBtn.onclick = () => window.sendMessage();
+            }
+        });
+        // Init state
+        sendBtn.innerHTML = '<i class="fas fa-bolt"></i>';
+        sendBtn.onclick = () => window.sendMessage('buzz', 'buzz');
+
+
         function updateProfileUI() {
             document.getElementById('profile-tab-img').src = myUserProfile.photoURL;
             document.getElementById('profile-tab-name').innerText = myUserProfile.displayName;
+            document.getElementById('profile-tab-bio').innerText = myUserProfile.bio;
         }
 
-        function setLoading(state, text="İşlem yapılıyor...") {
-            const loader = document.getElementById('global-loader');
-            if(state) {
-                loader.classList.remove('hidden');
-                loader.querySelector('p').innerText = text;
-            } else {
-                loader.classList.add('hidden');
-            }
-        }
-
-        // Setup Avatar Preview
         document.getElementById('setup-avatar').addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if(file) {
+            if(e.target.files[0]) {
                 const r = new FileReader();
                 r.onload = (ev) => document.getElementById('setup-preview').src = ev.target.result;
-                r.readAsDataURL(file);
+                r.readAsDataURL(e.target.files[0]);
             }
         });
 
-        // Expose to window for HTML events
         window.switchTab = (tab) => {
             document.querySelectorAll('.tab-view').forEach(t => t.classList.add('hidden'));
             document.getElementById(`view-${tab}`).classList.remove('hidden');
@@ -461,163 +481,169 @@
             document.getElementById(`nav-${tab}`).classList.add('active');
         };
 
+        // Enter ile gönder
+        input.addEventListener('keypress', (e) => { if(e.key === 'Enter') window.sendMessage(); });
+
     </script>
 
-    <!-- LOADING OVERLAY -->
-    <div id="global-loader" class="fixed inset-0 z-[100] bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center hidden">
-        <span class="loader mb-4"></span>
-        <p class="text-slate-600 font-medium">Yükleniyor...</p>
+    <!-- LOADING -->
+    <div id="global-loader" class="fixed inset-0 z-[100] bg-[#0f172a]/90 backdrop-blur-sm flex flex-col items-center justify-center hidden">
+        <div class="loader mb-4"></div>
+        <p class="text-sky-400 font-mono text-sm tracking-widest animate-pulse">YÜKLENİYOR...</p>
     </div>
 
-    <!-- EKRAN 1: WELCOME (Giriş/Kayıt Seçimi) -->
+    <!-- 1. WELCOME -->
     <div id="screen-welcome" class="screen fixed inset-0 flex flex-col items-center justify-center p-8 text-center z-50">
         <div class="mb-8 relative">
-            <div class="absolute inset-0 bg-pink-400 blur-2xl opacity-20 rounded-full animate-pulse"></div>
-            <i class="fas fa-heart text-6xl text-transparent bg-clip-text bg-gradient-to-tr from-pink-500 to-rose-600 drop-shadow-sm"></i>
+            <div class="absolute inset-0 bg-blue-500 blur-3xl opacity-20 rounded-full"></div>
+            <div class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-violet-600 to-sky-500 flex items-center justify-center shadow-lg shadow-sky-500/20 mb-4 mx-auto rotate-3 hover:rotate-6 transition duration-500">
+                <i class="fas fa-network-wired text-4xl text-white"></i>
+            </div>
         </div>
-        <h1 class="text-4xl font-bold text-slate-800 mb-2 tracking-tight">LoveSync</h1>
-        <p class="text-slate-500 mb-10 text-lg">Sevdiklerinle, en özel anlarında.</p>
+        <h1 class="text-5xl font-bold text-white mb-2 tracking-tighter">VibeChat</h1>
+        <p class="text-slate-400 mb-12 text-lg font-light">Yeni nesil bağlantı noktası.</p>
 
         <div class="w-full max-w-sm space-y-4">
-            <button onclick="window.show('screen-login')" class="w-full py-4 rounded-2xl bg-slate-900 text-white font-bold shadow-xl shadow-slate-200 hover:scale-[1.02] transition">
+            <button onclick="window.show('screen-login')" class="w-full py-4 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-200 transition">
                 Giriş Yap
             </button>
-            <button onclick="window.show('screen-register')" class="w-full py-4 rounded-2xl bg-white text-slate-900 font-bold border border-slate-200 shadow-lg hover:bg-slate-50 hover:scale-[1.02] transition">
+            <button onclick="window.show('screen-register')" class="w-full py-4 rounded-xl bg-slate-800 text-white font-bold border border-slate-700 hover:border-sky-500 transition">
+                Hesap Oluştur
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. LOGIN -->
+    <div id="screen-login" class="screen hidden fixed inset-0 z-50 flex flex-col p-6 bg-[#0f172a]/95 backdrop-blur-xl">
+        <button onclick="window.show('screen-welcome')" class="self-start p-2 mb-8 text-slate-400 hover:text-white"><i class="fas fa-arrow-left text-xl"></i></button>
+        <h2 class="text-3xl font-bold mb-1 text-white">Giriş Yap</h2>
+        <p class="text-slate-500 mb-8">Vibe'ı yakala.</p>
+        
+        <div class="space-y-4">
+            <input type="email" id="login-email" placeholder="E-posta" class="glass-input w-full p-4 rounded-xl outline-none">
+            <input type="password" id="login-pass" placeholder="Şifre" class="glass-input w-full p-4 rounded-xl outline-none">
+            <button onclick="window.handleLogin()" class="w-full py-4 mt-4 bg-gradient-to-r from-violet-600 to-sky-500 text-white rounded-xl font-bold shadow-lg shadow-sky-500/20">
+                Giriş
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. REGISTER -->
+    <div id="screen-register" class="screen hidden fixed inset-0 z-50 flex flex-col p-6 bg-[#0f172a]/95 backdrop-blur-xl">
+        <button onclick="window.show('screen-welcome')" class="self-start p-2 mb-8 text-slate-400 hover:text-white"><i class="fas fa-arrow-left text-xl"></i></button>
+        <h2 class="text-3xl font-bold mb-1 text-white">Katıl</h2>
+        <p class="text-slate-500 mb-8">Profilini oluşturmaya başla.</p>
+        
+        <div class="space-y-4">
+            <input type="email" id="reg-email" placeholder="E-posta" class="glass-input w-full p-4 rounded-xl outline-none">
+            <input type="password" id="reg-pass" placeholder="Şifre" class="glass-input w-full p-4 rounded-xl outline-none">
+            <button onclick="window.handleRegister()" class="w-full py-4 mt-4 bg-white text-slate-900 rounded-xl font-bold hover:bg-slate-200">
                 Kayıt Ol
             </button>
         </div>
     </div>
 
-    <!-- EKRAN 2: LOGIN -->
-    <div id="screen-login" class="screen hidden fixed inset-0 z-50 flex flex-col p-6 bg-white/90 backdrop-blur-xl">
-        <button onclick="window.show('screen-welcome')" class="self-start p-2 mb-8"><i class="fas fa-arrow-left text-xl"></i></button>
-        <h2 class="text-3xl font-bold mb-1">Tekrar Hoşgeldin!</h2>
-        <p class="text-slate-400 mb-8">Kaldığın yerden devam et.</p>
-        
-        <div class="space-y-4">
-            <input type="email" id="login-email" placeholder="E-posta Adresi" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-pink-300 transition">
-            <input type="password" id="login-pass" placeholder="Şifre" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-pink-300 transition">
-            <button onclick="handleLogin()" class="w-full py-4 mt-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-2xl font-bold shadow-lg shadow-pink-200">
-                Giriş Yap
-            </button>
-        </div>
-    </div>
-
-    <!-- EKRAN 3: REGISTER -->
-    <div id="screen-register" class="screen hidden fixed inset-0 z-50 flex flex-col p-6 bg-white/90 backdrop-blur-xl">
-        <button onclick="window.show('screen-welcome')" class="self-start p-2 mb-8"><i class="fas fa-arrow-left text-xl"></i></button>
-        <h2 class="text-3xl font-bold mb-1">Hesap Oluştur</h2>
-        <p class="text-slate-400 mb-8">LoveSync dünyasına katıl.</p>
-        
-        <div class="space-y-4">
-            <input type="email" id="reg-email" placeholder="E-posta Adresi" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-pink-300 transition">
-            <input type="password" id="reg-pass" placeholder="Şifre (En az 6 karakter)" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 outline-none focus:border-pink-300 transition">
-            <button onclick="handleRegister()" class="w-full py-4 mt-4 bg-slate-900 text-white rounded-2xl font-bold shadow-lg">
-                Kayıt Ol
-            </button>
-        </div>
-    </div>
-
-    <!-- EKRAN 4: PROFILE SETUP (Kayıt Sonrası) -->
-    <div id="screen-profile-setup" class="screen hidden fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-white/95 backdrop-blur-xl">
-        <h2 class="text-2xl font-bold mb-6">Profilini Düzenle</h2>
+    <!-- 4. PROFILE SETUP -->
+    <div id="screen-profile-setup" class="screen hidden fixed inset-0 z-50 flex flex-col items-center justify-center p-6 bg-[#0f172a] backdrop-blur-xl">
+        <h2 class="text-2xl font-bold mb-8 text-white">Kimliğini Belirle</h2>
         
         <div class="mb-8 relative group cursor-pointer">
             <input type="file" id="setup-avatar" class="hidden" accept="image/*">
             <label for="setup-avatar">
                 <div class="avatar-container w-32 h-32">
-                    <img id="setup-preview" src="https://ui-avatars.com/api/?name=User&background=cbd5e1&color=fff" class="avatar-img w-full h-full object-cover">
+                    <img id="setup-preview" src="https://ui-avatars.com/api/?name=User&background=1e293b&color=fff" class="avatar-img w-full h-full object-cover">
                 </div>
-                <div class="absolute bottom-0 right-0 w-10 h-10 bg-slate-900 rounded-full flex items-center justify-center text-white border-4 border-white">
+                <div class="absolute bottom-0 right-0 w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center text-white border-4 border-[#0f172a]">
                     <i class="fas fa-camera"></i>
                 </div>
             </label>
         </div>
 
         <div class="w-full max-w-sm space-y-4">
-            <input type="text" id="setup-name" placeholder="Görünecek İsim" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-pink-100 text-center font-bold">
-            <input type="text" id="setup-bio" placeholder="Kısa bir biyografi..." class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 outline-none focus:ring-2 focus:ring-pink-100 text-center">
+            <input type="text" id="setup-name" placeholder="Takma Adın" class="glass-input w-full p-4 rounded-xl outline-none text-center font-bold">
+            <input type="text" id="setup-bio" placeholder="Bio (Örn: Just chillin')" class="glass-input w-full p-4 rounded-xl outline-none text-center">
             
-            <button onclick="handleProfileSave()" class="w-full py-4 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-2xl font-bold shadow-lg hover:shadow-pink-200 transition transform active:scale-95">
-                Başla
+            <button onclick="window.handleProfileSave()" class="w-full py-4 bg-gradient-to-r from-sky-500 to-indigo-600 text-white rounded-xl font-bold shadow-lg hover:shadow-sky-500/30 transition transform active:scale-95">
+                Başlat
             </button>
         </div>
     </div>
 
-    <!-- EKRAN 5: MAIN APP -->
+    <!-- 5. MAIN APP -->
     <div id="screen-main" class="screen hidden flex flex-col h-full bg-transparent">
         <!-- Header -->
-        <header class="glass-panel mx-4 mt-4 p-4 rounded-2xl flex justify-between items-center shadow-sm">
-            <div class="flex items-center gap-2">
-                <i class="fas fa-heart text-pink-500 text-xl animate-pulse"></i>
-                <h1 class="font-bold text-lg text-slate-800">LoveSync</h1>
+        <header class="glass-panel mx-4 mt-4 p-4 rounded-2xl flex justify-between items-center shadow-lg z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-sky-500 flex items-center justify-center">
+                    <i class="fas fa-bolt text-white text-sm"></i>
+                </div>
+                <h1 class="font-bold text-lg text-white tracking-wide">VibeChat</h1>
             </div>
-            <button onclick="handleLogout()" class="text-slate-400 hover:text-red-500 transition"><i class="fas fa-sign-out-alt"></i></button>
+            <button onclick="window.handleLogout()" class="text-slate-400 hover:text-red-400 transition"><i class="fas fa-power-off"></i></button>
         </header>
 
-        <!-- Content Views -->
+        <!-- Content -->
         <div class="flex-1 overflow-y-auto p-4 relative">
-            
-            <!-- People Tab -->
+            <!-- People -->
             <div id="view-people" class="tab-view">
-                <h2 class="text-slate-500 text-sm font-semibold mb-3 uppercase tracking-wider ml-1">Çevrimiçi Kişiler</h2>
-                <div id="people-list" class="pb-20">
-                    <!-- JS ile dolar -->
-                    <div class="text-center mt-10 text-slate-400">Kimse yok mu? Davet et!</div>
-                </div>
+                <h2 class="text-sky-400/80 text-xs font-bold mb-4 uppercase tracking-widest ml-1">Akış</h2>
+                <div id="people-list" class="pb-20 space-y-2"></div>
             </div>
 
-            <!-- Profile Tab -->
+            <!-- Profile -->
             <div id="view-profile" class="tab-view hidden flex flex-col items-center pt-10">
-                <div class="avatar-container w-32 h-32 mb-4 shadow-xl">
+                <div class="avatar-container w-32 h-32 mb-6 shadow-2xl shadow-violet-500/20">
                     <img id="profile-tab-img" src="" class="avatar-img w-full h-full object-cover">
                 </div>
-                <h2 id="profile-tab-name" class="text-2xl font-bold text-slate-800">...</h2>
-                <div class="mt-6 w-full space-y-3">
-                    <div class="glass-panel p-4 rounded-xl flex items-center justify-between">
-                        <span class="text-slate-600">Bildirimler</span>
-                        <div class="w-10 h-6 bg-pink-500 rounded-full relative"><div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div></div>
+                <h2 id="profile-tab-name" class="text-3xl font-bold text-white mb-2"></h2>
+                <p id="profile-tab-bio" class="text-slate-400 bg-white/5 px-4 py-1 rounded-full text-sm"></p>
+                
+                <div class="mt-8 grid grid-cols-2 gap-4 w-full">
+                    <div class="glass-panel p-4 rounded-2xl text-center">
+                        <span class="block text-2xl font-bold text-sky-400">12</span>
+                        <span class="text-xs text-slate-500 uppercase font-bold">Arkadaş</span>
+                    </div>
+                    <div class="glass-panel p-4 rounded-2xl text-center">
+                        <span class="block text-2xl font-bold text-violet-400">Online</span>
+                        <span class="text-xs text-slate-500 uppercase font-bold">Durum</span>
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- Bottom Nav -->
-        <div class="glass-panel mx-4 mb-4 p-2 rounded-2xl flex justify-around items-center shadow-lg">
-            <button id="nav-people" onclick="switchTab('people')" class="bottom-nav-item active w-12 h-12 flex items-center justify-center text-slate-400 text-xl"><i class="fas fa-users"></i></button>
-            <button id="nav-profile" onclick="switchTab('profile')" class="bottom-nav-item w-12 h-12 flex items-center justify-center text-slate-400 text-xl"><i class="fas fa-user"></i></button>
+        <!-- Nav -->
+        <div class="glass-panel mx-4 mb-4 p-3 rounded-2xl flex justify-around items-center z-20">
+            <button id="nav-people" onclick="window.switchTab('people')" class="bottom-nav-item active w-12 h-12 flex items-center justify-center text-slate-300 text-xl"><i class="fas fa-globe"></i></button>
+            <button id="nav-profile" onclick="window.switchTab('profile')" class="bottom-nav-item w-12 h-12 flex items-center justify-center text-slate-300 text-xl"><i class="fas fa-user-astronaut"></i></button>
         </div>
     </div>
 
-    <!-- EKRAN 6: CHAT ROOM -->
-    <div id="screen-chat" class="screen hidden fixed inset-0 z-40 bg-[#fefefe] flex flex-col">
+    <!-- 6. CHAT ROOM -->
+    <div id="screen-chat" class="screen hidden fixed inset-0 z-40 bg-[#0f172a] flex flex-col">
         <!-- Chat Header -->
-        <div class="glass-panel p-4 pb-2 border-b border-gray-100 flex items-center gap-4 z-10">
-            <button onclick="window.show('screen-main')" class="w-8 h-8 flex items-center justify-center bg-gray-50 rounded-full text-slate-600"><i class="fas fa-arrow-left"></i></button>
+        <div class="glass-panel p-4 pb-2 border-b border-white/5 flex items-center gap-4 z-10">
+            <button onclick="window.show('screen-main')" class="w-8 h-8 flex items-center justify-center bg-white/5 rounded-full text-slate-300 hover:bg-white/10"><i class="fas fa-arrow-left"></i></button>
             <div class="avatar-container w-10 h-10">
                 <img id="chat-user-img" src="" class="avatar-img w-full h-full object-cover">
             </div>
             <div class="flex-1">
-                <h3 id="chat-user-name" class="font-bold text-slate-800 text-sm">...</h3>
-                <span class="text-xs text-green-500 font-medium">● Çevrimiçi</span>
+                <h3 id="chat-user-name" class="font-bold text-white text-sm">User</h3>
+                <span class="text-xs text-sky-500 font-bold tracking-wider">● ONLINE</span>
             </div>
         </div>
 
-        <!-- Messages Area -->
-        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 bg-slate-50 space-y-2">
-            <!-- Messages injected here -->
-        </div>
+        <!-- Messages -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
 
-        <!-- Chat Input -->
-        <div class="p-4 bg-white pb-safe border-t border-gray-100">
+        <!-- Input -->
+        <div class="p-4 bg-[#0f172a] pb-safe border-t border-white/5">
             <div class="glass-input p-1.5 rounded-full flex items-center gap-2 pr-2">
                 <input type="file" id="chat-file-input" class="hidden" accept="image/*">
-                <button id="btn-cam" onclick="triggerFile()" class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 hover:text-pink-500 transition flex items-center justify-center">
+                <button id="btn-cam" onclick="window.triggerFile()" class="w-10 h-10 rounded-full text-slate-400 hover:text-sky-400 transition flex items-center justify-center">
                     <i class="fas fa-camera"></i>
                 </button>
-                <input type="text" id="msg-input" placeholder="Mesaj..." class="flex-1 bg-transparent border-none outline-none text-slate-700 text-sm px-2">
-                <button onclick="sendMessage()" class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-lg hover:bg-pink-500 transition">
+                <input type="text" id="msg-input" placeholder="Mesaj yaz..." class="flex-1 bg-transparent border-none outline-none text-white text-sm px-2">
+                <button id="btn-send" class="w-10 h-10 rounded-full bg-gradient-to-tr from-violet-600 to-sky-500 text-white flex items-center justify-center shadow-lg hover:shadow-violet-500/40 transition">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
